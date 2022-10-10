@@ -1,21 +1,14 @@
 version: "3"
 
 services:
-    # angular_app:
-    #     build: ./client
-    #     ports:
-    #         - 4200:4200
-    #     volumes:
-    #         - ./client/:/ng-app
-
     express_app:
         build: ./server
         ports:
-            - 3001:3001
+            - 3000:3000
         volumes:
-            - ./server/:/ApeType
+            - ./server/:/app
         environment:
-            - DB_NAME=EnTree
+            - DB_NAME=ytclone
             - DB_HOST=db_server
             - DB_PORT=3306
             - DB_USER=root
@@ -26,12 +19,12 @@ services:
         command: "bash start.sh db_server:3306"
 
     db_server:
-        image: mysql:5.7
+        image: mongo:latest
         ports:
-            - "3306:3306"
+            - 27017:27017
         environment:
-            - MYSQL_ROOT_PASSWORD=password
-            - MYSQL_DATABASE=EnTree
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
     redis:
         image: redis
