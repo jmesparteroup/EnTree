@@ -3,16 +3,19 @@ const router = express.Router();
 
 const {Tree, Trees} = require("../models/trees.model");
 
-const db = require('../config/database');
-
 const TreesController = require("../controllers/trees.controller");
 const TreesRepository = require("../repositories/trees.repository");
 const TreeErrorRepository = require("../errors/trees.error");
 
-const treesRepository = new TreesRepository(db);
-const treesController = new TreesController(treesRepository, Tree, TreeErrorRepository);
+const treesRepository = new TreesRepository(Tree);
+const treesController = new TreesController(treesRepository, Trees, TreeErrorRepository);
 
+router.get("/", treesController.getAllTrees.bind(treesController));
+router.get("/:id", treesController.getTreeById.bind(treesController));
+router.get("/proximity/:location/:radius", treesController.getTreeByProximity.bind(treesController));
 
-
+router.post("/", treesController.createTree.bind(treesController));
+router.put("/:id", treesController.updateTree.bind(treesController));
+router.delete("/:id", treesController.deleteTree.bind(treesController));
 
 module.exports = router;
