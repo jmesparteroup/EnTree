@@ -1,10 +1,7 @@
 # base image (all dockerfiles should have this)
-FROM node:12.2.0
- 
+FROM node:alpine
 # set working directory
 WORKDIR /app
- 
-### install and cache app dependencies
  
 # copy package.json & package-lock.json to ./ inside the Docker image
 COPY package*.json ./
