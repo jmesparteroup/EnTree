@@ -8,28 +8,22 @@ services:
         volumes:
             - ./server/:/app
         environment:
-            - DB_NAME=ytclone
-            - DB_HOST=db_server
+            - DB_NAME=entrees
+            - DB_HOST=mongo
             - DB_PORT=3306
             - DB_USER=root
-            - DB_PASSWORD=password
+            - DB_PASSWORD=rootpassword
             - JWT_SECRET=DFM312JUX09Q234NA
         depends_on:
-            - db_server
-        command: "bash start.sh db_server:3306"
+            - mongo
+        command: "bash start.sh mongo:27017"
 
-    db_server:
+    mongo:
+        container_name: mongo
         image: mongo:latest
         ports:
-            - 27017:27017
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: rootpassword
-
-    redis:
-        image: redis
-        ports:
-            - "6379:6379"
+            - "27017:27017"
+            
 
 
 
