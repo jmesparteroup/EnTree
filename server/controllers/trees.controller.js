@@ -25,7 +25,8 @@ class TreesController {
 
     async createTree(req, res) {
         try {
-            const tree = await this.TreesRepository.createTree(req.body);
+            console.log(req.body);
+            const tree = await this.TreesRepository.createTree({...req.body, timestamp: Date.now()});
             res.status(200).json(tree);
         } catch (error) {
             res.status(500).json(error);
