@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 
 services:
     next:
@@ -9,27 +9,40 @@ services:
             - ./entree-client-next/:/next-app
 
     express_app:
-        build: ./server
+        build: ./server-postgres
         ports:
-            - 3000:3000
+            - 3001:3001
         volumes:
-            - ./server/:/app
+            - ./server-postgres/:/entree
         environment:
-            - DB_NAME=entrees
-            - DB_HOST=mongo
-            - DB_PORT=3306
+            - DB_NAME=entree
+            - DB_HOST=db_server
+            - DB_PORT=5432
             - DB_USER=root
-            - DB_PASSWORD=rootpassword
+            - DB_PASSWORD=password
             - JWT_SECRET=DFM312JUX09Q234NA
         depends_on:
-            - mongo
-        command: "bash start.sh mongo:27017"
+            - db_server
+        command: "bash start.sh db_server:5432"
 
-    mongo:
-        container_name: mongo
-        image: mongo:latest
+    db_server:
+        image: kartoza/postgis:14-3.2
+        volumes:
+            - ./postgres-data/:/var/lib/postgresql/data
+        environment:
+            # If you need to create multiple database you can add coma separated databases eg gis,data
+            - POSTGRES_DB=entree
+            - POSTGRES_USER=root
+            - POSTGRES_PASS=password
+            - ALLOW_IP_RANGE=0.0.0.0/0
+            # Add extensions you need to be enabled by default in the DB. Default are the five specified below
+            - POSTGRES_MULTIPLE_EXTENSIONS=postgis
         ports:
-            - "27017:27017"
+          - "5432:5432"
+        restart: on-failure
+        healthcheck:
+          test: "exit 0"
+
             
 
 

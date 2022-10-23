@@ -15,6 +15,8 @@ do
  port=${var#*:}
  wait_for $host $port
 done 
+
+
  
 # run node app
 echo "running node app"
