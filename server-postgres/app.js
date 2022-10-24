@@ -5,8 +5,6 @@ const cookieParser = require('cookie-parser');
 const usersRouter = require('./routes/users.route');
 const treesRouter = require('./routes/trees.route');
 
-const db = require('./config/database');
-
 const app = express();
 
 app.use(express.json());

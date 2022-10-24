@@ -8,8 +8,10 @@ class TreesController {
     async getAllTrees(req, res) {
         try {
             const trees = await this.TreesRepository.getTrees();
+            console.log(trees);
             res.status(200).json(trees);
         } catch (error) {
+            console.log(error);
             res.status(500).json(error);
         }
     }
@@ -26,7 +28,7 @@ class TreesController {
     async createTree(req, res) {
         try {
             console.log(req.body);
-            const tree = await this.TreesRepository.createTree({...req.body, timestamp: Date.now()});
+            const tree = await this.TreesRepository.createTree({...req.body});
             res.status(200).json(tree);
         } catch (error) {
             res.status(500).json(error);
