@@ -9,7 +9,7 @@ class TreesController {
         try {
             console.log(req.body);
             const treeData = new this.TreeModel(req.body);
-            const tree = await this.TreesRepository.createTree({});
+            const tree = await this.TreesRepository.createTree(treeData);
             res.status(200).json(tree);
         } catch (error) {
             console.log(error);
