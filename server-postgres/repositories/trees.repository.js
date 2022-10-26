@@ -1,31 +1,12 @@
-const { connect } = require("../app");
-
 class TreesRepository {
   constructor(pool) {
     this.pool = pool;
   }
 
-  // Use pg pool query
-
-  // -- TABLE FOR TREES
-  // CREATE TABLE IF NOT EXISTS "trees" (
-  //     "treeId" SERIAL PRIMARY KEY,
-  //     "name" VARCHAR(255) NOT NULL,
-  //     "description" VARCHAR(255) NOT NULL,
-  //     "createdAt" INT NOT NULL,
-  //     --   LOCATION POSTGIS POINT
-  //     "location" POINT,
-  //     "userId" VARCHAR(32) NOT NULL
-  // );
   async createTree(data) {
     try {
       const conn = await this.pool.connect();
-      const query = `INSERT INTO trees (name, description, "createdAt", location, "userId") VALUES ($1, $2, $3, ST_GeomFromGeoJSON($4), $5) RETURNING *`;
-      const values = [
-        data.name,
-        data.description,
-      ];
-      const result = await conn.query(query, values);
+      const result = await conn.query(`CALL create_tree($1, $2, $3, $4, $5)`, values);
       conn.release();
       return result.rows[0];
     } catch (error) {

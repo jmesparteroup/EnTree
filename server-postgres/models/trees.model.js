@@ -1,8 +1,10 @@
 class Trees {
   constructor(data) {
-    this.location = data.location;
-    this.timestamp = data.timestamp;
-    this.uploader = data.uploader;
+    this.name = data?.name
+    this.description = data?.description 
+    this.createdAt = Date.now()
+    this.location = data?.location
+    this.userId = data?.userId
   }
 }
 
