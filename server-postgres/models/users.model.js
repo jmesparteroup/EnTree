@@ -11,33 +11,32 @@ class User {
     this.mobileNumber = data?.mobileNumber;
     this.age = data?.age;
     this.role = data?.role || "user";
-    this.createdAt = data?.createdAt
+    this.createdAt = data?.createdAt;
     this.updatedAt = Date.now();
   }
 
-    generateCreateUserData(){
-        return {
-            userId: this.userId,
-            email: this.email,
-            password: this.constructor.hashPassword(this.password),
-            firstName: this.firstName,
-            lastName: this.lastName,
-            mobileNumber: this.mobileNumber,
-            age: this.age,
-            role: this.role,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-        }
-    }
+  getNewUserData() {
+    return {
+      userId: this.userId,
+      email: this.email,
+      password: this.constructor.hashPassword(this.password),
+      firstName: this.firstName,
+      lastName: this.lastName,
+      mobileNumber: this.mobileNumber,
+      age: this.age,
+      role: this.role,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+  }
 
-    hashPassword(password) {
-		return bcrypt.hash(password, 10);
-	}
+  hashPassword(password) {
+    return bcrypt.hash(password, 10);
+  }
 
-	comparePassword(password, hash) {
-		return bcrypt.compare(password, hash);
-	}
-
+  comparePassword(password, hash) {
+    return bcrypt.compare(password, hash);
+  }
 
 
 }

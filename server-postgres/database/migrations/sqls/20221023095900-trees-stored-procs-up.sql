@@ -21,7 +21,7 @@ VALUES
         p_name,
         p_description,
         p_createdAt,
-        ST_GeomFromText(p_location),
+        ST_GeomFromText(p_location), 
         p_userId
     );
 
