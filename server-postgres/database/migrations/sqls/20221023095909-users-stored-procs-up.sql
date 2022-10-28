@@ -8,7 +8,7 @@ OR REPLACE PROCEDURE insert_user(
     IN p_name VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_updatedAt BIGINT
-) LANGUAGE plpgsql AS $$ BEGIN
+) LANGUAGE plpgsql AS $ $ BEGIN
 INSERT INTO
     users (
         "userId",
@@ -30,7 +30,7 @@ VALUES
 
 END;
 
-$$;
+$ $;
 
 -- CREATE PROCEDURE FOR GETTING USERS
 CREATE
@@ -95,6 +95,4 @@ END;
 
 $ $;
 
-
 -- Path: server-postgres/database/migrations/sqls/20221023095909-users-stored-procs-down.sql
-

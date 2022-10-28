@@ -23,3 +23,11 @@ CREATE TABLE IF NOT EXISTS "trees" (
     "location" GEOMETRY,
     "userId" VARCHAR(32) NOT NULL
 );
+
+-- TABLE FOR CITY POLYGONS
+CREATE TABLE IF NOT EXISTS "cityPolygons" (
+    "cityId" SERIAL PRIMARY KEY,
+    "cityName" VARCHAR(255) NOT NULL,
+    --   POLYGON POSTGIS POLYGON
+    "polygon" GEOMETRY
+);
