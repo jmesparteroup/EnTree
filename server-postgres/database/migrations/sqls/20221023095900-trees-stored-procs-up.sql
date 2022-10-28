@@ -64,11 +64,11 @@ OR REPLACE PROCEDURE update_tree(
 UPDATE
     trees
 SET
-    name = COALESCE(p_name),
-    description = COALESCE(p_description),
-    "createdAt" = COALESCE("createdAt", p_createdAt),
-    location = COALESCE(location,ST_GeomFromText(p_location)),
-    "userId" = COALESCE("userId", p_userId)
+    name = COALESCE(p_name, name),
+    description = COALESCE(p_description, description),
+    "createdAt" = COALESCE(p_createdAt, "createdAt"),
+    location = COALESCE(ST_GeomFromText(p_location), location),
+    "userId" = COALESCE(p_userId, "userId")
 WHERE
     treeId = p_treeId;
 
