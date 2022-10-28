@@ -3,11 +3,22 @@ class TreesRepository {
     this.pool = pool;
   }
 
+  async _poolQuery(query, params) {
+    try {
+      const conn = await this.pool.connect();
+      const result = await conn.query(query, params);
+      conn.release();
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
   async createTree(data) {
     try {
       const conn = await this.pool.connect();
-      const result = await conn.query(`CALL create_tree($1, $2, $3, $4, $5)`, [
-        data.name,
+      const result = await conn.query(`CALL create_tree($1, $2, $3, $4)`, [
         data.description,
         data.createdAt,
         data.location,
@@ -23,7 +34,7 @@ class TreesRepository {
   async getTrees() {
     try {
       const conn = await this.pool.connect();
-      const result = await conn.query("SELECT * FROM trees");
+      const result = await conn.query("SELECT * from trees");
       conn.release();
       return result.rows;
     } catch (error) {
@@ -33,7 +44,10 @@ class TreesRepository {
 
   async getTree(id) {
     try {
-      return await this.TreeDB.findById(id);
+      const conn = await this.pool.connect();
+      const result = await conn.query("CALL get_tree($1)", [id]);
+      conn.release();
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
@@ -57,17 +71,7 @@ class TreesRepository {
 
   async getTreeByProximity(location, radius) {
     try {
-      return await this.TreeDB.find({
-        location: {
-          $near: {
-            $geometry: {
-              type: "Point",
-              coordinates: location,
-            },
-            $maxDistance: radius,
-          },
-        },
-      });
+      
     } catch (error) {
       throw error;
     }

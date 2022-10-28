@@ -2,7 +2,6 @@
 -- Stored procedure for creating a tree
 CREATE
 OR REPLACE PROCEDURE create_tree(
-    IN p_name VARCHAR(255),
     IN p_description VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_location VARCHAR(255),
@@ -10,7 +9,6 @@ OR REPLACE PROCEDURE create_tree(
 ) language plpgsql as $$ BEGIN
 INSERT INTO
     trees (
-        name,
         description,
         "createdAt",
         location,
@@ -18,7 +16,6 @@ INSERT INTO
     )
 VALUES
     (
-        p_name,
         p_description,
         p_createdAt,
         ST_GeomFromText(p_location), 
@@ -54,8 +51,6 @@ END;$$;
 -- Stored procedure for updating a tree
 CREATE
 OR REPLACE PROCEDURE update_tree(
-    IN p_treeId INT,
-    IN p_name VARCHAR(255),
     IN p_description VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_location VARCHAR(255),
@@ -64,7 +59,6 @@ OR REPLACE PROCEDURE update_tree(
 UPDATE
     trees
 SET
-    name = COALESCE(p_name, name),
     description = COALESCE(p_description, description),
     "createdAt" = COALESCE(p_createdAt, "createdAt"),
     location = COALESCE(ST_GeomFromText(p_location), location),
