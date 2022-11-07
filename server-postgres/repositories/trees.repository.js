@@ -34,7 +34,7 @@ class TreesRepository {
   async getTrees() {
     try {
       const conn = await this.pool.connect();
-      const result = await conn.query("SELECT * from trees");
+      const result = await conn.query("SELECT get_all_trees()");
       conn.release();
       return result.rows;
     } catch (error) {
@@ -45,7 +45,7 @@ class TreesRepository {
   async getTree(id) {
     try {
       const conn = await this.pool.connect();
-      const result = await conn.query("CALL get_tree($1)", [id]);
+      const result = await conn.query("SELECT get_tree($1)", [id]);
       conn.release();
       return result.rows[0];
     } catch (error) {

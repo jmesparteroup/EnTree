@@ -26,27 +26,29 @@ END;$$;
 
 -- Stored procedure for getting a tree
 CREATE
-OR REPLACE PROCEDURE get_tree(
+OR REPLACE FUNCTION get_tree(
     IN p_treeId INT
-) language plpgsql as $$ BEGIN
-SELECT
-    *
-FROM
-    trees
-WHERE
-    treeId = p_treeId;
-
+) 
+RETURNS setof trees
+language plpgsql 
+as 
+$$ 
+BEGIN
+    RETURN QUERY
+    SELECT *
+    FROM trees
+    WHERE trees."treeId" = p_treeId;
 END;$$;
 
 -- Stored procedure for getting all trees
-CREATE
-OR REPLACE PROCEDURE get_all_trees() language plpgsql as $$ BEGIN
-SELECT
-    *
-FROM
-    trees;
+-- CREATE
+-- OR REPLACE PROCEDURE get_all_trees() language plpgsql as $$ BEGIN
+-- SELECT
+--     *
+-- FROM
+--     trees;
 
-END;$$;
+-- END;$$;
 
 -- Stored procedure for updating a tree
 CREATE
@@ -64,7 +66,7 @@ SET
     location = COALESCE(ST_GeomFromText(p_location), location),
     "userId" = COALESCE(p_userId, "userId")
 WHERE
-    treeId = p_treeId;
+    trees."treeId" = p_treeId;
 
 END;$$;
 
@@ -76,7 +78,7 @@ OR REPLACE PROCEDURE delete_tree(
 DELETE FROM
     trees
 WHERE
-    treeId = p_treeId;
+    trees."treeId" = p_treeId;
 
 END;$$;
 
@@ -98,3 +100,15 @@ WHERE
     );
 
 END;$$;
+
+-- Create function to get all trees
+CREATE OR REPLACE FUNCTION get_all_trees()
+RETURNS setof trees
+language plpgsql
+as
+$$
+BEGIN
+    RETURN QUERY
+    SELECT * FROM trees;
+END;
+$$;
