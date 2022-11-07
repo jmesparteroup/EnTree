@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS "trees" (
     "description" VARCHAR(255) NOT NULL,
     "createdAt" BIGINT NOT NULL,
     --   LOCATION POSTGIS POINT
-    "location" GEOMETRY,
+    "location" GEOGRAPHY,
     "userId" VARCHAR(32) NOT NULL
 );
 

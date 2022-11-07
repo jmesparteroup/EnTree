@@ -18,7 +18,7 @@ VALUES
     (
         p_description,
         p_createdAt,
-        ST_GeomFromText(p_location), 
+        ST_GeogFromText(p_location), 
         p_userId
     );
 
@@ -63,7 +63,7 @@ UPDATE
 SET
     description = COALESCE(p_description, description),
     "createdAt" = COALESCE(p_createdAt, "createdAt"),
-    location = COALESCE(ST_GeomFromText(p_location), location),
+    location = COALESCE(ST_GeogFromText(p_location), location),
     "userId" = COALESCE(p_userId, "userId")
 WHERE
     trees."treeId" = p_treeId;
@@ -83,30 +83,31 @@ WHERE
 END;$$;
 
 -- Stored procedure for getting trees by proximity
-CREATE
-OR REPLACE PROCEDURE get_trees_by_proximity(
+CREATE OR REPLACE FUNCTION get_trees_by_proximity(
     IN p_location VARCHAR(255),
     IN p_distance INT
-) language plpgsql as $$ BEGIN
-SELECT
-    *
-FROM
-    trees
-WHERE
-    ST_DWithin(
-        trees.location,
-        ST_GeomFromText(p_location),
-        p_distance
-    );
-
-END;$$;
+) 
+RETURNS SETOF trees
+LANGUAGE plpgsql 
+as $$ 
+BEGIN
+    RETURN QUERY
+    SELECT *
+    FROM trees
+    WHERE
+        ST_DWithin(
+            trees.location,
+            p_location::geography,
+            p_distance
+        );
+END;
+$$;
 
 -- Create function to get all trees
 CREATE OR REPLACE FUNCTION get_all_trees()
-RETURNS setof trees
-language plpgsql
-as
-$$
+RETURNS SETOF trees
+LANGUAGE plpgsql
+as $$
 BEGIN
     RETURN QUERY
     SELECT * FROM trees;
