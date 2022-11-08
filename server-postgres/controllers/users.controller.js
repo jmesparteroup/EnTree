@@ -9,9 +9,11 @@ class UsersController {
         try {
             
             const user = new this.UserModel(req.body);
-            const result = await this.UsersRepository.createUser(user.getNewUserData());
-            res.status(200).json(user);
+            const result = await this.UsersRepository.createUser(await user.getNewUserData());
+            const loginDetails = await this.UserModel.loginUser('email', user.email, user.password, this.UsersRepository, this.UserErrorRepository);
+            res.status(200).json(loginDetails);
         } catch (error) {
+            console.log(error);
             res.status(500).json(error);
         }
     }
@@ -27,8 +29,12 @@ class UsersController {
     
     async getUserById(req, res) {
         try {
-            const user = await this.UsersRepository.getUser(req.params.id);
-            res.status(200).json(user);
+            const user = await this.UsersRepository.getUserById(req.params.id);
+
+            res.status(200).json({
+                message: 'User found',
+                data: user
+            });
         } catch (error) {
             res.status(500).json(error);
         }
@@ -53,6 +59,16 @@ class UsersController {
         }
     }
 
-
+    async loginUser(req, res) {
+        try {
+            const { email, password } = req.body;
+            const data = await this.UserModel.loginUser('email', email, password, this.UsersRepository, this.UserErrorRepository);
+            res.status(200).json(data);
+        } catch (error) {
+            res.status(500).json(error);
+        }
+    }
 
 }
+
+module.exports = UsersController;

@@ -34,11 +34,7 @@ class TreesRepository {
   async getTrees() {
     try {
       const conn = await this.pool.connect();
-<<<<<<< HEAD
       const result = await conn.query("SELECT get_all_trees()");
-=======
-      const result = await conn.query("SELECT * from trees");
->>>>>>> 63950aaf (Last changes)
       conn.release();
       return result.rows;
     } catch (error) {

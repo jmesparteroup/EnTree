@@ -1,14 +1,27 @@
 const GlobalError = require('./global.error');
+const CustomError = require('./custom.error');
 
 class UsersError extends GlobalError {
-    constructor(message, status) {
-        super(message);
-        this.status = status;
+    static UserNotFound() {
+        return new CustomError('User not found', 404);
     }
 
-    static userNotFound() {
-        throw Error ('User not found');
+    static UserAlreadyExists() {
+        return new CustomError('User already exists', 409);
     }
+
+    static InvalidCredentials() {
+        return new CustomError('Invalid credentials', 401);
+    }
+
+    static InvalidEmail() {
+        return new CustomError('Invalid email', 400);
+    }
+
+    static InvalidPassword() {
+        return new CustomError('Invalid password', 400);
+    }
+
 }
 
 

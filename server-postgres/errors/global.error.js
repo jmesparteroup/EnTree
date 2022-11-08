@@ -1,19 +1,18 @@
+const CustomError = require('./custom.error');
+
+
 class GlobalError {
-    constructor(message, status) {
-        this.message = message;
-        this.status = status;
-    }
 
     static genericError(message, code) {
-        return new Error(message, code);
+        return new CustomError(message, code);
     }
 
     static badRequest(message) {
-        return new Error(message, 400);
+        return new CustomError(message, 400);
     }
 
     static notFound(message) {
-        return new Error(message, 404);
+        return new CustomError(message, 404);
     }
 
 }
