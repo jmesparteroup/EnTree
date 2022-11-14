@@ -5,7 +5,7 @@ import { Marker } from 'react-leaflet/Marker'
 import { useMap } from 'react-leaflet/hooks'
 
 const EntreeMap = () => {
-  const [center, setCenter] = useState({ lat: -4.043477, lng: 39.668205 })
+  const [center, setCenter] = useState({ lat: 14.5995, lng: 120.9842 })
   const ZOOM_LEVEL = 9
   const mapRef = useRef()
 

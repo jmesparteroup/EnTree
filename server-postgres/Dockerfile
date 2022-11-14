@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y netcat
 COPY . .
  
 # expose the port where the app will listen to
-EXPOSE 3001
+EXPOSE 5000
  
 # start the server
 CMD ["npm", "start"]
