@@ -9,11 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@arcgis/core": "^4.25.1",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.2",
+    "leaflet": "^1.9.2",
     "next": "13.0.2",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-leaflet": "^4.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
