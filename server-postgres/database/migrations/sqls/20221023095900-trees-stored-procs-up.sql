@@ -1,30 +1,4 @@
-/* Replace with your SQL commands */
--- function to insert a tree
--- CREATE
--- OR REPLACE PROCEDURE create_tree(
---     IN p_description VARCHAR(255),
---     IN p_createdAt BIGINT,
---     IN p_location VARCHAR(255),
---     IN p_userId VARCHAR(32)
--- ) language plpgsql as $$ BEGIN
--- INSERT INTO
---     trees (
---         description,
---         "createdAt",
---         location,
---         "userId"
---     )
--- VALUES
---     (
---         p_description,
---         p_createdAt,
---         ST_GeomFromText(p_location), 
---         p_userId
---     );
-
--- END;$$;
-
-CREATE OR REPLACE FUNCTION create_tree(
+CREATE OR REPLACE PROCEDURE create_tree(
     IN p_description VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_location VARCHAR(255),
@@ -44,7 +18,8 @@ VALUES
         ST_GeogFromText(p_location), 
         p_userId
     );
-
+END;
+$$;
 
 -- Stored procedure for getting a tree
 CREATE
@@ -89,8 +64,7 @@ SET
     "userId" = COALESCE(p_userId, "userId")
 WHERE
     trees."treeId" = p_treeId;
-
--- END;$$;
+END;$$;
 
 -- Stored procedure for deleting a tree
 CREATE
@@ -101,8 +75,8 @@ DELETE FROM
     trees
 WHERE
     trees."treeId" = p_treeId;
-
--- END;$$;
+END;
+$$;
 
 -- Stored procedure for getting trees by proximity
 CREATE OR REPLACE FUNCTION get_trees_by_proximity(
