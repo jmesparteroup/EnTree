@@ -87,12 +87,18 @@ CREATE OR REPLACE FUNCTION get_trees_by_proximity(
     IN p_location VARCHAR(255),
     IN p_distance INT
 ) 
-RETURNS SETOF trees
+RETURNS table (j json)
 LANGUAGE plpgsql 
 as $$ 
 BEGIN
     RETURN QUERY
-    SELECT *
+    SELECT json_agg(json_build_object(        
+        'treeId', trees."treeId",
+        'description', trees."description",
+        'createdAt', trees."createdAt",
+        'location', trees."location",
+        'userId', trees."userId"
+    )) j
     FROM trees
     WHERE
         ST_DWithin(
@@ -104,12 +110,29 @@ END;
 $$;
 
 -- Create function to get all trees
+-- CREATE OR REPLACE FUNCTION get_all_trees()
+-- RETURNS SETOF trees
+-- LANGUAGE plpgsql
+-- as $$
+-- BEGIN
+--     RETURN QUERY
+--     SELECT * FROM trees;
+-- END;
+-- $$;
+
 CREATE OR REPLACE FUNCTION get_all_trees()
-RETURNS SETOF trees
+RETURNS table (j json)
 LANGUAGE plpgsql
 as $$
 BEGIN
     RETURN QUERY
-    SELECT * FROM trees;
+    SELECT json_agg(json_build_object(
+        'treeId', trees."treeId",
+        'description', trees."description",
+        'createdAt', trees."createdAt",
+        'location', trees."location",
+        'userId', trees."userId"
+    )) j 
+    FROM trees;
 END;
 $$;
