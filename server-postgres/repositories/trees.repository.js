@@ -37,7 +37,7 @@ class TreesRepository {
       const conn = await this.pool.connect();
       const result = await conn.query("SELECT get_all_trees()");
       conn.release();
-      return result.rows;
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
@@ -70,9 +70,12 @@ class TreesRepository {
     }
   }
 
-  async getTreeByProximity(location, radius) {
+  async getTreeByProximity(longitude, latitude, radius) {
     try {
-      
+      const conn = await this.pool.connect();
+      const result = await conn.query("SELECT * FROM get_trees_by_proximity($1, $2, $3)", [longitude, latitude, radius]);
+      conn.release();
+      return result.rows[0];
     } catch (error) {
       throw error;
     }

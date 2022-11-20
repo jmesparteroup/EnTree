@@ -30,6 +30,7 @@ class TreesController {
 
     async getTreeById(req, res) {
         try {
+            console.log("Getting tree by id");
             const tree = await this.TreesRepository.getTree(req.params.id);
             res.status(200).json(tree);
         } catch (error) {
@@ -59,7 +60,8 @@ class TreesController {
 
     async getTreeByProximity(req, res) {
         try {
-            const trees = await this.TreesRepository.getTreeByProximity(req.params.location, req.params.radius);
+            console.log("Scanning nearby trees")
+            const trees = await this.TreesRepository.getTreeByProximity(req.body.longitude, req.body.latitude, req.body.radius);
             res.status(200).json(trees);
         } catch (error) {
             res.status(500).json(error);

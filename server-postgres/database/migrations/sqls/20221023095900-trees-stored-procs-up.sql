@@ -84,7 +84,8 @@ $$;
 
 -- Stored procedure for getting trees by proximity
 CREATE OR REPLACE FUNCTION get_trees_by_proximity(
-    IN p_location VARCHAR(255),
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL,
     IN p_distance INT
 ) 
 RETURNS table (j json)
@@ -103,7 +104,7 @@ BEGIN
     WHERE
         ST_DWithin(
             trees.location,
-            p_location::geography,
+            ST_MakePoint(p_longitude, p_latitude)::geography,
             p_distance
         );
 END;

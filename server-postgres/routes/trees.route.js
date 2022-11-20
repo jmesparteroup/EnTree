@@ -13,8 +13,8 @@ const treesRepository = new TreesRepository(pool);
 const treesController = new TreesController(treesRepository, Trees, TreeErrorRepository);
 
 router.get("/", treesController.getAllTrees.bind(treesController));
+router.get("/proximity", treesController.getTreeByProximity.bind(treesController));
 router.get("/:id", treesController.getTreeById.bind(treesController));
-router.get("/proximity/:location/:radius", treesController.getTreeByProximity.bind(treesController));
 
 router.post("/", treesController.createTree.bind(treesController));
 router.put("/:id", treesController.updateTree.bind(treesController));
