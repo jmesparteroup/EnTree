@@ -1,4 +1,5 @@
 CREATE OR REPLACE PROCEDURE create_tree(
+    IN p_treeId VARCHAR(16),
     IN p_description VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_location VARCHAR(255),
@@ -6,13 +7,15 @@ CREATE OR REPLACE PROCEDURE create_tree(
 ) language plpgsql as $$ BEGIN
 INSERT INTO
     trees (
-        description,
+        "treeId",
+        "description",
         "createdAt",
-        location,
+        "location",
         "userId"
     )
 VALUES
     (
+        p_treeId,
         p_description,
         p_createdAt,
         ST_GeogFromText(p_location), 
@@ -24,7 +27,7 @@ $$;
 -- Stored procedure for getting a tree
 CREATE
 OR REPLACE FUNCTION get_tree(
-    IN p_treeId INT
+    IN p_treeId VARCHAR(16)
 ) 
 RETURNS setof trees
 language plpgsql 
@@ -50,6 +53,7 @@ END;$$;
 -- Stored procedure for updating a tree
 CREATE
 OR REPLACE PROCEDURE update_tree(
+    IN p_treeId VARCHAR(16),
     IN p_description VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_location VARCHAR(255),
@@ -58,9 +62,9 @@ OR REPLACE PROCEDURE update_tree(
 UPDATE
     trees
 SET
-    description = COALESCE(p_description, description),
+    "description" = COALESCE(p_description, "description"),
     "createdAt" = COALESCE(p_createdAt, "createdAt"),
-    location = COALESCE(ST_GeogFromText(p_location), location),
+    "location" = COALESCE(ST_GeogFromText(p_location), "location"),
     "userId" = COALESCE(p_userId, "userId")
 WHERE
     trees."treeId" = p_treeId;
@@ -69,7 +73,7 @@ END;$$;
 -- Stored procedure for deleting a tree
 CREATE
 OR REPLACE PROCEDURE delete_tree(
-    IN p_treeId INT
+    IN p_treeId VARCHAR(16)
 ) language plpgsql as $$ BEGIN
 DELETE FROM
     trees

@@ -14,11 +14,12 @@ class TreesRepository {
     }
   }
 
-
   async createTree(data) {
     try {
       const conn = await this.pool.connect();
-      const result = await conn.query(`CALL create_tree($1, $2, $3, $4)`, [
+      console.log(data);
+      const result = await conn.query(`CALL create_tree($1, $2, $3, $4, $5)`, [
+        data.treeId,
         data.description,
         data.createdAt,
         data.location,

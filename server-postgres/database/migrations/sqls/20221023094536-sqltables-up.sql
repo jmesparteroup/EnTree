@@ -17,12 +17,13 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 -- TABLE FOR TREES
 CREATE TABLE IF NOT EXISTS "trees" (
-    "treeId" SERIAL PRIMARY KEY,
+    "treeId" VARCHAR(16) UNIQUE NOT NULL,
     "description" VARCHAR(255) NOT NULL,
     "createdAt" BIGINT NOT NULL,
     --   LOCATION POSTGIS POINT
     "location" GEOGRAPHY,
-    "userId" VARCHAR(32) NOT NULL
+    "userId" VARCHAR(32) NOT NULL,
+    PRIMARY KEY ("treeId")
 );
 
 -- TABLE FOR CITY POLYGONS

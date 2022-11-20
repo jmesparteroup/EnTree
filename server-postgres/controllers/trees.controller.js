@@ -19,8 +19,8 @@ class TreesController {
 
     async getAllTrees(req, res) {
         try {
+            console.log("Getting all trees.");
             const trees = await this.TreesRepository.getTrees();
-            console.log(trees);
             res.status(200).json(trees);
         } catch (error) {
             console.log(error);
