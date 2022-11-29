@@ -1,12 +1,12 @@
 version: "3.9"
 
 services:
-#    next:
-#        build: ./entree-client-next
-#        ports:
-#            - 4200:4200
-#        volumes:
-#            - ./entree-client-next/:/next-app
+    next_app:
+       build: ./entree-client
+       ports:
+           - 3000:3000
+       volumes:
+           - ./entree-client/:/app
 
     express_app:
         build: ./server-postgres
