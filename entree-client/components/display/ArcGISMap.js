@@ -5,10 +5,13 @@ import config from "@arcgis/core/config";
 import * as watchUtils from "@arcgis/core/core/watchUtils";
 
 import { useEffect, useRef } from "react";
+import useGeoLocation from "../../hooks/useGeoLocation";
 
-
-const EntreeMap = () => {
+function EntreeMap() {
   const mapRef = useRef(null);
+  const location = useGeoLocation();
+  const DEFAULT_LOCATION = { lng: 121.072489, lat: 14.648881 };
+
   useEffect(() => {
     config.apiKey =
       "AAPK55c00e93bd0743829d697d33557eca05L_lRyhpFL28eYxnVDH20DmrLuF1ClNg0KB2FgYqLiOJvdVfFr_hew2HXu9F0Td18";
@@ -19,7 +22,10 @@ const EntreeMap = () => {
 
     const view = new MapView({
       map: map,
-      center: [121.072489, 14.648881], // Longitude, latitude
+      center: [
+        location?.coordinates?.lng || DEFAULT_LOCATION.lng,
+        location?.coordinates?.lat || DEFAULT_LOCATION.lat,
+      ], // Longitude, latitude
       zoom: 13, // Zoom level
       container: mapRef.current, // Div element
       padding: {
@@ -28,15 +34,12 @@ const EntreeMap = () => {
       },
     });
 
-    
-
-    watchUtils.whenTrue(view, "stationary", () => {
-        const long = view.center.longitude;
-        const lat = view.center.latitude;
-        console.log(long, lat); // successfully catches venter of view
-        console.log(view.zoom); // successfully catches zoom level
+    watchUtils.when(view, "stationary", () => {
+      const long = view.center.longitude;
+      const lat = view.center.latitude;
+      console.log(long, lat); // successfully catches venter of view
+      console.log(view.zoom); // successfully catches zoom level
     });
-        
 
     return () => {
       if (view) {
@@ -50,6 +53,6 @@ const EntreeMap = () => {
       <div className="h-full w-100 mx-5" ref={mapRef}></div>
     </div>
   );
-};
+}
 
 export default EntreeMap;
