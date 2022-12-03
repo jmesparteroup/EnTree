@@ -18,6 +18,7 @@ async function getCityPolygon(city) {
     const string = `INSERT into cityPolygons VALUES(${city},'POLYGON(${polygon.join(
       ", "
     )})')`;
+    fs.writeFileSync("raw.json", JSON.stringify(data));
     fs.writeFileSync("polygon.txt", string);
     console.log(`Polygon of ${city} written to file`);
   } catch (error) {
