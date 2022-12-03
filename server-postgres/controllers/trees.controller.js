@@ -70,8 +70,21 @@ class TreesController {
             if (!city) {
                 res.status(400).json({error:"City not found"}); 
             }
-            const trees = await this.TreesRepository.getTreeByCity(city)
-            const result = trees.j;
+            const trees = await this.TreesRepository.getTreeByCity(city);
+            const city_data = await this.TreesRepository.getCity(city);
+            const city_polygon_raw = city_data.polygon.slice(9,-2);
+            const point_array = city_polygon_raw.split(',');
+            let polygon_processed = []
+            for (let coord of point_array) {
+                const x = parseFloat(coord.split(' ')[0]);
+                const y = parseFloat(coord.split(' ')[1]);
+                polygon_processed.push([x,y])
+            }
+            let result = {
+                city: city_data.cityName,
+                polygon: polygon_processed,
+                trees: trees.j
+            };
             res.status(200).json(result);
         } catch (error) {
             res.status(500).json(error);
