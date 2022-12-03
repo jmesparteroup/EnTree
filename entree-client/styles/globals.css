@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --secondary-bg-color: #FAFAFA;
+    --primary-bg-color: #FFFFFF;
+  }
+
+
+body {
+    background-color: var(--secondary-bg-color);
+}
+
+svg {
+    filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+  }

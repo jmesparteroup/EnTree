@@ -27,23 +27,7 @@ async function getCityPolygon(city) {
 }
 
 const NCR_Cities = [
-  "Manila",
   "Quezon City",
-  "Caloocan",
-  "Las Piñas",
-  "Makati City",
-  "Malabon City",
-  "Mandaluyong City",
-  "Marikina",
-  "Muntinlupa",
-  "Navotas",
-  "Parañaque",
-  "Pasay",
-  "Pasig",
-  "Pateros",
-  "San Juan",
-  "Taguig",
-  "Valenzuela",
 ];
 
 NCR_Cities.forEach(async (city) => {
