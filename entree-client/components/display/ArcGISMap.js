@@ -19,11 +19,11 @@ const createPolygon = (polygonData) => {
   };
 
   const polygonOutlineSymbol = {
-    // type only outlines the polygon
-    type: "simple-line", //
-    color: [227, 139, 79, 0.8], // Orange, opacity 80%
+    // the polygon fill color
+    type: "simple-fill", //
+    color: [227, 139, 79, 0.3], // Orange, opacity 80%
     outline: {
-      color: [255, 255, 255],
+      color: [255, 255, 255, 0.5],
       width: 1,
     },
   };
@@ -82,11 +82,8 @@ export default function EntreeMap({ baselayer, polygons }) {
           if (trees?.length === 0) {
             const data = await TreeService.getAllTrees();
             const treesResponse = await data.json();
-            addTrees(treesResponse["get_all_trees"]);
+            addTrees(treesResponse);
           }
-          
-
-          
 
           console.log("Showing trees:", trees);
           trees?.forEach((tree) => {
@@ -143,7 +140,7 @@ export default function EntreeMap({ baselayer, polygons }) {
         view.container = null;
       }
     };
-  }, [baselayer, polygons, trees]);
+  }, [baselayer, polygons]);
 
   return (
     <div className="h-full overflow-y-hidden">

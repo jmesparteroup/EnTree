@@ -1,7 +1,11 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Container from "../../components/layout/Container";
-import useCityPolyStore from "../../stores/useCityPolyStore";
+
+import useCityStore from "../../stores/cityStore";
+import useTreesStore from "../../stores/treesStore";
+
+import TreeService from "../../services/treeService";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -13,20 +17,9 @@ const EntreeMapWithNoSSR = dynamic(
 export default function Maps() {
   const [openChangeView, setOpenChangeView] = useState(false);
   const [baseMapKey, setBaseMapKey] = useState("Topographic");
-  const addCityPolygon = useCityPolyStore((state) => state.addPolygon);
-  const cityPolygons = useCityPolyStore((state) => state.polygons);
-  
 
-  useEffect(() => {
-    const fetchQCJSON = async () => {
-      const res = await fetch("/api/polygons", {
-        method: "GET",
-      });
-      const data = await res.json();
-      addCityPolygon(data[0].geojson.coordinates[0]);
-    };
-    fetchQCJSON();
-  }, []);
+  const addCityPolygon = useCityStore((state) => state.addPolygon);
+  const cityPolygons = useCityStore((state) => state.polygons);
 
   const BASEMAPS = {
     Topographic: "arcgis-topographic",
@@ -34,6 +27,17 @@ export default function Maps() {
     Streets: "arcgis-streets",
     Community: "arcgis-community",
   };
+  
+  // initialize the map with the view which are city heatmaps
+  useEffect(() => {
+    const getCityPolygons = async () => {
+      const data = await TreeService.getTreesAllCities()
+      const polygons = data.map((city) => {});
+    };
+    getCityPolygons();
+  }, []);
+
+  
 
   const changeViewClickHandler = () => {
     setOpenChangeView((prevState) => !prevState);
