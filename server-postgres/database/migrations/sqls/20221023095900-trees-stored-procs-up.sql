@@ -97,7 +97,7 @@ BEGIN
         'treeId', trees."treeId",
         'description', trees."description",
         'createdAt', trees."createdAt",
-        'location', trees."location",
+        'location', ST_AsText(trees."location"),
         'userId', trees."userId"
     )) j
     FROM trees
@@ -131,7 +131,7 @@ BEGIN
         'treeId', trees."treeId",
         'description', trees."description",
         'createdAt', trees."createdAt",
-        'location', trees."location",
+        'location', ST_AsText(trees."location"),
         'userId', trees."userId"
     )) j 
     FROM trees;

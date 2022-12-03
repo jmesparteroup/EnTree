@@ -31,5 +31,6 @@ CREATE TABLE IF NOT EXISTS "cityPolygons" (
     "cityId" VARCHAR(16) UNIQUE NOT NULL,
     "cityName" VARCHAR(255) NOT NULL,
     "data" JSONB NOT NULL,
+    "polygon" GEOGRAPHY NOT NULL,
     PRIMARY KEY ("cityId")
 );

@@ -80,6 +80,19 @@ class TreesRepository {
       throw error;
     }
   }
+
+  async getTreeByCity(city) {
+    try {
+      const conn = await this.pool.connect();
+      const result = await conn.query("SELECT * FROM get_trees_by_city($1)", [city]);
+      conn.release();
+      return result.rows[0];
+    } catch (error) {
+      throw error;
+    }
+  }
 }
+
+
 
 module.exports = TreesRepository;

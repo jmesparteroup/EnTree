@@ -14,7 +14,7 @@ const treesController = new TreesController(treesRepository, Trees, TreeErrorRep
 
 router.get("/", treesController.getAllTrees.bind(treesController));
 router.get("/proximity", treesController.getTreeByProximity.bind(treesController));
-router.get("/view", treesController.getTreeView.bind(treesController));
+router.get("/bycity", treesController.getTreeByCity.bind(treesController));
 router.get("/:id", treesController.getTreeById.bind(treesController));
 
 router.post("/", treesController.createTree.bind(treesController));

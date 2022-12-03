@@ -68,9 +68,15 @@ class TreesController {
         }
     }
 
-    async getTreeView(req, res) {
+    async getTreeByCity(req, res) {
         try {
-
+            console.log("Viewing Trees by City");
+            const city = req.body.city;
+            if (!city) {
+                res.status(400).json({error:"City not found"}); 
+            }
+            const trees = await this.TreesRepository.getTreeByCity(city)
+            res.status(200).json(trees);
         } catch (error) {
             res.status(500).json(error);
         }
