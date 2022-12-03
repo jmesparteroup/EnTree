@@ -66,8 +66,8 @@ function EntreeMap({ baselayer, polygons }) {
       async () => {
         const long = view.center.longitude;
         const lat = view.center.latitude;
-        console.log(long, lat); // successfully catches venter of view
-        console.log(view.zoom); // successfully catches zoom level
+        console.log("View Center", long, lat); // successfully catches venter of view
+        console.log("Zoom Level", view.zoom); // successfully catches zoom level
 
         // test
         console.log(polygons);

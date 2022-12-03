@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import useSWR from "swr";
 import { useEffect, useState } from "react";
 import Container from "../../components/layout/Container";
 
