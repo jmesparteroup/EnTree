@@ -138,7 +138,9 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_by_city()
+CREATE OR REPLACE FUNCTION get_trees_by_city(
+    IN p_city VARCHAR(255)
+)
 RETURNS table (j json)
 LANGUAGE plpgsql
 as $$
@@ -152,6 +154,7 @@ BEGIN
         'userId', trees."userId"
     )) j 
     FROM "trees" join "cityPolygons"
-	ON ST_Intersects("trees".location,"cityPolygons".polygon);
+	ON ST_Intersects("trees".location,"cityPolygons".polygon)
+    WHERE "cityPolygons"."cityName" = p_city;
 END;
 $$;
