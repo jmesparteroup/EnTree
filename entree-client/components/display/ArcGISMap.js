@@ -3,7 +3,6 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import config from "@arcgis/core/config";
 import Graphic from "@arcgis/core/Graphic";
-import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
 import { useEffect, useRef, useState } from "react";
