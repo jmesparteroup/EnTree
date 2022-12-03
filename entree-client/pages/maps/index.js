@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Container from "../../components/layout/Container";
+import useCityPolyStore from "../../stores/useCityPolyStore";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -12,17 +13,17 @@ const EntreeMapWithNoSSR = dynamic(
 export default function Maps() {
   const [openChangeView, setOpenChangeView] = useState(false);
   const [baseMapKey, setBaseMapKey] = useState("Topographic");
-  const [polygons, setPolygons] = useState([]);
+  const addCityPolygon = useCityPolyStore((state) => state.addPolygon);
+  const cityPolygons = useCityPolyStore((state) => state.polygons);
+  
 
   useEffect(() => {
     const fetchQCJSON = async () => {
-      console.log("fetching");
       const res = await fetch("/api/polygons", {
         method: "GET",
       });
       const data = await res.json();
-      setPolygons((prev) => [...prev, data[0].geojson.coordinates[0]]);
-      console.log(polygons)
+      addCityPolygon(data[0].geojson.coordinates[0]);
     };
     fetchQCJSON();
   }, []);
@@ -44,7 +45,7 @@ export default function Maps() {
     <div className="h-[calc(100vh-4rem)] flex">
       <Container className="w-full h-full rounded-md relative">
         <div className="h-full w-full">
-          <EntreeMapWithNoSSR baselayer={BASEMAPS[baseMapKey]} polygons={polygons} />
+          <EntreeMapWithNoSSR baselayer={BASEMAPS[baseMapKey]} polygons={cityPolygons} />
         </div>
 
         {/* menu to change view */}
