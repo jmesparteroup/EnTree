@@ -27,7 +27,7 @@ async function getCityPolygon(city) {
 }
 
 const NCR_Cities = [
-  "Quezon City",
+  "Pasig"
 ];
 
 NCR_Cities.forEach(async (city) => {
