@@ -9,6 +9,10 @@ import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 import { useEffect, useRef, useState } from "react";
 import useGeoLocation from "../../hooks/useGeoLocation";
 
+import useTreesStore from "../../stores/treesStore";
+
+import TreeService from "../../services/treeService";
+
 const createPolygon = (polygonData) => {
   // Create a polygon geometry
   const polygon = {
@@ -28,12 +32,14 @@ const createPolygon = (polygonData) => {
   return [polygon, polygonOutlineSymbol];
 };
 
-function EntreeMap({ baselayer, polygons }) {
+export default function EntreeMap({ baselayer, polygons }) {
   const mapRef = useRef(null);
   const location = useGeoLocation();
+
+  const trees = useTreesStore((state) => state.treesState.trees);
+  const addTrees = useTreesStore((state) => state.addTrees);
+
   const DEFAULT_LOCATION = { lng: 121.072489, lat: 14.648881 };
-
-
 
   useEffect(() => {
     config.apiKey =
@@ -66,11 +72,10 @@ function EntreeMap({ baselayer, polygons }) {
       async () => {
         const long = view.center.longitude;
         const lat = view.center.latitude;
-        console.log("View Center", long, lat); // successfully catches venter of view
-        console.log("Zoom Level", view.zoom); // successfully catches zoom level
+        console.log(`Center View: Long ${long} Lat ${lat}`); // successfully catches venter of view
+        console.log(`Zoom level: ${view.zoom}`); // successfully catches zoom level
 
-        // test
-        console.log(polygons);
+        
         polygons?.forEach((polygonData) => {
           const [polygon, simpleFillSymbol] = createPolygon(polygonData);
           const graphic = new Graphic({
@@ -78,8 +83,10 @@ function EntreeMap({ baselayer, polygons }) {
             symbol: simpleFillSymbol,
           });
           view.graphics.add(graphic);
-          console.log("added polygon");
+
         });
+        
+        
       }
     );
 
@@ -97,4 +104,4 @@ function EntreeMap({ baselayer, polygons }) {
   );
 }
 
-export default EntreeMap;
+
