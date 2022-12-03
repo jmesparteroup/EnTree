@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS "trees" (
 
 -- TABLE FOR CITY POLYGONS
 CREATE TABLE IF NOT EXISTS "cityPolygons" (
-    "cityId" SERIAL PRIMARY KEY,
+    "cityId" VARCHAR(16) UNIQUE NOT NULL,
     "cityName" VARCHAR(255) NOT NULL,
-    --   POLYGON POSTGIS POLYGON
-    "polygon" GEOMETRY
+    "data" JSONB NOT NULL,
+    PRIMARY KEY ("cityId")
 );
