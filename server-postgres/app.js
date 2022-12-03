@@ -1,12 +1,15 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const usersRouter = require('./routes/users.route');
 const treesRouter = require('./routes/trees.route');
 
 const app = express();
 
+
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

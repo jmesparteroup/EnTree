@@ -19,5 +19,8 @@
     "passport-jwt": "^4.0.0",
     "pg": "^8.8.0",
     "random": "^4.0.2"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5"
   }
 }
