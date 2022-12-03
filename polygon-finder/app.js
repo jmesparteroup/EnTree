@@ -13,7 +13,7 @@ async function getCityPolygon(city) {
 
     // process array into polygon for postgis
     const polygon = data[0].geojson.coordinates[0].map((point) => {
-      return [`${point[1]} ${point[0]}`];
+      return [`${point[0]} ${point[1]}`];
     });
     const string = `INSERT into cityPolygons VALUES(${city},'POLYGON(${polygon.join(
       ", "
@@ -28,7 +28,7 @@ async function getCityPolygon(city) {
 }
 
 const NCR_Cities = [
-  "Pasig"
+  "Mandaluyong"
 ];
 
 NCR_Cities.forEach(async (city) => {

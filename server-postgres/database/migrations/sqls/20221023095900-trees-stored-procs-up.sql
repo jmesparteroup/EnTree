@@ -137,3 +137,21 @@ BEGIN
     FROM trees;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION get_trees_by_city()
+RETURNS table (j json)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT json_agg(json_build_object(
+        'treeId', trees."treeId",
+        'description', trees."description",
+        'createdAt', trees."createdAt",
+        'location', ST_AsText(trees."location"),
+        'userId', trees."userId"
+    )) j 
+    FROM "trees" join "cityPolygons"
+	ON ST_Intersects("trees".location,"cityPolygons".polygon);
+END;
+$$;
