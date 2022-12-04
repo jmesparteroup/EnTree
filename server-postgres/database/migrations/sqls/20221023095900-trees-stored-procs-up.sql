@@ -173,20 +173,3 @@ BEGIN
     WHERE "cityPolygons"."cityName" = p_city;
 END;
 $$;
-
-CREATE OR REPLACE FUNCTION get_city(
-    IN p_city VARCHAR(255)
-)
-RETURNS table (
-	"cityName" VARCHAR(255),
-	"polygon" TEXT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "cityId", ST_AsText("cityPolygons"."polygon") 
-    FROM "cityPolygons"
-    WHERE "cityPolygons"."cityName" = p_city;
-END;
-$$;
