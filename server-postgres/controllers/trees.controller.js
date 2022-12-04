@@ -70,6 +70,7 @@ class TreesController {
             const city = req.query.city;
             if (!city) {
                 res.status(400).json({error:"City not found"}); 
+                return;
             }
             const trees = await this.TreesRepository.getTreeByCity(city);
             const city_data = await this.TreesRepository.getCity(city);
@@ -84,7 +85,7 @@ class TreesController {
             let result = {
                 city: city_data.cityName,
                 polygon: polygon_processed,
-                trees: trees.j
+                trees: parseInt(trees.c)
             };
             res.status(200).json(result);
         } catch (error) {
