@@ -15,7 +15,6 @@ BEGIN
 END;
 $$;
 
-
 -- PROCEDURE TO GENERATE POLYGONS 
 CREATE OR REPLACE PROCEDURE tile_map(
     IN p_table TEXT,
@@ -156,3 +155,14 @@ $$;
 -- 	EXECUTE 'CREATE INDEX sidx_'|| _table ||'_geom ON '|| _table ||' USING GIST (geom)';
 -- 	DROP TABLE IF EXISTS hx_tmp;
 -- END $$;
+
+CALL tile_map('hexmap50', 50);
+CALL tile_map('hexmap100', 100);
+CALL tile_map('hexmap150', 150);
+CALL tile_map('hexmap200', 200);
+CALL tile_map('hexmap250', 250);
+CALL tile_map('hexmap300', 300);
+CALL tile_map('hexmap350', 350);
+CALL tile_map('hexmap400', 400);
+CALL tile_map('hexmap450', 450);
+CALL tile_map('hexmap500', 500);
