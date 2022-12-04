@@ -58,7 +58,8 @@ class TreesController {
         try {
             const trees = await this.TreesRepository.getTreeByProximity(+req.query.long, +req.query.lat, +req.query.radius);
             const result = trees.j;
-            res.status(200).json(   );
+            console.log("Returning", result.length, "results.");
+            res.status(200).json(result);
         } catch (error) {
             res.status(500).json(error);
         }

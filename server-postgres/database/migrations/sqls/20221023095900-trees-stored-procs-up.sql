@@ -103,8 +103,8 @@ BEGIN
     FROM trees
     WHERE
         ST_DWithin(
-            trees.location,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude),4326),
+            trees.location::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude),4326)::geography,
             p_distance
         );
 END;
