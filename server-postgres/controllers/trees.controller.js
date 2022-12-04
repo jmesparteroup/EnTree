@@ -93,6 +93,48 @@ class TreesController {
         }
     }
 
+    async getTreeByHex(req, res) {
+        try {
+            const zoomLevel = req.query.zoomlevel;
+            if (!zoomLevel) {
+                res.status(404).json({error:"City not found"}); 
+                return;
+            }
+            let result;
+            if (zoomLevel <=12) {
+                result = await this.TreesRepository.getTreeByHex(50);
+            } else if (zoomLevel == 13) {
+                result = await this.TreesRepository.getTreeByHex(150);
+            } else if (zoomLevel == 14) {
+                result = await this.TreesRepository.getTreeByHex(250);
+            } else if (zoomLevel == 15) {
+                result = await this.TreesRepository.getTreeByHex(300);
+            } else if (zoomLevel == 16) {
+                result = await this.TreesRepository.getTreeByHex(400);
+            } else {
+                result = await this.TreesRepository.getTreeByHex(500);
+            }
+            let return_processed = [];
+            for (let row of result) {
+                let hexagon_processed = [];
+                const hexagons_raw = row.geom.slice(9,-2);
+                const hexagons_array = hexagons_raw.split(',');
+                for (let coord of hexagons_array){
+                    const x = parseFloat(coord.split(' ')[0]);
+                    const y = parseFloat(coord.split(' ')[1]);
+                    hexagon_processed.push([x,y])
+                }
+                return_processed.push({
+                    hexagon: hexagon_processed,
+                    count: row.c
+                })
+            }
+            res.status(200).json(return_processed);
+        } catch (error) {
+            res.status(500).json(error);
+        }
+    }
+
 
 }
 

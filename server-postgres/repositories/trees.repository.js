@@ -102,6 +102,19 @@ class TreesRepository {
       throw error;
     }
   }
+
+  async getTreeByHex(hexLevel) {
+    try {
+      const conn = await this.pool.connect();
+      let query = `SELECT * FROM get_trees_on_hex_${hexLevel}()`;
+      console.log("query:", query);
+      const result = await conn.query(query);
+      conn.release();
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 

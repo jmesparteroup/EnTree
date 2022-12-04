@@ -166,3 +166,163 @@ CALL tile_map('hexmap350', 350);
 CALL tile_map('hexmap400', 400);
 CALL tile_map('hexmap450', 450);
 CALL tile_map('hexmap500', 500);
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_50()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap50"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap50"
+	ON ST_Intersects("trees".location,"hexmap50".geom)
+    GROUP BY "hexmap50"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_100()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap100"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap100"
+	ON ST_Intersects("trees".location,"hexmap100".geom)
+    GROUP BY "hexmap100"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_150()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap150"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap150"
+	ON ST_Intersects("trees".location,"hexmap150".geom)
+    GROUP BY "hexmap150"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_200()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap200"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap200"
+	ON ST_Intersects("trees".location,"hexmap200".geom)
+    GROUP BY "hexmap200"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_250()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap250"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap250"
+	ON ST_Intersects("trees".location,"hexmap250".geom)
+    GROUP BY "hexmap250"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_300()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap300"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap300"
+	ON ST_Intersects("trees".location,"hexmap300".geom)
+    GROUP BY "hexmap300"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_350()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap350"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap350"
+	ON ST_Intersects("trees".location,"hexmap350".geom)
+    GROUP BY "hexmap350"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_400()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap400"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap400"
+	ON ST_Intersects("trees".location,"hexmap400".geom)
+    GROUP BY "hexmap400"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_450()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap450"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap450"
+	ON ST_Intersects("trees".location,"hexmap450".geom)
+    GROUP BY "hexmap450"."geom";
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_trees_on_hex_500()
+RETURNS table (
+    geom TEXT,
+    c BIGINT
+)
+LANGUAGE plpgsql
+as $$
+BEGIN
+    RETURN QUERY
+    SELECT ST_AsText("hexmap500"."geom"), COUNT("trees"."treeId") as c
+    FROM "trees" join "hexmap500"
+	ON ST_Intersects("trees".location,"hexmap500".geom)
+    GROUP BY "hexmap500"."geom";
+END;
+$$;
