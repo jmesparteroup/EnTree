@@ -126,7 +126,7 @@ class TreesController {
                 }
                 return_processed.push({
                     hexagon: hexagon_processed,
-                    count: row.c
+                    count: parseInt(row.c)
                 })
             }
             res.status(200).json(return_processed);
