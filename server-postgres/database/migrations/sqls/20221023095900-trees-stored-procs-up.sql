@@ -18,7 +18,7 @@ VALUES
         p_treeId,
         p_description,
         p_createdAt,
-        ST_GeogFromText(p_location), 
+        ST_GeomFromText(p_location, 4326), 
         p_userId
     );
 END;
@@ -64,7 +64,7 @@ UPDATE
 SET
     "description" = COALESCE(p_description, "description"),
     "createdAt" = COALESCE(p_createdAt, "createdAt"),
-    "location" = COALESCE(ST_GeogFromText(p_location), "location"),
+    "location" = COALESCE(ST_GeomFromText(p_location, 4326), "location"),
     "userId" = COALESCE(p_userId, "userId")
 WHERE
     trees."treeId" = p_treeId;
@@ -104,7 +104,7 @@ BEGIN
     WHERE
         ST_DWithin(
             trees.location,
-            ST_MakePoint(p_longitude, p_latitude)::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude),4326),
             p_distance
         );
 END;

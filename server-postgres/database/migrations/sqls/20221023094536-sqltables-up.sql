@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "trees" (
     "description" VARCHAR(255) NOT NULL,
     "createdAt" BIGINT NOT NULL,
     --   LOCATION POSTGIS POINT
-    "location" GEOGRAPHY,
+    "location" GEOMETRY NOT NULL,
     "userId" VARCHAR(32) NOT NULL,
     PRIMARY KEY ("treeId")
 );
@@ -31,6 +31,6 @@ CREATE TABLE IF NOT EXISTS "cityPolygons" (
     "cityId" VARCHAR(16) UNIQUE NOT NULL,
     "cityName" VARCHAR(255) NOT NULL,
     "data" JSONB NOT NULL,
-    "polygon" GEOGRAPHY NOT NULL,
+    "polygon" GEOMETRY NOT NULL,
     PRIMARY KEY ("cityId")
 );
