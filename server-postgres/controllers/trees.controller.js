@@ -56,9 +56,9 @@ class TreesController {
 
     async getTreeByProximity(req, res) {
         try {
-            const trees = await this.TreesRepository.getTreeByProximity(req.body.longitude, req.body.latitude, req.body.radius);
+            const trees = await this.TreesRepository.getTreeByProximity(+req.query.long, +req.query.lat, +req.query.radius);
             const result = trees.j;
-            res.status(200).json(result);
+            res.status(200).json(   );
         } catch (error) {
             res.status(500).json(error);
         }
@@ -66,7 +66,7 @@ class TreesController {
 
     async getTreeByCity(req, res) {
         try {
-            const city = req.body.city;
+            const city = req.query.city;
             if (!city) {
                 res.status(400).json({error:"City not found"}); 
             }

@@ -21,35 +21,42 @@ export default function Maps() {
   const addCityPolygon = useCityStore((state) => state.addPolygon);
   const cityPolygons = useCityStore((state) => state.polygons);
 
+  const trees = useTreesStore((state) => state.trees);
+  const addTrees = useTreesStore((state) => state.addTrees);
+
   const BASEMAPS = {
     Topographic: "arcgis-topographic",
     Imagery: "arcgis-imagery",
     Streets: "arcgis-streets",
     Community: "arcgis-community",
   };
-  
-  // initialize the map with the view which are city heatmaps
+
+  // initialize the map with the view which are city heatmaps and trees
   useEffect(() => {
     const getCityPolygons = async () => {
-      const data = await TreeService.getTreesAllCities()
-      const polygons = data.map((city) => {});
+      let data = await TreeService.getTreesByCity("Mandaluyong City");
+      addCityPolygon(data);
+      data = await TreeService.getTreesByCity("Pasig City");
+      addCityPolygon(data);
     };
+
     getCityPolygons();
   }, []);
-
-  
 
   const changeViewClickHandler = () => {
     setOpenChangeView((prevState) => !prevState);
     console.log(openChangeView);
   };
-  
 
   return (
     <div className="h-[calc(100vh-4rem)] flex">
       <Container className="w-full h-full rounded-md relative">
         <div className="h-full w-full">
-          <EntreeMapWithNoSSR baselayer={BASEMAPS[baseMapKey]} polygons={cityPolygons} />
+          <EntreeMapWithNoSSR
+            baselayer={BASEMAPS[baseMapKey]}
+            polygons={cityPolygons}
+            useTreesStore={useTreesStore}
+          />
         </div>
 
         {/* menu to change view */}

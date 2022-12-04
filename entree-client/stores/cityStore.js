@@ -1,5 +1,13 @@
 import create from "zustand";
 
+// polygons => [polygon]
+
+// polygon: {
+//   city: String,
+//   polygon: Array,
+//   trees: Array,
+// }
+
 const useCityStore = create((set) => ({
   polygons: [],
   addPolygon: (polygon) =>
