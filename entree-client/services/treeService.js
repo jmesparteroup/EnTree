@@ -29,6 +29,15 @@ const TreeService = {
       method: "GET",
     });
   },
+  getTreesByProximity: async (lat, lng, radius) => {
+    const data =  await fetch(
+      `http://localhost:5000/trees/proximity?lat=${lat}&long=${lng}&radius=${radius}`,
+      {
+        method: "GET",
+      }
+    );
+    return await data.json();
+  }
 };
 
 export default TreeService;

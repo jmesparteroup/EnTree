@@ -58,7 +58,6 @@ class TreesController {
         try {
             const trees = await this.TreesRepository.getTreeByProximity(+req.query.long, +req.query.lat, +req.query.radius);
             const result = trees.j;
-            console.log("Returning", result.length, "results.");
             res.status(200).json(result);
         } catch (error) {
             res.status(500).json(error);
@@ -101,15 +100,15 @@ class TreesController {
                 return;
             }
             let result;
-            if (zoomLevel <=12) {
+            if (zoomLevel >= 17) {
                 result = await this.TreesRepository.getTreeByHex(50);
-            } else if (zoomLevel == 13) {
-                result = await this.TreesRepository.getTreeByHex(150);
-            } else if (zoomLevel == 14) {
-                result = await this.TreesRepository.getTreeByHex(250);
-            } else if (zoomLevel == 15) {
-                result = await this.TreesRepository.getTreeByHex(300);
             } else if (zoomLevel == 16) {
+                result = await this.TreesRepository.getTreeByHex(150);
+            } else if (zoomLevel == 15) {
+                result = await this.TreesRepository.getTreeByHex(250);
+            } else if (zoomLevel == 14) {
+                result = await this.TreesRepository.getTreeByHex(300);
+            } else if (zoomLevel == 13) {
                 result = await this.TreesRepository.getTreeByHex(400);
             } else {
                 result = await this.TreesRepository.getTreeByHex(500);

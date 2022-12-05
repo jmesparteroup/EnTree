@@ -4,8 +4,10 @@ import Container from "../../components/layout/Container";
 
 import useCityStore from "../../stores/cityStore";
 import useTreesStore from "../../stores/treesStore";
+import useHexagonsStore from "../../stores/hexagonsStore";
 
 import TreeService from "../../services/treeService";
+import HexagonService from "../../services/hexagonService";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -14,6 +16,8 @@ const EntreeMapWithNoSSR = dynamic(
   }
 );
 
+const DEFAULT_CITIES = ["Pasig City", "Mandaluyong City"];
+
 export default function Maps() {
   const [openChangeView, setOpenChangeView] = useState(false);
   const [baseMapKey, setBaseMapKey] = useState("Topographic");
@@ -21,8 +25,10 @@ export default function Maps() {
   const addCityPolygon = useCityStore((state) => state.addPolygon);
   const cityPolygons = useCityStore((state) => state.polygons);
 
-  const trees = useTreesStore((state) => state.trees);
-  const addTrees = useTreesStore((state) => state.addTrees);
+  const hexagons = useHexagonsStore((state) => state.hexagons);
+  const addHexagons = useHexagonsStore((state) => state.addHexagons);
+
+
 
   const BASEMAPS = {
     Topographic: "arcgis-topographic",
@@ -34,13 +40,25 @@ export default function Maps() {
   // initialize the map with the view which are city heatmaps and trees
   useEffect(() => {
     const getCityPolygons = async () => {
-      let data = await TreeService.getTreesByCity("Mandaluyong City");
-      addCityPolygon(data);
-      data = await TreeService.getTreesByCity("Pasig City");
-      addCityPolygon(data);
+      let cityPromises = DEFAULT_CITIES.map(async (city) => {
+        const data = TreeService.getTreesByCity(city);
+        return data;
+      });
+
+      let cityPolygons = await Promise.all(cityPromises);
+      cityPolygons.forEach((city) => {
+        console.log(city);
+        addCityPolygon(city);
+      });
+    };
+
+    const getHexagons = async (zoom) => {
+      let hexagons = await HexagonService.getHexagons(zoom);
+      addHexagons(hexagons, zoom);
     };
 
     getCityPolygons();
+    getHexagons(14);
   }, []);
 
   const changeViewClickHandler = () => {
@@ -54,8 +72,9 @@ export default function Maps() {
         <div className="h-full w-full">
           <EntreeMapWithNoSSR
             baselayer={BASEMAPS[baseMapKey]}
-            polygons={cityPolygons}
+            cities={cityPolygons}
             useTreesStore={useTreesStore}
+            useHexagonsStore={useHexagonsStore}
           />
         </div>
 
