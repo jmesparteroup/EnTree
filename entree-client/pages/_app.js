@@ -3,19 +3,26 @@ import Layout from "../components/layout/Layout";
 import CookieService from "../services/cookieService";
 import UserService from "../services/userService";
 import useUserStore from "../stores/userStore";
+import jwt_decode from "jwt-decode";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-  
   // on first load, check for cookie if user is logged in
+  const setUserState = useUserStore((state) => state.setUserState);
+
   useEffect(() => {
     const checkUserCookie = async () => {
       const user = CookieService.getUserCookie();
       if (user) {
-        useUserStore.setState({
-          isLoggedIn: true,
-          user: await UserService.getUser(user.id),
-        });
+        const decoded = jwt_decode(user);
+        // get current user
+        const response = await UserService.getUserById(decoded.userId);
+        if (response?.data) {
+          setUserState({
+            isLoggedIn: true,
+            user: response.data,
+          });
+        }
       }
     };
 

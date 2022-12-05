@@ -7,7 +7,6 @@ class UsersController {
 
     async createUser(req, res) {
         try {
-            
             const user = new this.UserModel(req.body);
             const result = await this.UsersRepository.createUser(await user.getNewUserData());
             const loginDetails = await this.UserModel.loginUser('email', user.email, user.password, this.UsersRepository, this.UserErrorRepository);

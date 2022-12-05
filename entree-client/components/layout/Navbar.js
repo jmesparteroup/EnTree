@@ -10,6 +10,7 @@ import useUserStore from "../../stores/userStore";
 export default function Navbar() {
   const router = useRouter();
   const userState = useUserStore((state) => state.userState);
+  console.log("User State: ", userState);
 
   // On first load, check for cookie if user is logged in
 
@@ -34,7 +35,7 @@ export default function Navbar() {
               {/* User Info */}
               <div className="flex-grow flex justify-end text-[var(--primary-text-color)]">
                 {/* Username or Login */}
-                Hello, {userState.user}
+                Hello, {userState?.user?.firstName}
               </div>
             </div>
           </nav>

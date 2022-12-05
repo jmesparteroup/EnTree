@@ -2,10 +2,11 @@ import create from "zustand";
 
 const useUserStore = create((set) => ({
   userState: {
-    isLoggedIn: true,
-    user: "Camille",
+    isLoggedIn: false,
+    user: null
+  
   },
-  setUserState: (userState) => set({ userState }),
+  setUserState: (userState) => set({ userState: userState }),
 }));
   
 

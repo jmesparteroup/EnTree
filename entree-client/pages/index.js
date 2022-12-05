@@ -3,27 +3,52 @@ import { useState } from "react";
 import Container from "../components/layout/Container";
 import Logo from "../components/layout/Logo";
 
+import userService from "../services/userService";
+import cookieService from "../services/cookieService";
+
+import useUserStore from "../stores/userStore";
+
+import { useRouter } from "next/router";
+
 export default function Home() {
+  const router = useRouter();
+  const userState = useUserStore((state) => state.userState);
+  const setUserState = useUserStore((state) => state.setUserState);
+
   const [formDetails, setFormDetails] = useState({
     email: "",
     password: "",
   });
-
   const [error, setError] = useState("");
 
   const onEdit = (e, field) => {
     setFormDetails({ ...formDetails, [field]: e.target.value });
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
+
     e.preventDefault();
-    console.log(`Form submitted: ${formDetails.email} ${formDetails.password}`);
+    const { email, password } = formDetails;
+    const response = await userService.loginUser({ email, password });
+    
+    if (response?.data?.token) {
+      cookieService.setUserCookie(response?.data?.token);
+      // get user details
+      const userResponse = await userService.getUserById(response?.data?.userId);
+      setUserState({ isLoggedIn: true, user: userResponse?.data });
+      router.push("/maps");
+      
+    }
+    if (response.error) {
+      setError(data.error);
+    }
+    
   };
 
   return (
     <div className="h-screen w-screen flex justify-center items-center">
       {/* HALF LOGO WITH TEXT */}
-      <div className="w-1/3 lg:w-[250px] hidden md:flex min-h-[480px] md:justify-end" >
+      <div className="w-1/3 lg:w-[250px] hidden md:flex min-h-[480px] md:justify-end">
         <div className="relative w-full">
           <Image
             src="/home-page-img.png"
@@ -47,7 +72,7 @@ export default function Home() {
               <input
                 className="border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full"
                 type="text"
-                placeholder="Username"
+                placeholder="email"
                 value={formDetails.email}
                 onChange={(e) => onEdit(e, "email")}
               />
