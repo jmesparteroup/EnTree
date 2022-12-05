@@ -105,13 +105,13 @@ class TreesController {
             } else if (zoomLevel == 16) {
                 result = await this.TreesRepository.getTreeByHex(150);
             } else if (zoomLevel == 15) {
-                result = await this.TreesRepository.getTreeByHex(250);
-            } else if (zoomLevel == 14) {
                 result = await this.TreesRepository.getTreeByHex(300);
-            } else if (zoomLevel == 13) {
-                result = await this.TreesRepository.getTreeByHex(400);
-            } else {
+            } else if (zoomLevel == 14) {
                 result = await this.TreesRepository.getTreeByHex(500);
+            } else if (zoomLevel == 13) {
+                result = await this.TreesRepository.getTreeByHex(500);
+            } else {
+                result = await this.TreesRepository.getTreeByHex(600);
             }
             let return_processed = [];
             for (let row of result) {
