@@ -17,18 +17,25 @@ class TreesRepository {
   async createTree(data) {
     try {
       const conn = await this.pool.connect();
-      console.log(data);
-      const result = await conn.query(`CALL create_tree($1, $2, $3, $4, $5)`, [
-        data.treeId,
-        data.description,
-        data.createdAt,
-        data.location,
-        data.userId,
-      ]);
-      conn.release();
-      return result.rows[0];
+      await conn.query('BEGIN');
+      console.log("Starting loop");
+      for (let tree of data) {
+        console.log("Inserting", tree)
+        const result = await conn.query(`CALL create_tree($1, $2, $3, $4, $5)`, [
+          tree.treeId,
+          tree.description,
+          tree.createdAt,
+          tree.location,
+          tree.userId,
+        ]);
+      }
+      await conn.query('COMMIT');
+      return result;
     } catch (error) {
+      await conn.query('ROLLBACK');
       throw error;
+    } finally {
+      conn.release();
     }
   }
 
