@@ -5,7 +5,7 @@ const TreeService = {
     });
     return await res.json();
   },
-  addTree: async (tree) => {
+  addTrees: async (tree) => {
     return await fetch(`http://localhost:5000/trees/`, {
       method: "POST",
       headers: {

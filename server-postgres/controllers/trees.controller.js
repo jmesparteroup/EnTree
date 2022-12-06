@@ -7,14 +7,16 @@ class TreesController {
 
     async createTree(req, res) {
         try {
-            let trees = []
-            for (let tree of req.body) {
-                console.log("Creating Trees");
-                const treeData = new this.TreeModel(tree);
-                trees.push(treeData);
-            }
+            
+            let trees = req.body.map(tree => {
+                return new this.TreeModel(tree);
+            });
+
+            console.log(trees);
+
             const result = await this.TreesRepository.createTree(trees);
             // const result = {error:"none"};
+            console.log("End Repo Call: ", result);
             res.status(200).json(result);
         } catch (error) {
             res.status(500).json(error);

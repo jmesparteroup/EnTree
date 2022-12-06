@@ -3,6 +3,8 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import config from "@arcgis/core/config";
 import Graphic from "@arcgis/core/Graphic";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
 import { useEffect, useRef, useState } from "react";
@@ -34,21 +36,21 @@ const POLYGON_ZOOM_LEVEL = 13;
 // ]
 
 const COLOR_CODE_HEATMAPS = {
-  "hexagons": [
+  hexagons: [
     [10, [135, 212, 107, 0.85]],
     [200, [108, 202, 74, 0.85]],
     [500, [89, 186, 54, 0.85]],
     [1000, [83, 172, 50, 0.85]],
     [50000, [74, 154, 45, 0.85]],
   ],
-  "polygons": [
+  polygons: [
     [10, [135, 212, 107, 0.5]],
     [2000, [108, 202, 74, 0.85]],
     [10000, [89, 186, 54, 0.85]],
     [100000, [83, 172, 50, 0.85]],
     [1000000, [74, 154, 45, 0.85]],
-  ]
-  }
+  ],
+};
 
 // START OF HELPER FUNCTIONS
 
@@ -78,7 +80,7 @@ const createPolygon = (polygonData, color) => {
   const polygonOutlineSymbol = {
     // the polygon fill color
     type: "simple-fill", //
-    color: color, 
+    color: color,
     outline: {
       color: [255, 255, 255, 0.5],
       width: 1,
@@ -87,7 +89,7 @@ const createPolygon = (polygonData, color) => {
   return [polygon, polygonOutlineSymbol];
 };
 
-const createPoint = (pointData) => {
+const createPoint = (pointData, color) => {
   const point = {
     type: "point", // autocasts as new Point()
     longitude: pointData.longitude,
@@ -96,7 +98,7 @@ const createPoint = (pointData) => {
 
   const pointSymbol = {
     type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-    color: "#228C22",
+    color: color,
     outline: {
       // autocasts as new SimpleLineSymbol()
       color: [255, 255, 255],
@@ -111,7 +113,13 @@ const createPoint = (pointData) => {
 
 //  MAP COMPONENT
 
-export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagonsStore }) {
+export default function EntreeMap({
+  baselayer,
+  cities,
+  useTreesStore,
+  useHexagonsStore,
+  useNewTreesStore,
+}) {
   const mapRef = useRef(null);
   const location = useGeoLocation();
 
@@ -123,6 +131,8 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
   const hexagons = useHexagonsStore((state) => state.hexagons);
   const addHexagons = useHexagonsStore((state) => state.addHexagons);
 
+  const newTrees = useNewTreesStore((state) => state.newTrees);
+  const addNewTree = useNewTreesStore((state) => state.addNewTree);
 
   const getTrees = async (lat, lng) => {
     console.log("Getting Trees");
@@ -142,7 +152,7 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
     if (data) {
       addHexagons(data, zoom);
     }
-  }
+  };
 
   const renderTrees = (view, state) => {
     console.log(
@@ -156,10 +166,13 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
         .replace(")", "")
         .split(" ");
 
-      const [point, pointSymbol] = createPoint({
-        longitude: lng,
-        latitude: lat,
-      });
+      const [point, pointSymbol] = createPoint(
+        {
+          longitude: lng,
+          latitude: lat,
+        },
+        "#228C22"
+      );
 
       const graphic = new Graphic({
         geometry: point,
@@ -172,8 +185,63 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
     setTreesRendered(state.trees?.length);
   };
 
+  const addLabels = (view, graphic, label) => {
+    const textSymbol = {
+      type: "text", // autocasts as new TextSymbol()
+      color: "black",
+      haloColor: "white",
+      haloSize: "1px",
+      text: label,
+      xoffset: 0,
+      yoffset: 0,
+      font: {
+        // autocast as new Font()
+        size: 12,
+        family: "sans-serif",
+      },
+    };
+
+    const textGraphic = new Graphic({
+      geometry: graphic.geometry.extent.center,
+      symbol: textSymbol,
+    });
+
+    view.graphics.add(textGraphic);
+  };
+
+  const renderNewTrees = (view, state) => {
+    try {
+      // loop through new trees and add them to the map
+      if (state.newTrees.length === 0) return;
+
+      state.newTrees?.forEach((tree) => {
+        const { longitude, latitude } = tree;
+
+        const [point, pointSymbol] = createPoint(
+          {
+            longitude: longitude,
+            latitude: latitude,
+          },
+          "#1434A4"
+        );
+
+        const graphic = new Graphic({
+          geometry: point,
+          symbol: pointSymbol,
+        });
+
+        view.graphics.add(graphic);
+        // return graphic;
+      });
+      console.log("New Trees Layer added to map", view.graphics);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const renderPolygons = (view, state) => {
     // Get polygon color
+    setTreesRendered(-1);
     const color = COLOR_CODE_HEATMAPS.polygons.find((colorCode) => {
       return state.treesRendered < colorCode[0];
     })[1];
@@ -189,6 +257,7 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
         symbol: simpleFillSymbol,
       });
       view.graphics.add(graphic);
+      addLabels(view, graphic, polygonData.trees);
     });
   };
 
@@ -201,13 +270,16 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
         return hexagon.count <= colorCode[0];
       })[1];
 
-
       const [polygon, simpleFillSymbol] = createPolygon(hexagon.hexagon, color);
       const graphic = new Graphic({
         geometry: polygon,
         symbol: simpleFillSymbol,
       });
+      // add a text symbol to the center of the hexagon
+
       view.graphics.add(graphic);
+
+      addLabels(view, graphic, hexagon.count);
     });
   };
 
@@ -220,7 +292,29 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
       hexagons: hexagons,
       viewCenter: [location?.coordinates?.lng, location?.coordinates?.lat],
       zoomLevel: DEFAULT_ZOOM_LEVEL,
+      newTrees: newTrees,
     };
+
+    config.apiKey =
+      "AAPK55c00e93bd0743829d697d33557eca05L_lRyhpFL28eYxnVDH20DmrLuF1ClNg0KB2FgYqLiOJvdVfFr_hew2HXu9F0Td18";
+
+    const map = new Map({
+      basemap: baselayer, // Basemap layer service
+    });
+
+    const view = new MapView({
+      map: map,
+      center: [
+        location?.coordinates?.lng || DEFAULT_LOCATION.lng,
+        location?.coordinates?.lat || DEFAULT_LOCATION.lat,
+      ], // Longitude, latitude
+      zoom: DEFAULT_ZOOM_LEVEL, // Zoom level
+      container: mapRef.current, // Div element
+      padding: {
+        top: 50,
+        bottom: 0,
+      },
+    });
 
     const treeRenderSubscription = useTreesStore.subscribe(
       (state) => state.treesRendered,
@@ -243,26 +337,32 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
       }
     );
 
+    const newTreesSubscription = useNewTreesStore.subscribe(
+      (state) => state.newTrees,
+      () => {
+        localMapState.newTrees = useNewTreesStore.getState().newTrees;
+        renderNewTrees(view, localMapState);
+      }
+    );
 
-    config.apiKey =
-      "AAPK55c00e93bd0743829d697d33557eca05L_lRyhpFL28eYxnVDH20DmrLuF1ClNg0KB2FgYqLiOJvdVfFr_hew2HXu9F0Td18";
+    view.on("click", (event) => {
+      // you must overwrite default click-for-popup
+      // behavior to display your own popup
+      view.popup.autoOpenEnabled = false;
 
-    const map = new Map({
-      basemap: baselayer, // Basemap layer service
-    });
+      // Get the coordinates of the click on the view
+      let lat = Math.round(event.mapPoint.latitude * 10000000) / 10000000;
+      let lng = Math.round(event.mapPoint.longitude * 10000000) / 10000000;
 
-    const view = new MapView({
-      map: map,
-      center: [
-        location?.coordinates?.lng || DEFAULT_LOCATION.lng,
-        location?.coordinates?.lat || DEFAULT_LOCATION.lat,
-      ], // Longitude, latitude
-      zoom: DEFAULT_ZOOM_LEVEL, // Zoom level
-      container: mapRef.current, // Div element
-      padding: {
-        top: 50,
-        bottom: 0,
-      },
+      console.log(`Clicked at ${lng}, ${lat}`);
+
+      addNewTree({
+        longitude: lng,
+        latitude: lat,
+        description: "I am a new tree",
+      });
+
+      console.log();
     });
 
     // Check if the user moves the map and releases it
@@ -296,17 +396,24 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
             localMapState.viewCenter = [longitude, latitude];
             await getTrees(latitude, longitude);
             renderTrees(view, localMapState);
+            renderNewTrees(view, localMapState);
           }
         }
 
         // IF ZOOM LEVEL IS LESS THAN 18, SHOW HEXAGONS
         if (view.zoom < POINT_ZOOM_LEVEL && view.zoom > POLYGON_ZOOM_LEVEL) {
-          view.graphics.removeAll();
-          localMapState.zoomLevel = view.zoom;
-          if (localMapState.hexagons[view.zoom].length === 0) {
-            await getHexagons(view.zoom);
+          // IF CURRENT ZOOM == PREVIOUS ZOOM, DO NOTHING
+          if (localMapState.zoomLevel !== view.zoom) {
+            view.graphics.removeAll();
+            localMapState.zoomLevel = view.zoom;
+            if (localMapState.hexagons[view.zoom].length === 0) {
+              await getHexagons(view.zoom);
+            }
+            getHexagons(view.zoom - 1);
+            getHexagons(view.zoom + 1);
+            renderHexagons(view, localMapState, view.zoom);
+            renderNewTrees(view, localMapState);
           }
-          renderHexagons(view, localMapState, view.zoom);
         }
         if (view.zoom <= POLYGON_ZOOM_LEVEL) {
           localMapState.zoomLevel = view.zoom;
@@ -314,7 +421,9 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
           console.log("rendering polygons");
           console.log(localMapState.cities);
           renderPolygons(view, localMapState);
+          renderNewTrees(view, localMapState);
         }
+        // always render new trees
       }
     );
 
@@ -324,6 +433,7 @@ export default function EntreeMap({ baselayer, cities, useTreesStore, useHexagon
         treeRenderSubscription();
         treesSubscription();
         hexagonsSubscription();
+        newTreesSubscription();
       }
     };
   }, [baselayer]);
