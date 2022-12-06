@@ -16,7 +16,7 @@ import HexagonService from "../../services/hexagonService";
 //  START OF CONSTANTS
 
 const DEFAULT_LOCATION = { lng: 121.072489, lat: 14.648881 };
-const DEFAULT_ZOOM_LEVEL = 15;
+const DEFAULT_ZOOM_LEVEL = 14;
 const POINT_ZOOM_LEVEL = 18;
 const HEXAGON_ZOOM_LEVEL = 17;
 const POLYGON_ZOOM_LEVEL = 13;
@@ -293,6 +293,7 @@ export default function EntreeMap({
       viewCenter: [location?.coordinates?.lng, location?.coordinates?.lat],
       zoomLevel: DEFAULT_ZOOM_LEVEL,
       newTrees: newTrees,
+      firstLoad: true,
     };
 
     config.apiKey =
@@ -403,16 +404,23 @@ export default function EntreeMap({
         // IF ZOOM LEVEL IS LESS THAN 18, SHOW HEXAGONS
         if (view.zoom < POINT_ZOOM_LEVEL && view.zoom > POLYGON_ZOOM_LEVEL) {
           // IF CURRENT ZOOM == PREVIOUS ZOOM, DO NOTHING
-          if (localMapState.zoomLevel !== view.zoom) {
+          console.log("I am in the hexagon zone");
+          if (
+            localMapState.zoomLevel !== view.zoom ||
+            localMapState.firstLoad
+          ) {
             view.graphics.removeAll();
             localMapState.zoomLevel = view.zoom;
             if (localMapState.hexagons[view.zoom].length === 0) {
               await getHexagons(view.zoom);
+              console.log(`Fetched hexagons for zoom level ${view.zoom}`);
             }
-            getHexagons(view.zoom - 1);
-            getHexagons(view.zoom + 1);
+            if (view.zoom > POLYGON_ZOOM_LEVEL && view.zoom !== POINT_ZOOM_LEVEL-1) getHexagons(view.zoom + 1);
+            if (view.zoom < POINT_ZOOM_LEVEL && view.zoom !== POLYGON_ZOOM_LEVEL+1) getHexagons(view.zoom - 1);
             renderHexagons(view, localMapState, view.zoom);
             renderNewTrees(view, localMapState);
+
+            localMapState.firstLoad = false;
           }
         }
         if (view.zoom <= POLYGON_ZOOM_LEVEL) {

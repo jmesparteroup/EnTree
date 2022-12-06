@@ -12,6 +12,7 @@ import HexagonService from "../../services/hexagonService";
 
 import BaseMapSelect from "../../components/display/BaseMapSelect";
 import AddTrees from "../../components/display/AddTrees";
+import Notification from "../../components/display/Notification";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -60,8 +61,8 @@ export default function Maps() {
   }, []);
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex">
-      <Container className="w-full h-full rounded-md relative">
+    <div className="h-[calc(100vh-4rem)] flex overflow-hidden">
+      <Container className="w-full h-full rounded-md relative overflow-hidden">
         <div className="h-full w-full">
           <EntreeMapWithNoSSR
             baselayer={BASEMAPS[baseMapKey]}
@@ -85,6 +86,8 @@ export default function Maps() {
           TreeService={TreeService}
         />
       </Container>
+      {/* Notification popup on the lower right */}
+      <Notification className="absolute right-2 bottom-2" type="success"/>
       {/* form for adding new trees */}
       {/* <Container className="h-full hidden md:flex md:w-1/3 m-2 rounded-lg flex-col">
         <div className="flex flex-col items-center ">
