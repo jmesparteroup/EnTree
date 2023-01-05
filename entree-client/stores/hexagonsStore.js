@@ -14,10 +14,17 @@ const useHexagonsStore = create(
       set((state) => ({
         hexagons: {
           ...state.hexagons,
-          [zoom]: [...state.hexagons[zoom], ...hexagons],
+          [zoom]: [...hexagons],
         },
       })),
-    clearHexagons: () => set({ hexagons: [] }),
+    // clear hexagons for a given zoom level
+    clearHexagons: (zoom) =>
+      set((state) => ({
+        hexagons: {
+          ...state.hexagons,
+          [zoom]: [],
+        },
+      })),
   }))
 );
 

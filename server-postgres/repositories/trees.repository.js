@@ -29,13 +29,15 @@ class TreesRepository {
           tree.userId,
         ]);
       }
+      console.log("Ending loop");
       await conn.query('COMMIT');
-      return result;
+      conn.release();
+      return "success";
     } catch (error) {
       await conn.query('ROLLBACK');
-      throw error;
-    } finally {
+      console.log("Error:", error);
       conn.release();
+      throw error;
     }
   }
 

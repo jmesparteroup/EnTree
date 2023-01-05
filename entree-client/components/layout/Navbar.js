@@ -35,7 +35,8 @@ export default function Navbar() {
               {/* User Info */}
               <div className="flex-grow flex justify-end text-[var(--primary-text-color)]">
                 {/* Username or Login */}
-                Hello, {userState?.user?.firstName}
+                {userState.isLoggedIn ? (`Hello, ${userState.user.firstName}`) : (<></>)}
+                
               </div>
             </div>
           </nav>

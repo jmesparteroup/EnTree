@@ -1,9 +1,9 @@
 const GlobalError = require('./global.error');
+const CustomError = require('./custom.error');
 
 class TreeError extends GlobalError {
-    constructor(message, status) {
-        super(message);
-        this.status = status;
+    static TreeInsertError() {
+        return new CustomError('Failed to insert trees', 400);
     }
 }
 

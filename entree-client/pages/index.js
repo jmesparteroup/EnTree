@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Container from "../components/layout/Container";
 import Logo from "../components/layout/Logo";
 
@@ -14,6 +14,15 @@ export default function Home() {
   const router = useRouter();
   const userState = useUserStore((state) => state.userState);
   const setUserState = useUserStore((state) => state.setUserState);
+
+  useEffect(() => {
+      // On first load, check for cookie if user is logged in
+      console.log("Checking for userState", userState);
+
+      if (userState.isLoggedIn){
+          window.location.pathname = "/maps";
+      }
+  }, []);
 
   const [formDetails, setFormDetails] = useState({
     email: "",
@@ -98,7 +107,7 @@ export default function Home() {
               {/* don't have an account? join us*/}
               <div className="flex flex-row items-center justify-center mt-3 w-full">
                 <p className="text-md text-gray-500">Don't have an account?</p>
-                <p className="mx-2 text-md text-gray-500 font-bold cursor-pointer hover:translate-y-[-5px]">
+                <p onClick={()=>router.push("/u/register")} className="mx-2 text-md text-gray-500 font-bold cursor-pointer hover:translate-y-[-5px]">
                   Join us
                 </p>
               </div>
