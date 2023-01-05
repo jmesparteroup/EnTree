@@ -3,8 +3,6 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import config from "@arcgis/core/config";
 import Graphic from "@arcgis/core/Graphic";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
 import { useEffect, useRef, useState } from "react";
@@ -18,7 +16,6 @@ import HexagonService from "../../services/hexagonService";
 const DEFAULT_LOCATION = { lng: 121.072489, lat: 14.648881 };
 const DEFAULT_ZOOM_LEVEL = 14;
 const POINT_ZOOM_LEVEL = 18;
-const HEXAGON_ZOOM_LEVEL = 17;
 const POLYGON_ZOOM_LEVEL = 13;
 
 // given certain ranges, return a shade of green for polygons and hexagons

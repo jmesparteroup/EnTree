@@ -83,7 +83,7 @@ export default function AddTrees({ className, useNewTreesStore, TreeService }) {
               #
             </div>
             <div className="w-9/12 h-full flex justify-center items-center border-x-[1px]">
-              Location 📌
+              Location
             </div>
             <div className="w-2/12 h-full flex justify-center items-center"></div>
           </div>
