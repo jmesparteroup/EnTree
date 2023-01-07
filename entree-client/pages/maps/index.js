@@ -30,7 +30,7 @@ const BASEMAPS = {
 export default function Maps() {
   const [baseMapKey, setBaseMapKey] = useState("Streets");
 
-  const addCityPolygon = useCityStore((state) => state.addPolygon);
+  const addCityPolygons = useCityStore((state) => state.addPolygons);
   const cityPolygons = useCityStore((state) => state.polygons);
 
   const hexagons = useHexagonsStore((state) => state.hexagons);
@@ -40,15 +40,17 @@ export default function Maps() {
   useEffect(() => {
     const getCityPolygons = async () => {
       let cityPromises = DEFAULT_CITIES.map(async (city) => {
-        const data = TreeService.getTreesByCity(city);
-        return data;
+        return await TreeService.getTreesByCity(city);
       });
 
-      let cityPolygons = await Promise.all(cityPromises);
-      cityPolygons.forEach((city) => {
-        console.log(city);
-        addCityPolygon(city);
-      });
+      console.log("City Promises:", cityPromises);
+
+      let cityPolygonsData = await Promise.all(cityPromises);
+      console.log("City Polygons Data:", cityPolygonsData);
+
+      addCityPolygons(cityPolygonsData);
+
+      console.log("Done Fetching Cities:", cityPolygons);
     };
 
     const getHexagons = async (zoom) => {
@@ -87,7 +89,7 @@ export default function Maps() {
         />
       </Container>
       {/* Notification popup on the lower right */}
-      <Notification className="absolute right-2 bottom-2" type="success"/>
+      <Notification className="absolute right-2 bottom-2" type="success" />
       {/* form for adding new trees */}
       {/* <Container className="h-full hidden md:flex md:w-1/3 m-2 rounded-lg flex-col">
         <div className="flex flex-col items-center ">

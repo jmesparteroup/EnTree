@@ -12,9 +12,10 @@ import useGeoLocation from "../../hooks/useGeoLocation";
 
 import TreeService from "../../services/treeService";
 import HexagonService from "../../services/hexagonService";
+import useCityStore from "../../stores/cityStore";
 
 //  START OF CONSTANTS
-
+const DEFAULT_CITIES = ["Pasig City", "Mandaluyong City"];
 const DEFAULT_LOCATION = { lng: 121.072489, lat: 14.648881 };
 const DEFAULT_ZOOM_LEVEL = 14;
 const POINT_ZOOM_LEVEL = 18;
@@ -133,6 +134,24 @@ export default function EntreeMap({
 
   const newTrees = useNewTreesStore((state) => state.newTrees);
   const addNewTree = useNewTreesStore((state) => state.addNewTree);
+
+  const cityPolygons = useCityStore((state) => state.polygons); 
+  const addCityPolygons = useCityStore((state) => state.addPolygons);
+
+  const getCityPolygons = async () => {
+    let cityPromises = DEFAULT_CITIES.map(async (city) => {
+      return await TreeService.getTreesByCity(city);
+    });
+
+    console.log("City Promises:", cityPromises);
+
+    let cityPolygonsData = await Promise.all(cityPromises);
+    console.log("City Polygons Data:", cityPolygonsData);
+
+    addCityPolygons(cityPolygonsData);
+
+    console.log("Done Fetching Cities:", cityPolygons);
+  };
 
   const getTrees = async (lat, lng) => {
     console.log("Getting Trees");
@@ -288,7 +307,7 @@ export default function EntreeMap({
     let localMapState = {
       trees: trees,
       treesRendered: treesRendered,
-      cities: cities,
+      cities: cityPolygons,
       hexagons: hexagons,
       viewCenter: [location?.coordinates?.lng, location?.coordinates?.lat],
       zoomLevel: DEFAULT_ZOOM_LEVEL,
@@ -334,6 +353,7 @@ export default function EntreeMap({
     const hexagonsSubscription = useHexagonsStore.subscribe(
       (state) => state.hexagons,
       () => {
+        console.log("Hexagons changed");
         localMapState.hexagons = useHexagonsStore.getState().hexagons;
       }
     );
@@ -343,6 +363,15 @@ export default function EntreeMap({
       () => {
         localMapState.newTrees = useNewTreesStore.getState().newTrees;
         renderNewTrees(view, localMapState);
+      }
+    );
+
+    const citiesSubscription = useCityStore.subscribe(
+      (state) => state.polygons,
+      () => {
+        // 
+        console.log("Cities changed");
+        localMapState.cities = useCityStore.getState().polygons;
       }
     );
 
@@ -423,9 +452,11 @@ export default function EntreeMap({
         }
         if (view.zoom <= POLYGON_ZOOM_LEVEL) {
           localMapState.zoomLevel = view.zoom;
+          await getCityPolygons();
           view.graphics.removeAll();
-          console.log("rendering polygons");
-          console.log(localMapState.cities);
+          console.log("Rendering Cities");
+          console.log("Cities", localMapState.cities);
+
           renderPolygons(view, localMapState);
           renderNewTrees(view, localMapState);
         }
@@ -440,6 +471,7 @@ export default function EntreeMap({
         treesSubscription();
         hexagonsSubscription();
         newTreesSubscription();
+        citiesSubscription();
       }
     };
   }, [baselayer]);
