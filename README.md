@@ -14,6 +14,6 @@
 
 ## Specific Instructions
 
-# When encountering "Error: Cannot find module './random'"
+### When encountering "Error: Cannot find module './random'"
 1. Run `npm uninstall nanoid`
 2. Run `npm install save nanoid@2.1.11`
