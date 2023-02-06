@@ -2,7 +2,7 @@
 
 ---
 
-## Deploying the app
+## Deploying the application
 
 1. Deploy the container by doing `docker-compose up -d --build`
 2. Wait for it to finish building
@@ -14,6 +14,18 @@
 
 ## Specific Instructions
 
+### Restarting the application
+
+1. Don't forget to take down the previous containers: `docker-compose down`.
+2. The application can be started by calling `docker-compose up`.
+
 ### When encountering "Error: Cannot find module './random'"
-1. Run `npm uninstall nanoid`
-2. Run `npm install save nanoid@2.1.11`
+1. Go to `server-postgres` directory: `cd server-postgres`.
+2. Run: `npm uninstall nanoid`.
+3. Run: `npm install save nanoid@2.1.11`.
+4. Try rebuilding the application (`docker-compose up --build`). 
+
+## Contact the developers
+You may contact the developers using the following emails:
+**Joshua** **Espartero:** jmespartero@up.edu.ph
+**Christian** **Gelera:** clgelera@up.edu.ph
