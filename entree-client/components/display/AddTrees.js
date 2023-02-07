@@ -6,6 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import Container from "../layout/Container";
+import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 
 // example tree array
 const trees = [
@@ -28,10 +29,46 @@ const trees = [
 
 export default function AddTrees({ className, useNewTreesStore, TreeService }) {
   const newTrees = useNewTreesStore((state) => state.newTrees);
+  const addNewTree = useNewTreesStore((state) => state.addNewTree);
   const removeNewTree = useNewTreesStore((state) => state.removeNewTree);
   const clearNewTrees = useNewTreesStore((state) => state.clearNewTrees);
 
-  const [openAddTrees, setOpenAddTrees] = useState(false);
+  const openAddTrees = useOpenAddTreesStore((state) => state.openAddTrees);
+  const setOpenAddTrees = useOpenAddTreesStore((state) => state.setOpenAddTrees);
+  // handler
+  const parseCSV = (csv) => {
+    const lines = csv.split("\n");
+    const headers = lines[0].split(",");
+    const parsedData = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const obj = {};
+      const currentLine = lines[i].split(",");
+
+      parsedData.push(currentLine);
+    }
+    return parsedData;
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = (event) => {
+      const csv = event.target.result;
+      const parsedData = parseCSV(csv);
+      console.log(parsedData);
+      parsedData.forEach((tree) => {
+        if (tree[0].length === 0) return;
+        addNewTree({
+          description: "new tree",
+          latitude: +tree[1],
+          // longitude should cut the \r at the end using regex
+          longitude: +tree[2].replace(/\r$/, ""),
+        });
+      });
+    };
+  };
 
   const addTreesClickHandler = () => {
     setOpenAddTrees((prevState) => !prevState);
@@ -120,6 +157,20 @@ export default function AddTrees({ className, useNewTreesStore, TreeService }) {
               onClick={submitNewTreesClickHandler}
             >
               Submit
+            </button>
+          </div>
+          <div className="text-lg border-t-[1px] w-full mx-4 mt-1 text-center font-bold relative ">
+            {/* submit trees */}
+            <input
+              type="file"
+              className="w-full h-full z-10 opacity-0 absolute cursor-pointer inset-0"
+              onChange={handleFileUpload}
+            />
+            <button
+              className="w-full h-full rounded-md border flex justify-center items-center shadow-sm active:shadow-inner z-0 cursor-pointer"
+              onClick={submitNewTreesClickHandler}
+            >
+              Upload CSV
             </button>
           </div>
         </Container>
