@@ -18,9 +18,7 @@ class TreesRepository {
     try {
       const conn = await this.pool.connect();
       await conn.query('BEGIN');
-      console.log("Starting loop");
       for (let tree of data) {
-        console.log("Inserting", tree)
         const result = await conn.query(`CALL create_tree($1, $2, $3, $4, $5)`, [
           tree.treeId,
           tree.description,
@@ -29,7 +27,6 @@ class TreesRepository {
           tree.userId,
         ]);
       }
-      console.log("Ending loop");
       await conn.query('COMMIT');
       conn.release();
       return "success";
@@ -116,7 +113,6 @@ class TreesRepository {
     try {
       const conn = await this.pool.connect();
       let query = `SELECT * FROM get_trees_on_hex_${hexLevel}()`;
-      console.log("query:", query);
       const result = await conn.query(query);
       conn.release();
       return result.rows;

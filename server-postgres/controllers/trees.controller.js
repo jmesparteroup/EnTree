@@ -6,17 +6,11 @@ class TreesController {
     };
 
     async createTree(req, res) {
-        try {
-            
+        try {            
             let trees = req.body.map(tree => {
                 return new this.TreeModel(tree);
             });
-
-            console.log(trees);
-
             const result = await this.TreesRepository.createTree(trees);
-            // const result = {error:"none"};
-            console.log("End Repo Call: ", result);
             res.status(200).json(result);
         } catch (error) {
             res.status(500).json(error);
@@ -74,7 +68,6 @@ class TreesController {
 
     async getTreeByCity(req, res) {
         try {
-            console.log("getTreeByCity", req.query.city)
             const city = req.query.city;
             if (!city) {
                 res.status(400).json({error:"City not found"}); 
@@ -85,7 +78,6 @@ class TreesController {
             let processed_polygon_array = [];
             for (let p of city_data) {
                 let polygon = p.polygon;
-                console.log(p);
                 const polygon_raw = polygon.slice(9,-2);
                 const point_array = polygon_raw.split(',');
                 let processed_polygon = [];

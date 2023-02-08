@@ -16,7 +16,7 @@ import useCityStore from "../../stores/cityStore";
 import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 
 //  START OF CONSTANTS
-const DEFAULT_CITIES = ["Pasig City", "Mandaluyong City", "Las Pinas"];
+const DEFAULT_CITIES = ["Pasig", "Mandaluyong", "Las Pinas"];
 const DEFAULT_LOCATION = { lng: 121.072489, lat: 14.648881 };
 const DEFAULT_ZOOM_LEVEL = 14;
 const POINT_ZOOM_LEVEL = 18;
