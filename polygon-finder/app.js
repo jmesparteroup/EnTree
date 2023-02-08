@@ -9,18 +9,31 @@ async function getCityPolygon(city) {
       `https://nominatim.openstreetmap.org/search?q=${city}&format=json&polygon_geojson=1`
     );
     const data = await response.json();
-    console.log(data[0].geojson.coordinates[0].length);
+    const geojson = data[0].geojson
+    console.log("Type: ", geojson.type)
 
-    // process array into polygon for postgis
-    const polygon = data[0].geojson.coordinates[0].map((point) => {
-      return [`${point[0]} ${point[1]}`];
-    });
-    const string = `INSERT into cityPolygons VALUES(${city},'POLYGON(${polygon.join(
-      ", "
-    )})')`;
-    fs.writeFileSync("raw.json", JSON.stringify(data));
-    fs.writeFileSync("polygon.txt", string);
-    console.log(`Polygon of ${city} written to file`);
+    if (geojson.type == "Polygon") {
+      // process array into polygon for postgis
+      const polygon = geojson.coordinates[0].map((point) => {
+        return [`${point[0]} ${point[1]}`];
+      });
+      let id = Math.floor((Math.random() * 100000) + 100000);
+      const string = `INSERT into cityPolygons VALUES(${id}, ${city},'POLYGON(${polygon.join(", ")})')`;
+      fs.writeFileSync("raw.json", JSON.stringify(data));
+      fs.writeFileSync("polygon.txt", string);
+      console.log(`Polygon of ${city} written to file`);
+    } else {
+      for (let p of geojson.coordinates) {
+        const polygon = p[0].map((point) => {
+          return [`${point[0]} ${point[1]}`];
+        });
+        let id = Math.floor((Math.random() * 100000) + 100000);
+        const string = `INSERT into cityPolygons VALUES(${id}, ${city},'POLYGON(${polygon.join(", ")})')\n`;
+        fs.writeFileSync("raw.json", JSON.stringify(data));
+        fs.writeFileSync("polygon.txt", string, { flag: 'a'});
+        console.log(`Polygon of ${city} written to file`);
+      }
+    }
   } catch (error) {
     console.log(`Error getting polygon for ${city}`);
     console.log(error.message);
@@ -28,7 +41,7 @@ async function getCityPolygon(city) {
 }
 
 const NCR_Cities = [
-  "Mandaluyong"
+  "Las Pinas"
 ];
 
 NCR_Cities.forEach(async (city) => {

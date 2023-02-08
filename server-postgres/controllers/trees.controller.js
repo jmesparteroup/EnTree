@@ -74,6 +74,7 @@ class TreesController {
 
     async getTreeByCity(req, res) {
         try {
+            console.log("getTreeByCity", req.query.city)
             const city = req.query.city;
             if (!city) {
                 res.status(400).json({error:"City not found"}); 
@@ -81,21 +82,28 @@ class TreesController {
             }
             const trees = await this.TreesRepository.getTreeByCity(city);
             const city_data = await this.TreesRepository.getCity(city);
-            const city_polygon_raw = city_data.polygon.slice(9,-2);
-            const point_array = city_polygon_raw.split(',');
-            let polygon_processed = []
-            for (let coord of point_array) {
-                const x = parseFloat(coord.split(' ')[0]);
-                const y = parseFloat(coord.split(' ')[1]);
-                polygon_processed.push([x,y])
+            let processed_polygon_array = [];
+            for (let p of city_data) {
+                let polygon = p.polygon;
+                console.log(p);
+                const polygon_raw = polygon.slice(9,-2);
+                const point_array = polygon_raw.split(',');
+                let processed_polygon = [];
+                for (let coord of point_array) {
+                    const x = parseFloat(coord.split(' ')[0]);
+                    const y = parseFloat(coord.split(' ')[1]);
+                    processed_polygon.push([x,y])
+                }
+                processed_polygon_array.push(processed_polygon)
             }
             let result = {
                 city: city_data.cityName,
-                polygon: polygon_processed,
+                polygons: processed_polygon_array,
                 trees: parseInt(trees.c)
             };
             res.status(200).json(result);
         } catch (error) {
+            console.log(error)
             res.status(500).json(error);
         }
     }

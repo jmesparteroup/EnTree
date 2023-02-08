@@ -106,7 +106,7 @@ class TreesRepository {
       const conn = await this.pool.connect();
       const result = await conn.query("SELECT * FROM get_city($1)", [city]);
       conn.release();
-      return result.rows[0];
+      return result.rows;
     } catch (error) {
       throw error;
     }

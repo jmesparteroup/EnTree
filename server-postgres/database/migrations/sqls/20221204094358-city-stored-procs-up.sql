@@ -9,7 +9,7 @@ LANGUAGE plpgsql
 as $$
 BEGIN
     RETURN QUERY
-    SELECT "cityId", ST_AsText("cityPolygons"."polygon") 
+    SELECT "cityPolygons"."cityName", ST_AsText("cityPolygons"."polygon") 
     FROM "cityPolygons"
     WHERE "cityPolygons"."cityName" = p_city;
 END;
