@@ -65,10 +65,10 @@ const COLOR_CODE_HEATMAPS = {
   ],
   polygons: [
     [10, [135, 212, 107, 0.5]],
-    [2000, [108, 202, 74, 0.85]],
-    [10000, [89, 186, 54, 0.85]],
-    [100000, [83, 172, 50, 0.85]],
-    [1000000, [74, 154, 45, 0.85]],
+    [100, [108, 202, 74, 0.85]],
+    [1000, [89, 186, 54, 0.85]],
+    [10000, [83, 172, 50, 0.85]],
+    [100000, [74, 154, 45, 0.85]],
   ],
 };
 
@@ -284,13 +284,15 @@ export default function EntreeMap({
   const renderPolygons = (view, state) => {
     // Get polygon color
     setTreesRendered(-1);
-    const color = COLOR_CODE_HEATMAPS.polygons.find((colorCode) => {
-      return state.treesRendered < colorCode[0];
-    })[1];
+    
 
     // CURRENTLY IMPLEMENTED: show polygons
     state.cities?.forEach((cityData) => {
       // for each polygon in city.polygons array render polygon
+      const color = COLOR_CODE_HEATMAPS.polygons.find((colorCode) => {
+        return cityData.trees < colorCode[0];
+      })[1];
+
       cityData.polygons.map((polygonData) => {
         const [polygon, simpleFillSymbol] = createPolygon(
           polygonData,
