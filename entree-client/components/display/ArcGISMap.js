@@ -13,6 +13,7 @@ import useGeoLocation from "../../hooks/useGeoLocation";
 import TreeService from "../../services/treeService";
 import HexagonService from "../../services/hexagonService";
 import useCityStore from "../../stores/cityStore";
+import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 
 //  START OF CONSTANTS
 const DEFAULT_CITIES = ["Pasig City", "Mandaluyong City", "Las Pinas"];
@@ -137,6 +138,8 @@ export default function EntreeMap({
 
   const cityPolygons = useCityStore((state) => state.polygons); 
   const addCityPolygons = useCityStore((state) => state.addPolygons);
+
+  const openAddTrees = useOpenAddTreesStore((state) => state.openAddTrees);
 
   const getCityPolygons = async () => {
     let cityPromises = DEFAULT_CITIES.map(async (city) => {
@@ -313,6 +316,7 @@ export default function EntreeMap({
       zoomLevel: DEFAULT_ZOOM_LEVEL,
       newTrees: newTrees,
       firstLoad: true,
+      openAddTrees: openAddTrees,
     };
 
     config.apiKey =
@@ -375,9 +379,21 @@ export default function EntreeMap({
       }
     );
 
+    const openAddTreesSubscription = useOpenAddTreesStore.subscribe(
+      (state) => state.openAddTrees,
+      () => {
+        localMapState.openAddTrees = useOpenAddTreesStore.getState().openAddTrees;
+      }
+    );
+
+
     view.on("click", (event) => {
       // you must overwrite default click-for-popup
       // behavior to display your own popup
+
+
+      if (!localMapState.openAddTrees) return; // if the user is not adding a new tree, do nothing
+      
       view.popup.autoOpenEnabled = false;
 
       // Get the coordinates of the click on the view
@@ -472,6 +488,7 @@ export default function EntreeMap({
         hexagonsSubscription();
         newTreesSubscription();
         citiesSubscription();
+        openAddTreesSubscription();
       }
     };
   }, [baselayer]);
