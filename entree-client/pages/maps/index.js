@@ -21,7 +21,7 @@ const EntreeMapWithNoSSR = dynamic(
   }
 );
 
-const DEFAULT_CITIES = ["Pasig City", "Mandaluyong City"];
+const DEFAULT_CITIES = ["Pasig", "Mandaluyong", "Las Pinas"];
 const BASEMAPS = {
   Streets: "arcgis-streets",
   Imagery: "arcgis-imagery",

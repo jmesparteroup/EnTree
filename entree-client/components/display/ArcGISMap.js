@@ -154,7 +154,7 @@ export default function EntreeMap({
   const newTrees = useNewTreesStore((state) => state.newTrees);
   const addNewTree = useNewTreesStore((state) => state.addNewTree);
 
-  const cityPolygons = useCityStore((state) => state.polygons); 
+  const cityPolygons = useCityStore((state) => state.polygons);
   const addCityPolygons = useCityStore((state) => state.addPolygons);
 
   const openAddTrees = useOpenAddTreesStore((state) => state.openAddTrees);
@@ -242,14 +242,14 @@ export default function EntreeMap({
     };
 
     const textGraphic = new Graphic({
-      geometry: graphic.geometry.extent.center,
+      geometry: graphic?.geometry?.extent?.center,
       symbol: textSymbol,
     });
 
     view.graphics.add(textGraphic);
   };
 
-  const renderNewTrees = (view, state) => {
+  const renderNewTrees = (view, state, newTreesLayer) => {
     try {
       // loop through new trees and add them to the map
       if (state.newTrees.length === 0) return;
@@ -270,7 +270,9 @@ export default function EntreeMap({
           symbol: pointSymbol,
         });
 
-        view.graphics.add(graphic);
+        // add to the new trees layer
+        newTreesLayer.add(graphic);
+
         // return graphic;
       });
       console.log("New Trees Layer added to map", view.graphics);
@@ -287,17 +289,20 @@ export default function EntreeMap({
     })[1];
 
     // CURRENTLY IMPLEMENTED: show polygons
-    state.cities?.forEach((polygonData) => {
-      const [polygon, simpleFillSymbol] = createPolygon(
-        polygonData.polygon,
-        color
-      );
-      const graphic = new Graphic({
-        geometry: polygon,
-        symbol: simpleFillSymbol,
+    state.cities?.forEach((cityData) => {
+      // for each polygon in city.polygons array render polygon
+      cityData.polygons.map((polygonData) => {
+        const [polygon, simpleFillSymbol] = createPolygon(
+          polygonData,
+          color
+        );
+        const graphic = new Graphic({
+          geometry: polygon,
+          symbol: simpleFillSymbol,
+        });
+        view.graphics.add(graphic);
+        addLabels(view, graphic, cityData.trees);
       });
-      view.graphics.add(graphic);
-      addLabels(view, graphic, polygonData.trees);
     });
   };
 
@@ -318,7 +323,6 @@ export default function EntreeMap({
       // add a text symbol to the center of the hexagon
 
       view.graphics.add(graphic);
-
       addLabels(view, graphic, hexagon.count);
     });
   };
@@ -358,6 +362,10 @@ export default function EntreeMap({
       },
     });
 
+    // create a new layer for the new trees
+    const newTreesLayer = new GraphicsLayer();
+    map.add(newTreesLayer);
+
     const treeRenderSubscription = useTreesStore.subscribe(
       (state) => state.treesRendered,
       () => {
@@ -383,15 +391,21 @@ export default function EntreeMap({
     const newTreesSubscription = useNewTreesStore.subscribe(
       (state) => state.newTrees,
       () => {
-        localMapState.newTrees = useNewTreesStore.getState().newTrees;
-        renderNewTrees(view, localMapState);
+        const newState = useNewTreesStore.getState().newTrees;
+        if (newState.length < localMapState.newTrees.length) {
+          // clear the new trees layer
+          newTreesLayer.removeAll();
+          console.log("New Trees Layer cleared");
+        }
+        localMapState.newTrees = newState;
+        renderNewTrees(view, localMapState, newTreesLayer);
       }
     );
 
     const citiesSubscription = useCityStore.subscribe(
       (state) => state.polygons,
       () => {
-        // 
+        //
         console.log("Cities changed");
         localMapState.cities = useCityStore.getState().polygons;
       }
@@ -400,18 +414,16 @@ export default function EntreeMap({
     const openAddTreesSubscription = useOpenAddTreesStore.subscribe(
       (state) => state.openAddTrees,
       () => {
-        localMapState.openAddTrees = useOpenAddTreesStore.getState().openAddTrees;
+        localMapState.openAddTrees =
+          useOpenAddTreesStore.getState().openAddTrees;
       }
     );
-
 
     view.on("click", (event) => {
       // you must overwrite default click-for-popup
       // behavior to display your own popup
-
-
       if (!localMapState.openAddTrees) return; // if the user is not adding a new tree, do nothing
-      
+
       view.popup.autoOpenEnabled = false;
 
       // Get the coordinates of the click on the view
@@ -460,7 +472,6 @@ export default function EntreeMap({
             localMapState.viewCenter = [longitude, latitude];
             await getTrees(latitude, longitude);
             renderTrees(view, localMapState);
-            renderNewTrees(view, localMapState);
           }
         }
 
@@ -474,12 +485,13 @@ export default function EntreeMap({
           ) {
             view.graphics.removeAll();
             localMapState.zoomLevel = view.zoom;
+            renderHexagons(view, localMapState, view.zoom);
+
             await getHexagons(view.zoom);
 
             // if (view.zoom > POLYGON_ZOOM_LEVEL && view.zoom !== POINT_ZOOM_LEVEL-1) getHexagons(view.zoom + 1);
             // if (view.zoom < POINT_ZOOM_LEVEL && view.zoom !== POLYGON_ZOOM_LEVEL+1) getHexagons(view.zoom - 1);
             renderHexagons(view, localMapState, view.zoom);
-            renderNewTrees(view, localMapState);
 
             localMapState.firstLoad = false;
           }
@@ -492,7 +504,6 @@ export default function EntreeMap({
           console.log("Cities", localMapState.cities);
 
           renderPolygons(view, localMapState);
-          renderNewTrees(view, localMapState);
         }
         // always render new trees
       }
