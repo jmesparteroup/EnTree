@@ -18,9 +18,9 @@ async function getCityPolygon(city) {
         return [`${point[0]} ${point[1]}`];
       });
       let id = Math.floor((Math.random() * 100000) + 100000);
-      const string = `INSERT into cityPolygons VALUES(${id}, ${city},'POLYGON(${polygon.join(", ")})')`;
+      const string = `INSERT INTO "cityPolygons" VALUES\n(${id}, '${city}','POLYGON((${polygon.join(", ")}))');\n`;
       fs.writeFileSync("raw.json", JSON.stringify(data));
-      fs.writeFileSync("polygon.txt", string);
+      fs.writeFileSync("polygon.txt", string, { flag: 'a'});
       console.log(`Polygon of ${city} written to file`);
     } else {
       for (let p of geojson.coordinates) {
@@ -28,7 +28,7 @@ async function getCityPolygon(city) {
           return [`${point[0]} ${point[1]}`];
         });
         let id = Math.floor((Math.random() * 100000) + 100000);
-        const string = `INSERT into cityPolygons VALUES(${id}, ${city},'POLYGON(${polygon.join(", ")})')\n`;
+        const string = `INSERT INTO "cityPolygons" VALUES\n(${id}, '${city}','POLYGON((${polygon.join(", ")}))');\n`;
         fs.writeFileSync("raw.json", JSON.stringify(data));
         fs.writeFileSync("polygon.txt", string, { flag: 'a'});
         console.log(`Polygon of ${city} written to file`);
@@ -41,7 +41,9 @@ async function getCityPolygon(city) {
 }
 
 const NCR_Cities = [
-  "Las Pinas"
+  "Taguig",
+  "Valenzuela, Northern Manila District",
+  "Pateros"
 ];
 
 NCR_Cities.forEach(async (city) => {
