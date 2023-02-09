@@ -33,7 +33,7 @@ const DEFAULT_CITIES = [
   "San Juan",
   "Taguig",
   "Valenzuela",
-  "Pateros"
+  "Pateros",
 ];
 const DEFAULT_LOCATION = { lng: 121.072489, lat: 14.648881 };
 const DEFAULT_ZOOM_LEVEL = 14;
@@ -284,7 +284,6 @@ export default function EntreeMap({
   const renderPolygons = (view, state) => {
     // Get polygon color
     setTreesRendered(-1);
-    
 
     // CURRENTLY IMPLEMENTED: show polygons
     state.cities?.forEach((cityData) => {
@@ -294,10 +293,7 @@ export default function EntreeMap({
       })[1];
 
       cityData.polygons.map((polygonData) => {
-        const [polygon, simpleFillSymbol] = createPolygon(
-          polygonData,
-          color
-        );
+        const [polygon, simpleFillSymbol] = createPolygon(polygonData, color);
         const graphic = new Graphic({
           geometry: polygon,
           symbol: simpleFillSymbol,
@@ -467,8 +463,6 @@ export default function EntreeMap({
             localMapState.zoomLevel = view.zoom;
           }
 
-
-
           if (
             localMapState.treesRendered === -1 ||
             distanceFromLastView > 200
@@ -484,6 +478,14 @@ export default function EntreeMap({
           // IF CURRENT ZOOM == PREVIOUS ZOOM, DO NOTHING
           console.log("I am in the hexagon zone");
           if (
+            localMapState.firstLoad ||
+            distanceFromLastView > 200 * 2 ** (18 - view.zoom) // 200 meters at zoom 18, 400 meters at zoom 17, 800 meters at zoom 16, etc.
+          ) {
+            localMapState.viewCenter = [longitude, latitude];
+            await getHexagons(view.zoom, latitude, longitude);
+            renderHexagons(view, localMapState, view.zoom);
+          }
+          if (
             localMapState.zoomLevel !== view.zoom ||
             localMapState.firstLoad
           ) {
@@ -491,11 +493,8 @@ export default function EntreeMap({
             localMapState.zoomLevel = view.zoom;
             renderHexagons(view, localMapState, view.zoom);
 
-            await getHexagons(view.zoom, latitude, longitude);
-
             // if (view.zoom > POLYGON_ZOOM_LEVEL && view.zoom !== POINT_ZOOM_LEVEL-1) getHexagons(view.zoom + 1);
             // if (view.zoom < POINT_ZOOM_LEVEL && view.zoom !== POLYGON_ZOOM_LEVEL+1) getHexagons(view.zoom - 1);
-            renderHexagons(view, localMapState, view.zoom);
 
             localMapState.firstLoad = false;
           }
