@@ -186,9 +186,9 @@ export default function EntreeMap({
     }
   };
 
-  const getHexagons = async (zoom) => {
+  const getHexagons = async (zoom, lat, lng) => {
     console.log("Getting Hexagons");
-    const data = await HexagonService.getHexagons(zoom);
+    const data = await HexagonService.getHexagons(zoom, lat, lng);
     if (data) {
       addHexagons(data, zoom);
     }
@@ -452,6 +452,13 @@ export default function EntreeMap({
         console.log(`Center View: Long ${longitude} Lat ${latitude}`); // successfully catches venter of view
         console.log(`Zoom level: ${view.zoom}`); // successfully catches zoom level
 
+        const distanceFromLastView = distanceCalculator(
+          localMapState.viewCenter[1],
+          localMapState.viewCenter[0],
+          latitude,
+          longitude
+        );
+
         // IF ZOOM IS LESS THAN 18, SHOW TREES
         if (view.zoom >= 18) {
           // IF PREVIOUS ZOOM LEVEL IS BELOW 18 CLEAR GRAPHICS
@@ -460,12 +467,7 @@ export default function EntreeMap({
             localMapState.zoomLevel = view.zoom;
           }
 
-          const distanceFromLastView = distanceCalculator(
-            localMapState.viewCenter[1],
-            localMapState.viewCenter[0],
-            latitude,
-            longitude
-          );
+
 
           if (
             localMapState.treesRendered === -1 ||
@@ -489,7 +491,7 @@ export default function EntreeMap({
             localMapState.zoomLevel = view.zoom;
             renderHexagons(view, localMapState, view.zoom);
 
-            await getHexagons(view.zoom);
+            await getHexagons(view.zoom, latitude, longitude);
 
             // if (view.zoom > POLYGON_ZOOM_LEVEL && view.zoom !== POINT_ZOOM_LEVEL-1) getHexagons(view.zoom + 1);
             // if (view.zoom < POINT_ZOOM_LEVEL && view.zoom !== POLYGON_ZOOM_LEVEL+1) getHexagons(view.zoom - 1);

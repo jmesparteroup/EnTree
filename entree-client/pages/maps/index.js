@@ -21,7 +21,6 @@ const EntreeMapWithNoSSR = dynamic(
   }
 );
 
-const DEFAULT_CITIES = ["Pasig", "Mandaluyong", "Las Pinas"];
 const BASEMAPS = {
   Streets: "arcgis-streets",
   Imagery: "arcgis-imagery",
@@ -38,27 +37,11 @@ export default function Maps() {
 
   // initialize the map with the view which are city heatmaps and trees
   useEffect(() => {
-    const getCityPolygons = async () => {
-      let cityPromises = DEFAULT_CITIES.map(async (city) => {
-        return await TreeService.getTreesByCity(city);
-      });
-
-      console.log("City Promises:", cityPromises);
-
-      let cityPolygonsData = await Promise.all(cityPromises);
-      console.log("City Polygons Data:", cityPolygonsData);
-
-      addCityPolygons(cityPolygonsData);
-
-      console.log("Done Fetching Cities:", cityPolygons);
-    };
-
     const getHexagons = async (zoom) => {
       let hexagons = await HexagonService.getHexagons(zoom);
       addHexagons(hexagons, zoom);
     };
 
-    getCityPolygons();
     getHexagons(14);
   }, []);
 
@@ -82,6 +65,7 @@ export default function Maps() {
           baseMapKey={baseMapKey}
           setBaseMapKey={setBaseMapKey}
         />
+        {/*  */}
         <AddTrees
           className="bottom-2 left-2 absolute"
           useNewTreesStore={useNewTreesStore}
@@ -89,13 +73,8 @@ export default function Maps() {
         />
       </Container>
       {/* Notification popup on the lower right */}
-      <Notification className="absolute right-2 bottom-2" type="success" />
+      {/* <Notification className="absolute right-2 bottom-2" type="success" /> */}
       {/* form for adding new trees */}
-      {/* <Container className="h-full hidden md:flex md:w-1/3 m-2 rounded-lg flex-col">
-        <div className="flex flex-col items-center ">
-          <h1 className="text-center text-3xl font-bold w-full">Add Tree</h1>
-        </div>
-      </Container> */}
     </div>
   );
 }

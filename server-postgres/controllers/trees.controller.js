@@ -103,6 +103,8 @@ class TreesController {
     async getTreeByHex(req, res) {
         try {
             const zoomLevel = req.query.zoomlevel;
+            const {lat, long} = req.query;
+            console.log(lat, long, zoomLevel)
             if (!zoomLevel) {
                 res.status(404).json({error:"City not found"}); 
                 return;
