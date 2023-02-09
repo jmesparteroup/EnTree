@@ -167,7 +167,10 @@ CALL tile_map('hexmap400', 400);
 CALL tile_map('hexmap450', 450);
 CALL tile_map('hexmap500', 500);
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_50()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_50(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -179,11 +182,20 @@ BEGIN
     SELECT ST_AsText("hexmap50"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap50"
 	ON ST_Intersects("trees".location,"hexmap50".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            100
+        )
     GROUP BY "hexmap50"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_100()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_100(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -195,11 +207,20 @@ BEGIN
     SELECT ST_AsText("hexmap100"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap100"
 	ON ST_Intersects("trees".location,"hexmap100".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            200
+        )
     GROUP BY "hexmap100"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_150()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_150(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -211,11 +232,20 @@ BEGIN
     SELECT ST_AsText("hexmap150"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap150"
 	ON ST_Intersects("trees".location,"hexmap150".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            300
+        )
     GROUP BY "hexmap150"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_200()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_200(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -227,11 +257,20 @@ BEGIN
     SELECT ST_AsText("hexmap200"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap200"
 	ON ST_Intersects("trees".location,"hexmap200".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            400
+        )
     GROUP BY "hexmap200"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_250()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_250(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -243,11 +282,20 @@ BEGIN
     SELECT ST_AsText("hexmap250"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap250"
 	ON ST_Intersects("trees".location,"hexmap250".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            500
+        )
     GROUP BY "hexmap250"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_300()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_300(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -259,11 +307,20 @@ BEGIN
     SELECT ST_AsText("hexmap300"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap300"
 	ON ST_Intersects("trees".location,"hexmap300".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            600
+        )
     GROUP BY "hexmap300"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_350()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_350(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -275,11 +332,20 @@ BEGIN
     SELECT ST_AsText("hexmap350"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap350"
 	ON ST_Intersects("trees".location,"hexmap350".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            700
+        )
     GROUP BY "hexmap350"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_400()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_400(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -291,11 +357,20 @@ BEGIN
     SELECT ST_AsText("hexmap400"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap400"
 	ON ST_Intersects("trees".location,"hexmap400".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            800
+        )
     GROUP BY "hexmap400"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_450()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_450(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -307,11 +382,20 @@ BEGIN
     SELECT ST_AsText("hexmap450"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap450"
 	ON ST_Intersects("trees".location,"hexmap450".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            900
+        )
     GROUP BY "hexmap450"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_500()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_500(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -323,11 +407,20 @@ BEGIN
     SELECT ST_AsText("hexmap500"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap500"
 	ON ST_Intersects("trees".location,"hexmap500".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            1000
+        )
     GROUP BY "hexmap500"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_550()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_550(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -339,11 +432,20 @@ BEGIN
     SELECT ST_AsText("hexmap550"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap550"
 	ON ST_Intersects("trees".location,"hexmap550".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            1100
+        )
     GROUP BY "hexmap550"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_600()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_600(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -355,11 +457,20 @@ BEGIN
     SELECT ST_AsText("hexmap600"."geom"), COUNT("trees"."treeId") as c
     FROM "trees" join "hexmap600"
 	ON ST_Intersects("trees".location,"hexmap600".geom)
+    WHERE
+        ST_DWithin(
+            "hexmap500"."geom"::geography,
+            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
+            1200
+        )
     GROUP BY "hexmap600"."geom";
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_650()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_650(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -375,7 +486,10 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_700()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_700(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -391,7 +505,10 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_750()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_750(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -407,7 +524,10 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_800()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_800(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -423,7 +543,10 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_850()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_850(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -439,7 +562,10 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_900()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_900(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -455,7 +581,10 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_950()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_950(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT
@@ -471,7 +600,10 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_1000()
+CREATE OR REPLACE FUNCTION get_trees_on_hex_1000(
+    IN p_longitude DECIMAL,
+    IN p_latitude DECIMAL
+)
 RETURNS table (
     geom TEXT,
     c BIGINT

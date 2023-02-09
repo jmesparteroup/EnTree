@@ -58,6 +58,7 @@ class TreesController {
 
     async getTreeByProximity(req, res) {
         try {
+            console.log("Getting by proximity", req.query.long, req.query.lat, req.query.radius);
             const trees = await this.TreesRepository.getTreeByProximity(+req.query.long, +req.query.lat, +req.query.radius);
             const result = trees.j;
             res.status(200).json(result);
@@ -102,26 +103,36 @@ class TreesController {
 
     async getTreeByHex(req, res) {
         try {
+            console.log("H")
             const zoomLevel = req.query.zoomlevel;
             const {lat, long} = req.query;
-            console.log(lat, long, zoomLevel)
+            const latitude = parseFloat(lat);
+            const longitude = parseFloat(long);
+            console.log(latitude, longitude ,typeof(latitude), typeof(longitude));
             if (!zoomLevel) {
-                res.status(404).json({error:"City not found"}); 
-                return;
+                throw new Error("Undefined Latitude or Longitude");
+            }
+            // console.log("Checking lat long", lat);
+            // if (lat) {console.log("NULL", lat)};
+            // else {console.log("Not null", lat)};
+            if ((lat == null) || (long == null)) {
+                console.log("Undefined latitude or longitude")
+                throw new Error("Undefined latitude or longitude");
             }
             let result;
             if (zoomLevel >= 17) {
-                result = await this.TreesRepository.getTreeByHex(50);
+                result = await this.TreesRepository.getTreeByHex(50, latitude, longitude);
             } else if (zoomLevel == 16) {
-                result = await this.TreesRepository.getTreeByHex(150);
+                result = await this.TreesRepository.getTreeByHex(150, latitude, longitude);
             } else if (zoomLevel == 15) {
-                result = await this.TreesRepository.getTreeByHex(300);
+                result = await this.TreesRepository.getTreeByHex(300, latitude, longitude);
             } else if (zoomLevel == 14) {
-                result = await this.TreesRepository.getTreeByHex(500);
+                console.log("on zoom level 14, getting hex 500")
+                result = await this.TreesRepository.getTreeByHex(500, latitude, longitude);
             } else if (zoomLevel == 13) {
-                result = await this.TreesRepository.getTreeByHex(500);
+                result = await this.TreesRepository.getTreeByHex(500, latitude, longitude);
             } else {
-                result = await this.TreesRepository.getTreeByHex(600);
+                result = await this.TreesRepository.getTreeByHex(600, latitude, longitude);
             }
             let return_processed = [];
             for (let row of result) {

@@ -109,10 +109,11 @@ class TreesRepository {
     }
   }
 
-  async getTreeByHex(hexLevel) {
+  async getTreeByHex(hexLevel, latitude, longitude) {
     try {
       const conn = await this.pool.connect();
-      let query = `SELECT * FROM get_trees_on_hex_${hexLevel}()`;
+      let query = `SELECT * FROM get_trees_on_hex_${hexLevel}(${longitude}, ${latitude})`;
+      console.log(query, longitude, latitude, typeof(longitude), typeof(latitude));
       const result = await conn.query(query);
       conn.release();
       return result.rows;
