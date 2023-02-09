@@ -184,7 +184,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap50".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap50"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             100
         )
@@ -209,7 +209,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap100".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap100"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             200
         )
@@ -234,7 +234,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap150".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap150"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             300
         )
@@ -259,7 +259,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap200".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap200"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             400
         )
@@ -284,7 +284,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap250".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap250"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             500
         )
@@ -309,7 +309,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap300".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap300"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             600
         )
@@ -334,7 +334,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap350".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap350"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             700
         )
@@ -359,7 +359,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap400".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap400"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             800
         )
@@ -384,7 +384,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap450".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap450"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             900
         )
@@ -434,7 +434,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap550".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap550"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             1100
         )
@@ -459,7 +459,7 @@ BEGIN
 	ON ST_Intersects("trees".location,"hexmap600".geom)
     WHERE
         ST_DWithin(
-            "hexmap500"."geom"::geography,
+            "hexmap600"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
             1200
         )
