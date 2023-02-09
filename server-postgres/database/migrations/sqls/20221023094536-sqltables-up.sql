@@ -1,4 +1,5 @@
 /* Replace with your SQL commands */
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- TABLE FOR USERS
 CREATE TABLE IF NOT EXISTS "users" (
     "userId" VARCHAR(32) UNIQUE NOT NULL,

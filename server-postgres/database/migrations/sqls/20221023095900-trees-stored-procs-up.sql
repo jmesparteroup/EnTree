@@ -110,17 +110,6 @@ BEGIN
 END;
 $$;
 
--- Create function to get all trees
--- CREATE OR REPLACE FUNCTION get_all_trees()
--- RETURNS SETOF trees
--- LANGUAGE plpgsql
--- as $$
--- BEGIN
---     RETURN QUERY
---     SELECT * FROM trees;
--- END;
--- $$;
-
 CREATE OR REPLACE FUNCTION get_all_trees()
 RETURNS table (j json)
 LANGUAGE plpgsql
@@ -138,27 +127,6 @@ BEGIN
 END;
 $$;
 
--- FOLLOWING IS DEPRECATED
--- CREATE OR REPLACE FUNCTION get_trees_by_city(
---     IN p_city VARCHAR(255)
--- )
--- RETURNS table (j json)
--- LANGUAGE plpgsql
--- as $$
--- BEGIN
---     RETURN QUERY
---     SELECT json_agg(json_build_object(
---         'treeId', trees."treeId",
---         'description', trees."description",
---         'createdAt', trees."createdAt",
---         'location', ST_AsText(trees."location"),
---         'userId', trees."userId"
---     )) j 
---     FROM "trees" join "cityPolygons"
--- 	ON ST_Intersects("trees".location,"cityPolygons".polygon)
---     WHERE "cityPolygons"."cityName" = p_city;
--- END;
--- $$;
 CREATE OR REPLACE FUNCTION get_trees_by_city(
     IN p_city VARCHAR(255)
 )

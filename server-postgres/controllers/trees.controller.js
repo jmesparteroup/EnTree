@@ -58,7 +58,6 @@ class TreesController {
 
     async getTreeByProximity(req, res) {
         try {
-            console.log("Getting by proximity", req.query.long, req.query.lat, req.query.radius);
             const trees = await this.TreesRepository.getTreeByProximity(+req.query.long, +req.query.lat, +req.query.radius);
             const result = trees.j;
             res.status(200).json(result);
@@ -103,12 +102,10 @@ class TreesController {
 
     async getTreeByHex(req, res) {
         try {
-            console.log("H")
             const zoomLevel = req.query.zoomlevel;
             const {lat, long} = req.query;
             const latitude = parseFloat(lat);
             const longitude = parseFloat(long);
-            console.log(latitude, longitude ,typeof(latitude), typeof(longitude));
             if (!zoomLevel) {
                 throw new Error("Undefined Latitude or Longitude");
             }
@@ -127,7 +124,6 @@ class TreesController {
             } else if (zoomLevel == 15) {
                 result = await this.TreesRepository.getTreeByHex(300, latitude, longitude);
             } else if (zoomLevel == 14) {
-                console.log("on zoom level 14, getting hex 500")
                 result = await this.TreesRepository.getTreeByHex(500, latitude, longitude);
             } else if (zoomLevel == 13) {
                 result = await this.TreesRepository.getTreeByHex(500, latitude, longitude);
@@ -145,6 +141,7 @@ class TreesController {
                     hexagon_processed.push([x,y])
                 }
                 return_processed.push({
+                    hexId: row.hexid,
                     hexagon: hexagon_processed,
                     count: parseInt(row.c)
                 })
