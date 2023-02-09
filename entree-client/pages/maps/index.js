@@ -29,29 +29,12 @@ const BASEMAPS = {
 export default function Maps() {
   const [baseMapKey, setBaseMapKey] = useState("Streets");
 
-  const addCityPolygons = useCityStore((state) => state.addPolygons);
-  const cityPolygons = useCityStore((state) => state.polygons);
-
-  const hexagons = useHexagonsStore((state) => state.hexagons);
-  const addHexagons = useHexagonsStore((state) => state.addHexagons);
-
-  // initialize the map with the view which are city heatmaps and trees
-  useEffect(() => {
-    const getHexagons = async (zoom) => {
-      let hexagons = await HexagonService.getHexagons(zoom);
-      addHexagons(hexagons, zoom);
-    };
-
-    getHexagons(14);
-  }, []);
-
   return (
     <div className="h-[calc(100vh-4rem)] flex overflow-hidden">
       <Container className="w-full h-full rounded-md relative overflow-hidden">
         <div className="h-full w-full">
           <EntreeMapWithNoSSR
             baselayer={BASEMAPS[baseMapKey]}
-            cities={cityPolygons}
             useTreesStore={useTreesStore}
             useHexagonsStore={useHexagonsStore}
             useNewTreesStore={useNewTreesStore}
@@ -73,7 +56,7 @@ export default function Maps() {
         />
       </Container>
       {/* Notification popup on the lower right */}
-      {/* <Notification className="absolute right-2 bottom-2" type="success" /> */}
+      <Notification className="absolute right-2 bottom-2" type="success" />
       {/* form for adding new trees */}
     </div>
   );

@@ -5,11 +5,17 @@ const useTreesStore = create(
   subscribeWithSelector((set) => ({
     trees: [],
     treesRendered: -1,
-    addTrees: (trees) => set((state) => ({ trees: [...state.trees, ...trees] })),
+    renderedTrees: [],
+    addTrees: (trees) =>
+      set((state) => ({ trees: [...state.trees, ...trees] })),
     clearTrees: () => set({ trees: [] }),
     incrementTreesRendered: () =>
       set((state) => ({ treesRendered: state.treesRendered + 1 })),
     setTreesRendered: (treesRendered) => set({ treesRendered }),
+    transferRenderedTrees: () =>
+      set((state) => ({
+        renderedTrees: [...state.renderedTrees, ...state.trees],
+      })),
   }))
 );
 

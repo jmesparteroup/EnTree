@@ -3,7 +3,6 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import config from "@arcgis/core/config";
 import Graphic from "@arcgis/core/Graphic";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
@@ -14,6 +13,8 @@ import TreeService from "../../services/treeService";
 import HexagonService from "../../services/hexagonService";
 import useCityStore from "../../stores/cityStore";
 import useOpenAddTreesStore from "../../stores/openAddTreesStore";
+
+import useNotificationStore from "../../stores/notificationStore";
 
 //  START OF CONSTANTS
 const DEFAULT_CITIES = [
@@ -43,17 +44,6 @@ const POLYGON_ZOOM_LEVEL = 13;
 
 // given certain ranges, return a shade of green for polygons and hexagons
 // color should be an array of 4 values: [r, g, b, a] lighter for lower values, darker for higher values
-
-// "hexagons": [
-//   [10, [135, 212, 107, 0.5]],
-//   [50, [132, 211, 103, 0.5]],
-//   [100, [118, 206, 86, 0.5]],
-//   [500, [108, 202, 74, 0.5]],
-//   [1000, [97, 198, 60, 0.5]],
-//   [5000, [89, 186, 54, 0.5]],
-//   [10000, [83, 172, 50, 0.5]],
-//   [50000, [74, 154, 45, 0.5]],
-// ]
 
 const COLOR_CODE_HEATMAPS = {
   hexagons: [
@@ -147,9 +137,19 @@ export default function EntreeMap({
   const treesRendered = useTreesStore((state) => state.treesRendered);
   const setTreesRendered = useTreesStore((state) => state.setTreesRendered);
   const addTrees = useTreesStore((state) => state.addTrees);
+  const clearTrees = useTreesStore((state) => state.clearTrees);
+  const transferRenderedTrees = useTreesStore( // transfer rendered trees to the store
+    (state) => state.transferRenderedTrees
+  );
+  const renderedTrees = useTreesStore((state) => state.renderedTrees);
 
   const hexagons = useHexagonsStore((state) => state.hexagons);
   const addHexagons = useHexagonsStore((state) => state.addHexagons);
+  const renderedHexagons = useHexagonsStore((state) => state.renderedHexagons);
+  const transferRenderedHexagons = useHexagonsStore(
+    (state) => state.transferRenderedHexagons
+  );
+  const clearHexagons = useHexagonsStore((state) => state.clearHexagons);
 
   const newTrees = useNewTreesStore((state) => state.newTrees);
   const addNewTree = useNewTreesStore((state) => state.addNewTree);
@@ -159,23 +159,30 @@ export default function EntreeMap({
 
   const openAddTrees = useOpenAddTreesStore((state) => state.openAddTrees);
 
+  const setMessage = useNotificationStore((state) => state.setMessage);
+  const setStatus = useNotificationStore((state) => state.setStatus);
+
   const getCityPolygons = async () => {
+    setStatus("loading");
+    setMessage("Fetching City Data");
+
     let cityPromises = DEFAULT_CITIES.map(async (city) => {
       return await TreeService.getTreesByCity(city);
     });
 
-    console.log("City Promises:", cityPromises);
-
     let cityPolygonsData = await Promise.all(cityPromises);
-    console.log("City Polygons Data:", cityPolygonsData);
-
     addCityPolygons(cityPolygonsData);
 
-    console.log("Done Fetching Cities:", cityPolygons);
+    setStatus("success");
+    setMessage("City Data Loaded");
   };
 
-  const getTrees = async (lat, lng) => {
-    console.log("Getting Trees");
+  const getTrees = async (lat, lng, trees) => {
+    setStatus("loading");
+    setMessage("Fetching Trees");
+
+    console.log("Trees:", trees)
+
     const data = await TreeService.getTreesByProximity(lat, lng, 500);
     if (data) {
       // remove trees that are already in store
@@ -184,22 +191,34 @@ export default function EntreeMap({
       });
       addTrees(newTrees);
     }
+
+    setStatus("success");
+    setMessage("Trees Loaded");
   };
 
-  const getHexagons = async (zoom, lat, lng) => {
-    console.log("Getting Hexagons");
+  const getHexagons = async (zoom, lat, lng, hexagons) => {
+    setStatus("loading");
+    setMessage("Fetching Hexagons");
     const data = await HexagonService.getHexagons(zoom, lat, lng);
-    if (data) {
-      addHexagons(data, zoom);
+
+    if (data?.length > 0) {
+      // remove hexagons that are already in store
+      console.log("Newly Pulled Hexagons:", data);
+      console.log("Hexagons:", hexagons);
+      console.log("Length of Hexagons Before:", data?.length);
+      const newHexagons = data.filter((hexagon) => {
+        return !hexagons[zoom].some((h) => h.hexId === hexagon.hexId);
+      });
+      console.log("Length of Hexagons After:", data?.length);
+
+      addHexagons(newHexagons, zoom);
     }
+    setStatus("success");
+    setMessage("Hexagons Loaded");
   };
 
-  const renderTrees = (view, state) => {
-    console.log(
-      `Trees rendered: ${state.treesRendered} Trees length: ${state.trees?.length}`
-    );
-
-    state.trees?.forEach((tree) => {
+  const renderTrees = (view, trees) => {
+    trees?.forEach((tree) => {
       // POINT(121.083367 14.592321) -> [121.083367, 14.592321]
       const [lng, lat] = tree.location
         .replace("POINT(", "")
@@ -222,7 +241,7 @@ export default function EntreeMap({
       view.graphics.add(graphic);
     });
 
-    setTreesRendered(state.trees?.length);
+    setTreesRendered(trees?.length);
   };
 
   const addLabels = (view, graphic, label) => {
@@ -304,10 +323,10 @@ export default function EntreeMap({
     });
   };
 
-  const renderHexagons = (view, state, zoom) => {
+  const renderHexagons = (view, hexagons, zoom) => {
     setTreesRendered(-1);
     // CURRENTLY IMPLEMENTED: show hexagons
-    state.hexagons[zoom]?.map((hexagon) => {
+    hexagons[zoom]?.map((hexagon) => {
       // get hexagon color
       const color = COLOR_CODE_HEATMAPS.hexagons.find((colorCode) => {
         return hexagon.count <= colorCode[0];
@@ -330,8 +349,10 @@ export default function EntreeMap({
     let localMapState = {
       trees: trees,
       treesRendered: treesRendered,
+      renderedTrees: renderedTrees,
       cities: cityPolygons,
       hexagons: hexagons,
+      renderedHexagons: renderedHexagons,
       viewCenter: [location?.coordinates?.lng, location?.coordinates?.lat],
       zoomLevel: DEFAULT_ZOOM_LEVEL,
       newTrees: newTrees,
@@ -378,11 +399,27 @@ export default function EntreeMap({
       }
     );
 
+    const renderedTreesSubscription = useTreesStore.subscribe(
+      (state) => state.renderedTrees,
+      () => {
+        localMapState.renderedTrees = useTreesStore.getState().renderedTrees;
+      }
+    );
+
     const hexagonsSubscription = useHexagonsStore.subscribe(
       (state) => state.hexagons,
       () => {
-        console.log("Hexagons changed");
         localMapState.hexagons = useHexagonsStore.getState().hexagons;
+        console.log("Hexagons", localMapState.hexagons);
+      }
+    );
+
+    const renderedHexagonsSubscription = useHexagonsStore.subscribe(
+      (state) => state.renderedHexagons,
+      () => {
+        localMapState.renderedHexagons =
+          useHexagonsStore.getState().renderedHexagons;
+        console.log("Rendered Hexagons", localMapState.renderedHexagons);
       }
     );
 
@@ -418,35 +455,27 @@ export default function EntreeMap({
     );
 
     view.on("click", (event) => {
-      // you must overwrite default click-for-popup
-      // behavior to display your own popup
       if (!localMapState.openAddTrees) return; // if the user is not adding a new tree, do nothing
-
       view.popup.autoOpenEnabled = false;
 
       // Get the coordinates of the click on the view
       let lat = Math.round(event.mapPoint.latitude * 10000000) / 10000000;
       let lng = Math.round(event.mapPoint.longitude * 10000000) / 10000000;
 
-      console.log(`Clicked at ${lng}, ${lat}`);
-
       addNewTree({
         longitude: lng,
         latitude: lat,
         description: "I am a new tree",
       });
-
-      console.log();
     });
 
     // Check if the user moves the map and releases it
-    reactiveUtils.when(
-      () => view?.stationary,
+    reactiveUtils.on(
+      () => view,
+      "drag",
       async () => {
         const { longitude, latitude } = view.center;
-
-        console.log(`Center View: Long ${longitude} Lat ${latitude}`); // successfully catches venter of view
-        console.log(`Zoom level: ${view.zoom}`); // successfully catches zoom level
+        console.log("Map moved to", latitude, longitude);
 
         const distanceFromLastView = distanceCalculator(
           localMapState.viewCenter[1],
@@ -454,6 +483,54 @@ export default function EntreeMap({
           latitude,
           longitude
         );
+
+        if (distanceFromLastView < 200 * 2 ** (18 - view.zoom)) return;
+
+
+        // IF ZOOM IS LESS THAN 18, SHOW TREES
+        if (view.zoom >= 18) {
+          // IF PREVIOUS ZOOM LEVEL IS BELOW 18 CLEAR GRAPHICS
+          if (
+            localMapState.treesRendered === -1 ||
+            distanceFromLastView > 200
+          ) {
+            localMapState.viewCenter = [longitude, latitude];
+            await getTrees(latitude, longitude, localMapState.trees);
+            renderTrees(view, localMapState.trees);
+            transferRenderedTrees();
+            clearTrees();
+          }
+        }
+
+        // IF ZOOM LEVEL IS LESS THAN 18, SHOW HEXAGONS
+        if (view.zoom < POINT_ZOOM_LEVEL && view.zoom > POLYGON_ZOOM_LEVEL) {
+          // IF CURRENT ZOOM == PREVIOUS ZOOM, DO NOTHING
+          if (
+            distanceFromLastView >
+            200 * 2 ** (18 - view.zoom) // 200 meters at zoom 18, 400 meters at zoom 17, 800 meters at zoom 16, etc.
+          ) {
+            localMapState.viewCenter = [longitude, latitude];
+            await getHexagons(
+              view.zoom,
+              latitude,
+              longitude,
+              localMapState.renderedHexagons
+            );
+            renderHexagons(view, localMapState.hexagons, view.zoom);
+            transferRenderedHexagons(view.zoom);
+            clearHexagons(view.zoom);
+          }
+        }
+        // always render new trees
+      }
+    );
+
+    reactiveUtils.when(
+      () => view?.stationary,
+      async () => {
+        const { longitude, latitude } = view.center;
+        console.log("Map moved to", latitude, longitude);
+
 
         // IF ZOOM IS LESS THAN 18, SHOW TREES
         if (view.zoom >= 18) {
@@ -464,40 +541,39 @@ export default function EntreeMap({
           }
 
           if (
-            localMapState.treesRendered === -1 ||
-            distanceFromLastView > 200
+            localMapState.treesRendered === -1
           ) {
             localMapState.viewCenter = [longitude, latitude];
-            await getTrees(latitude, longitude);
-            renderTrees(view, localMapState);
+            await getTrees(latitude, longitude, localMapState.trees);
+            renderTrees(view, localMapState.trees);
+            renderTrees(view, localMapState.renderedTrees);
+            clearTrees();
           }
         }
 
         // IF ZOOM LEVEL IS LESS THAN 18, SHOW HEXAGONS
         if (view.zoom < POINT_ZOOM_LEVEL && view.zoom > POLYGON_ZOOM_LEVEL) {
           // IF CURRENT ZOOM == PREVIOUS ZOOM, DO NOTHING
-          console.log("I am in the hexagon zone");
-          if (
-            localMapState.firstLoad ||
-            distanceFromLastView > 200 * 2 ** (18 - view.zoom) // 200 meters at zoom 18, 400 meters at zoom 17, 800 meters at zoom 16, etc.
-          ) {
-            localMapState.viewCenter = [longitude, latitude];
-            await getHexagons(view.zoom, latitude, longitude);
-            renderHexagons(view, localMapState, view.zoom);
-          }
           if (
             localMapState.zoomLevel !== view.zoom ||
             localMapState.firstLoad
           ) {
             view.graphics.removeAll();
             localMapState.zoomLevel = view.zoom;
-            renderHexagons(view, localMapState, view.zoom);
+            await getHexagons(
+              view.zoom,
+              latitude,
+              longitude,
+              localMapState.hexagons
+            );
 
-            // if (view.zoom > POLYGON_ZOOM_LEVEL && view.zoom !== POINT_ZOOM_LEVEL-1) getHexagons(view.zoom + 1);
-            // if (view.zoom < POINT_ZOOM_LEVEL && view.zoom !== POLYGON_ZOOM_LEVEL+1) getHexagons(view.zoom - 1);
+            renderHexagons(view, localMapState.hexagons, view.zoom);
+            renderHexagons(view, localMapState.renderedHexagons, view.zoom);
+            transferRenderedHexagons(view.zoom);
+            clearHexagons(view.zoom);
 
             localMapState.firstLoad = false;
-          }
+          } 
         }
         if (view.zoom <= POLYGON_ZOOM_LEVEL) {
           localMapState.zoomLevel = view.zoom;
@@ -521,6 +597,7 @@ export default function EntreeMap({
         newTreesSubscription();
         citiesSubscription();
         openAddTreesSubscription();
+        renderedHexagonsSubscription();
       }
     };
   }, [baselayer]);
