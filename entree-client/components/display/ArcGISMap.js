@@ -6,7 +6,7 @@ import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import useGeoLocation from "../../hooks/useGeoLocation";
 
 import TreeService from "../../services/treeService";
@@ -15,6 +15,21 @@ import useCityStore from "../../stores/cityStore";
 import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 
 import useNotificationStore from "../../stores/notificationStore";
+import useBaseMapStore from "../../stores/basemapStore";
+
+
+// STRUCTURE OF FILE
+// 1. CONSTANTS
+// 2. HELPER FUNCTIONS
+// 3. MAIN FUNCTION
+// 3.1 FUNCTIONS FOR QUERYING DATA
+// 3.2 FUNCTIONS FOR RENDERING DATA
+// 3.3 SUBSCRIPTIONS FOR THE STORES
+// 3.4 MAIN LOGIC FOR RENDERING LAYERS
+// 3.4.1 ON DRAG
+// 3.4.2 ON ZOOM (STATIONARY) 
+// 4. EXPORT
+
 
 //  START OF CONSTANTS
 const DEFAULT_CITIES = [
@@ -131,14 +146,14 @@ const createPoint = (pointData, color) => {
 //  MAP COMPONENT
 
 export default function EntreeMap({
-  baselayer,
-  cities,
   useTreesStore,
   useHexagonsStore,
   useNewTreesStore,
 }) {
   const mapRef = useRef(null);
   const location = useGeoLocation();
+
+  const baseMap = useBaseMapStore((state) => state.baseMap);
 
   const trees = useTreesStore((state) => state.trees);
   const treesRendered = useTreesStore((state) => state.treesRendered);
@@ -365,13 +380,14 @@ export default function EntreeMap({
       newTrees: newTrees,
       firstLoad: true,
       openAddTrees: openAddTrees,
+      baseMap: baseMap,
     };
 
     config.apiKey =
       "AAPK55c00e93bd0743829d697d33557eca05L_lRyhpFL28eYxnVDH20DmrLuF1ClNg0KB2FgYqLiOJvdVfFr_hew2HXu9F0Td18";
 
     const map = new Map({
-      basemap: baselayer, // Basemap layer service
+      basemap: baseMap, // Basemap layer service
     });
 
     const view = new MapView({
@@ -458,6 +474,14 @@ export default function EntreeMap({
       () => {
         localMapState.openAddTrees =
           useOpenAddTreesStore.getState().openAddTrees;
+      }
+    );
+
+    const baseMapSubscription = useBaseMapStore.subscribe(
+      (state) => state.baseMap,
+      () => {
+        localMapState.baseMap = useBaseMapStore.getState().baseMap;
+        map.basemap = localMapState.baseMap;
       }
     );
 
@@ -605,9 +629,11 @@ export default function EntreeMap({
         citiesSubscription();
         openAddTreesSubscription();
         renderedHexagonsSubscription();
+        renderedTreesSubscription();
+        baseMapSubscription();
       }
     };
-  }, [baselayer]);
+  }, []);
 
   return (
     <div className="h-full overflow-y-hidden">
