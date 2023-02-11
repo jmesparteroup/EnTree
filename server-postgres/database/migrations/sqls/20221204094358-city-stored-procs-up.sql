@@ -138,7 +138,7 @@ BEGIN
         ST_DWithin(
             "hexmap50"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            100
+            500
         )
     GROUP BY "hexmap50"."geom", "hexmap50"."hexid";
 END;
@@ -164,7 +164,7 @@ BEGIN
         ST_DWithin(
             "hexmap100"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            200
+            800
         )
     GROUP BY "hexmap100"."geom", "hexmap100"."hexid";
 END;
@@ -190,7 +190,7 @@ BEGIN
         ST_DWithin(
             "hexmap150"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            300
+            900
         )
     GROUP BY "hexmap150"."geom", "hexmap150"."hexid";
 END;
@@ -216,7 +216,7 @@ BEGIN
         ST_DWithin(
             "hexmap200"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            400
+            1200
         )
     GROUP BY "hexmap200"."geom", "hexmap200"."hexid";
 END;
@@ -242,7 +242,7 @@ BEGIN
         ST_DWithin(
             "hexmap250"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            500
+            1500
         )
     GROUP BY "hexmap250"."geom", "hexmap250"."hexid";
 END;
@@ -268,7 +268,7 @@ BEGIN
         ST_DWithin(
             "hexmap300"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            600
+            1800
         )
     GROUP BY "hexmap300"."geom", "hexmap300"."hexid";
 END;
@@ -294,7 +294,7 @@ BEGIN
         ST_DWithin(
             "hexmap350"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            700
+            2100
         )
     GROUP BY "hexmap350"."geom", "hexmap350"."hexid";
 END;
@@ -320,7 +320,7 @@ BEGIN
         ST_DWithin(
             "hexmap400"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            800
+            2800
         )
     GROUP BY "hexmap400"."geom", "hexmap400"."hexid";
 END;
@@ -346,7 +346,7 @@ BEGIN
         ST_DWithin(
             "hexmap450"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            900
+            3600
         )
     GROUP BY "hexmap450"."geom", "hexmap450"."hexid";
 END;
@@ -372,7 +372,7 @@ BEGIN
         ST_DWithin(
             "hexmap500"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            1000
+            4000
         )
     GROUP BY "hexmap500"."geom", "hexmap500"."hexid";
 END;
@@ -398,7 +398,7 @@ BEGIN
         ST_DWithin(
             "hexmap550"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            1100
+            4400
         )
     GROUP BY "hexmap550"."geom", "hexmap550"."hexid";
 END;
@@ -424,7 +424,7 @@ BEGIN
         ST_DWithin(
             "hexmap600"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            1200
+            4800
         )
     GROUP BY "hexmap600"."geom", "hexmap600"."hexid";
 END;
