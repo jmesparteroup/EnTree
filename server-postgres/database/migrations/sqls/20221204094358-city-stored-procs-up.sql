@@ -100,8 +100,8 @@ BEGIN
 
     CREATE INDEX sidx_hx_tmp_geom ON hx_tmp USING GIST (geom);
     EXECUTE 'DROP TABLE IF EXISTS '|| p_table;
-    EXECUTE 'CREATE TABLE '|| p_table ||' (geom GEOMETRY(POLYGON, 4326), hexid VARCHAR(16), PRIMARY KEY(hexid))';
-    EXECUTE 'INSERT INTO '|| p_table ||' SELECT ST_Transform(geom,4326), hexid FROM hx_tmp GROUP BY geom, hexid';
+    EXECUTE 'CREATE TABLE '|| p_table ||' (geom GEOMETRY(POLYGON, 4326), hexid VARCHAR(16), treecount BIGINT, PRIMARY KEY(hexid))';
+    EXECUTE 'INSERT INTO '|| p_table ||' SELECT ST_Transform(geom,4326), hexid, 0 FROM hx_tmp GROUP BY geom, hexid';
     EXECUTE 'CREATE INDEX sidx_'|| p_table ||'_geom ON '|| p_table ||' USING GIST (geom)';
     DROP TABLE IF EXISTS hx_tmp;
 END;
@@ -124,16 +124,15 @@ CREATE OR REPLACE FUNCTION get_trees_on_hex_50(
 )
 RETURNS table (
     hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
+    treecount BIGINT,
+    geom TEXT
 )
 LANGUAGE plpgsql
 as $$
 BEGIN
     RETURN QUERY
-    SELECT "hexmap50"."hexid", ST_AsText("hexmap50"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap50"
-	ON ST_Intersects("trees".location,"hexmap50".geom)
+    SELECT "hexmap50"."hexid", "hexmap50"."treecount", ST_AsText("hexmap50"."geom")
+    FROM "hexmap50"
     WHERE
         ST_DWithin(
             "hexmap50"."geom"::geography,
@@ -144,48 +143,21 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_100(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap100"."hexid", ST_AsText("hexmap100"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap100"
-	ON ST_Intersects("trees".location,"hexmap100".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap100"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            800
-        )
-    GROUP BY "hexmap100"."geom", "hexmap100"."hexid";
-END;
-$$;
-
 CREATE OR REPLACE FUNCTION get_trees_on_hex_150(
     IN p_longitude DECIMAL,
     IN p_latitude DECIMAL
 )
 RETURNS table (
     hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
+    treecount BIGINT,
+    geom TEXT
 )
 LANGUAGE plpgsql
 as $$
 BEGIN
     RETURN QUERY
-    SELECT "hexmap150"."hexid", ST_AsText("hexmap150"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap150"
-	ON ST_Intersects("trees".location,"hexmap150".geom)
+    SELECT "hexmap150"."hexid", "hexmap150"."treecount", ST_AsText("hexmap150"."geom")
+    FROM "hexmap150"
     WHERE
         ST_DWithin(
             "hexmap150"."geom"::geography,
@@ -196,74 +168,21 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_200(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap200"."hexid", ST_AsText("hexmap200"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap200"
-	ON ST_Intersects("trees".location,"hexmap200".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap200"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            1200
-        )
-    GROUP BY "hexmap200"."geom", "hexmap200"."hexid";
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION get_trees_on_hex_250(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap250"."hexid", ST_AsText("hexmap250"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap250"
-	ON ST_Intersects("trees".location,"hexmap250".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap250"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            1500
-        )
-    GROUP BY "hexmap250"."geom", "hexmap250"."hexid";
-END;
-$$;
-
 CREATE OR REPLACE FUNCTION get_trees_on_hex_300(
     IN p_longitude DECIMAL,
     IN p_latitude DECIMAL
 )
 RETURNS table (
     hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
+    treecount BIGINT,
+    geom TEXT
 )
 LANGUAGE plpgsql
 as $$
 BEGIN
     RETURN QUERY
-    SELECT "hexmap300"."hexid", ST_AsText("hexmap300"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap300"
-	ON ST_Intersects("trees".location,"hexmap300".geom)
+    SELECT "hexmap300"."hexid", "hexmap300"."treecount", ST_AsText("hexmap300"."geom")
+    FROM "hexmap300"
     WHERE
         ST_DWithin(
             "hexmap300"."geom"::geography,
@@ -274,100 +193,21 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_350(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap350"."hexid", ST_AsText("hexmap350"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap350"
-	ON ST_Intersects("trees".location,"hexmap350".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap350"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            2100
-        )
-    GROUP BY "hexmap350"."geom", "hexmap350"."hexid";
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION get_trees_on_hex_400(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap400"."hexid", ST_AsText("hexmap400"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap400"
-	ON ST_Intersects("trees".location,"hexmap400".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap400"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            2800
-        )
-    GROUP BY "hexmap400"."geom", "hexmap400"."hexid";
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION get_trees_on_hex_450(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap450"."hexid", ST_AsText("hexmap450"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap450"
-	ON ST_Intersects("trees".location,"hexmap450".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap450"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            3600
-        )
-    GROUP BY "hexmap450"."geom", "hexmap450"."hexid";
-END;
-$$;
-
 CREATE OR REPLACE FUNCTION get_trees_on_hex_500(
     IN p_longitude DECIMAL,
     IN p_latitude DECIMAL
 )
 RETURNS table (
     hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
+    treecount BIGINT,
+    geom TEXT
 )
 LANGUAGE plpgsql
 as $$
 BEGIN
     RETURN QUERY
-    SELECT "hexmap500"."hexid", ST_AsText("hexmap500"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap500"
-	ON ST_Intersects("trees".location,"hexmap500".geom)
+    SELECT "hexmap500"."hexid", "hexmap500"."treecount", ST_AsText("hexmap500"."geom")
+    FROM "hexmap500"
     WHERE
         ST_DWithin(
             "hexmap500"."geom"::geography,
@@ -375,57 +215,5 @@ BEGIN
             4000
         )
     GROUP BY "hexmap500"."geom", "hexmap500"."hexid";
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION get_trees_on_hex_550(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap550"."hexid", ST_AsText("hexmap550"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap550"
-	ON ST_Intersects("trees".location,"hexmap550".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap550"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            4400
-        )
-    GROUP BY "hexmap550"."geom", "hexmap550"."hexid";
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION get_trees_on_hex_600(
-    IN p_longitude DECIMAL,
-    IN p_latitude DECIMAL
-)
-RETURNS table (
-    hexid VARCHAR(16),
-    geom TEXT,
-    c BIGINT
-)
-LANGUAGE plpgsql
-as $$
-BEGIN
-    RETURN QUERY
-    SELECT "hexmap600"."hexid", ST_AsText("hexmap600"."geom"), COUNT("trees"."treeId") as c
-    FROM "trees" join "hexmap600"
-	ON ST_Intersects("trees".location,"hexmap600".geom)
-    WHERE
-        ST_DWithin(
-            "hexmap600"."geom"::geography,
-            ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            4800
-        )
-    GROUP BY "hexmap600"."geom", "hexmap600"."hexid";
 END;
 $$;
