@@ -132,9 +132,9 @@ class TreesController {
             }
             let return_processed = [];
             for (let row of result) {
-                if (row.treecount == 0) {
-                    continue;
-                }
+                // if (row.treecount == 0) {
+                //     continue;
+                // }
                 let hexagon_processed = [];
                 const hexagons_raw = row.geom.slice(9,-2);
                 const hexagons_array = hexagons_raw.split(',');
@@ -149,6 +149,7 @@ class TreesController {
                     count: parseInt(row.treecount)
                 })
             }
+            console.log(return_processed.length)
             res.status(200).json(return_processed);
         } catch (error) {
             res.status(500).json(error);
