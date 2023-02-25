@@ -102,8 +102,8 @@ BEGIN
 
     CREATE INDEX sidx_hx_tmp_geom ON hx_tmp USING GIST (geom);
     EXECUTE 'DROP TABLE IF EXISTS '|| p_table;
-    EXECUTE 'CREATE TABLE '|| p_table ||' (geom GEOMETRY(POLYGON, 4326), hexid VARCHAR(16), treecount BIGINT, cities TEXT, PRIMARY KEY(hexid))';
-    EXECUTE 'INSERT INTO '|| p_table ||' SELECT ST_Transform(geom,4326), hexid, 0, text FROM hx_tmp GROUP BY geom, hexid, text';
+    EXECUTE 'CREATE TABLE '|| p_table ||' (geom GEOMETRY(POLYGON, 4326) UNIQUE NOT NULL, hexid VARCHAR(16), treecount BIGINT, cities TEXT, PRIMARY KEY(hexid))';
+    EXECUTE 'INSERT INTO '|| p_table ||' SELECT ST_Transform(geom,4326), hexid, 0, text FROM hx_tmp GROUP BY geom, hexid, text ON CONFLICT DO NOTHING';
     EXECUTE 'CREATE INDEX sidx_'|| p_table ||'_geom ON '|| p_table ||' USING GIST (geom)';
     DROP TABLE IF EXISTS hx_tmp;
 END;
