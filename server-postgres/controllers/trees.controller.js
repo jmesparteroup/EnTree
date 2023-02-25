@@ -135,6 +135,7 @@ class TreesController {
                 // if (row.treecount == 0) {
                 //     continue;
                 // }
+                let cities = row.cities.replace(/,*$/, '')
                 let hexagon_processed = [];
                 const hexagons_raw = row.geom.slice(9,-2);
                 const hexagons_array = hexagons_raw.split(',');
@@ -146,7 +147,8 @@ class TreesController {
                 return_processed.push({
                     hexId: row.hexid,
                     hexagon: hexagon_processed,
-                    count: parseInt(row.treecount)
+                    count: parseInt(row.treecount),
+                    cities: cities.split(',')
                 })
             }
             console.log(return_processed.length)
