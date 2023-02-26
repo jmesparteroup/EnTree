@@ -26,7 +26,6 @@ class TreesRepository {
           tree.location,
           tree.userId,
         ]);
-        console.log(tree.location);
         const result_two = await conn.query(`CALL update_hex_add_trees($1, $2)`, [
           tree.longitude,
           tree.latitude

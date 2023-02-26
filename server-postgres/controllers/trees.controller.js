@@ -10,7 +10,6 @@ class TreesController {
             let trees = req.body.map(tree => {
                 return new this.TreeModel(tree);
             });
-            console.log(trees)
             const result = await this.TreesRepository.createTree(trees);
             res.status(200).json(result);
         } catch (error) {
@@ -137,7 +136,7 @@ class TreesController {
                 if (row.treecount == 0) {
                     continue;
                 }
-                
+
                 let cities = row.cities.replace(/,*$/, '')
                 let hexagon_processed = [];
                 const hexagons_raw = row.geom.slice(9,-2);
