@@ -1,13 +1,7 @@
 import create from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 
-// polygons => [polygon]
 
-// polygon: {
-//   city: String,
-//   polygon: Array,
-//   trees: Array,
-// }
 
 const useCityStore = create(
   subscribeWithSelector((set) => ({

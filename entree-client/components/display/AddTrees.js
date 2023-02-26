@@ -4,28 +4,9 @@ import {
   MinusCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
 import Container from "../layout/Container";
 import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 
-// example tree array
-const trees = [
-  {
-    description: "This is a tree",
-    latitude: 14.555,
-    longitude: 121.055,
-  },
-  {
-    description: "This is another tree",
-    latitude: 14.555,
-    longitude: 121.055,
-  },
-  {
-    description: "This is a third tree",
-    latitude: 14.555,
-    longitude: 121.055,
-  },
-];
 
 export default function AddTrees({ className, useNewTreesStore, TreeService }) {
   const newTrees = useNewTreesStore((state) => state.newTrees);
