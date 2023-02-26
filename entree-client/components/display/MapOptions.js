@@ -6,6 +6,7 @@ import Container from "../layout/Container";
 import MAP_CONFIG from "../../constants/map";
 
 const MAP_SELECTIONS = [
+  { name: "Show Number of Trees", value: "showLabels" },
   { name: "Show All Cities", value: "showAll" },
   { name: "Show Select Cities", value: "showSelect" },
 ];
@@ -18,6 +19,9 @@ export default function MapOptions({ className }) {
     (state) => state.setOpenMapOptions
   );
 
+  const showLabels = useMapOptionsStore((state) => state.showLabels);
+  const setShowLabels = useMapOptionsStore((state) => state.setShowLabels);
+
   const mapOptions = useMapOptionsStore((state) => state.mapOptions);
   const setMapOptions = useMapOptionsStore((state) => state.setMapOptions);
   const selectCities = useMapOptionsStore((state) => state.selectCities);
@@ -27,6 +31,7 @@ export default function MapOptions({ className }) {
   // checkbox handler
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
+
     if (name === "showAll") {
       setMapOptions({
         showAll: checked,
@@ -37,6 +42,8 @@ export default function MapOptions({ className }) {
         showAll: !checked,
         showSelect: checked,
       });
+    } else if (name === "showLabels") {
+      setShowLabels(checked);
     }
     // log mapOptions
     console.log(mapOptions);
@@ -97,7 +104,7 @@ export default function MapOptions({ className }) {
                     type="checkbox"
                     className="w-4 h-4 hover:scale-125 cursor-pointer transition duration-150"
                     name={option.value}
-                    checked={mapOptions[option.value]}
+                    checked={option.value === "showLabels" ? showLabels : mapOptions[option.value]}
                     onChange={handleCheckboxChange}
                   />
                 </div>

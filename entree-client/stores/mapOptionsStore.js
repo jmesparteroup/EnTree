@@ -30,6 +30,13 @@ const useMapOptionsStore = create(
       showAll: true,
       showSelect: false,
     },
+    showLabels: true,
+    showZeroTreeHexagons: false,
+
+    setShowLabels: (showLabels) => {
+      set((state) => ({ showLabels: showLabels }));
+    },
+
     setMapOptions: (options) => {
       set((state) => ({ mapOptions: options }));
     },

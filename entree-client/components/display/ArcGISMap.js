@@ -223,7 +223,7 @@ export default function EntreeMap({
     setMessage("Hexagons Loaded");
   };
 
-  const renderTrees = (view, trees) => {
+  const renderTrees = (graphicsLayer, trees) => {
     trees?.forEach((tree) => {
       // POINT(121.083367 14.592321) -> [121.083367, 14.592321]
       const [lng, lat] = tree.location
@@ -244,13 +244,13 @@ export default function EntreeMap({
         symbol: pointSymbol,
       });
 
-      view.graphics.add(graphic);
+      graphicsLayer.add(graphic);
     });
 
     setTreesRendered(trees?.length);
   };
 
-  const addLabels = (view, graphic, label) => {
+  const addLabels = (labelLayer, graphic, label) => {
     const textSymbol = {
       type: "text", // autocasts as new TextSymbol()
       color: "black",
@@ -271,7 +271,7 @@ export default function EntreeMap({
       symbol: textSymbol,
     });
 
-    view.graphics.add(textGraphic);
+    labelLayer.add(textGraphic);
   };
 
   const renderNewTrees = (view, state, newTreesLayer) => {
@@ -300,13 +300,13 @@ export default function EntreeMap({
 
         // return graphic;
       });
-      console.log("New Trees Layer added to map", view.graphics);
+      console.log("New Trees Layer added to map", graphicsLayer);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const renderPolygons = (view, state, showFull) => {
+  const renderPolygons = (graphicsLayer, state, showFull, labelLayer) => {
     // Get polygon color
     setTreesRendered(-1);
 
@@ -335,13 +335,20 @@ export default function EntreeMap({
           geometry: polygon,
           symbol: simpleFillSymbol,
         });
-        view.graphics.add(graphic);
-        addLabels(view, graphic, cityData.trees);
+        graphicsLayer.add(graphic);
+        if (showFull) addLabels(labelLayer, graphic, cityData.trees);
       });
     });
   };
 
-  const renderHexagons = (view, hexagons, zoom, state) => {
+  const renderHexagons = (
+    graphicsLayer,
+    hexagons,
+    zoom,
+    state,
+    labelLayer,
+    zeroTreesLayer
+  ) => {
     setTreesRendered(-1);
     // CURRENTLY IMPLEMENTED: show hexagons
     hexagons[zoom]?.map((hexagon) => {
@@ -369,9 +376,12 @@ export default function EntreeMap({
         symbol: simpleFillSymbol,
       });
       // add a text symbol to the center of the hexagon
-
-      view.graphics.add(graphic);
-      addLabels(view, graphic, hexagon.count);
+      if (hexagon.count === 0) {
+        zeroTreesLayer.add(graphic);
+      } else {
+        graphicsLayer.add(graphic);
+        addLabels(labelLayer, graphic, hexagon.count);
+      }
     });
   };
 
@@ -415,9 +425,30 @@ export default function EntreeMap({
       },
     });
 
+    // graphic layer for most
+    const graphicsLayer = new GraphicsLayer({ id: "graphicsLayer" });
+    map.add(graphicsLayer);
+
     // create a new layer for the new trees
-    const newTreesLayer = new GraphicsLayer();
+    const newTreesLayer = new GraphicsLayer({ id: "newTreesLayer" });
     map.add(newTreesLayer);
+
+    const labelLayer = new GraphicsLayer({ id: "labelLayer" });
+    map.add(labelLayer);
+
+    // create a new layer for 0 tree hexagons
+    const zeroTreesLayer = new GraphicsLayer({ id: "zeroTreesLayer" });
+    map.add(zeroTreesLayer);
+
+    const showLabelsSubscription = useMapOptionsStore.subscribe(
+      (state) => state.showLabels,
+      () => {
+        // log
+        console.log("Show Labels Changed");
+        const showLabels = useMapOptionsStore.getState().showLabels;
+        labelLayer.visible = showLabels;
+      }
+    );
 
     const mapOptionsSubscription = useMapOptionsStore.subscribe(
       (state) => state.mapOptions || state.selectCities,
@@ -425,22 +456,25 @@ export default function EntreeMap({
         // log
         console.log("Map Options Changed");
         localMapState.mapOptions = useMapOptionsStore.getState().mapOptions;
-        view.graphics.removeAll();
+        labelLayer.removeAll();
+        graphicsLayer.removeAll();
         // if zoom is in the hexagon range, render hexagons
         if (
           view.zoom < MAP_CONFIG.POINT_ZOOM_LEVEL &&
           view.zoom > MAP_CONFIG.POLYGON_ZOOM_LEVEL
         ) {
           renderHexagons(
-            view,
+            graphicsLayer,
             localMapState.renderedHexagons,
             localMapState.zoomLevel,
-            localMapState
+            localMapState,
+            labelLayer,
+            zeroTreesLayer
           );
-          renderPolygons(view, localMapState, false);
+          renderPolygons(graphicsLayer, localMapState, false, labelLayer);
         }
         if (view.zoom < MAP_CONFIG.POLYGON_ZOOM_LEVEL) {
-          renderPolygons(view, localMapState, true);
+          renderPolygons(graphicsLayer, localMapState, true, labelLayer);
         }
       }
     );
@@ -450,21 +484,24 @@ export default function EntreeMap({
       () => {
         console.log("Select Cities Changed");
         localMapState.selectCities = useMapOptionsStore.getState().selectCities;
-        view.graphics.removeAll();
+        labelLayer.removeAll();
+        graphicsLayer.removeAll();
         if (
           view.zoom < MAP_CONFIG.POINT_ZOOM_LEVEL &&
           view.zoom > MAP_CONFIG.POLYGON_ZOOM_LEVEL
         ) {
           renderHexagons(
-            view,
+            graphicsLayer,
             localMapState.renderedHexagons,
             localMapState.zoomLevel,
-            localMapState
+            localMapState,
+            labelLayer,
+            zeroTreesLayer
           );
-          renderPolygons(view, localMapState, false);
+          renderPolygons(graphicsLayer, localMapState, false, labelLayer);
         }
         if (view.zoom < MAP_CONFIG.POLYGON_ZOOM_LEVEL) {
-          renderPolygons(view, localMapState, true);
+          renderPolygons(graphicsLayer, localMapState, true, labelLayer);
         }
       }
     );
@@ -587,7 +624,7 @@ export default function EntreeMap({
           ) {
             localMapState.viewCenter = [longitude, latitude];
             await getTrees(latitude, longitude, localMapState.trees);
-            renderTrees(view, localMapState.trees);
+            renderTrees(graphicsLayer, localMapState.trees);
             transferRenderedTrees();
             clearTrees();
           }
@@ -606,13 +643,15 @@ export default function EntreeMap({
             localMapState.viewCenter = [longitude, latitude];
             await getHexagons(view.zoom, latitude, longitude, [
               ...localMapState.renderedHexagons[view.zoom],
-              localMapState.hexagons[view.zoom],
+              ...localMapState.hexagons[view.zoom],
             ]);
             renderHexagons(
-              view,
+              graphicsLayer,
               localMapState.hexagons,
               view.zoom,
-              localMapState
+              localMapState,
+              labelLayer,
+              zeroTreesLayer
             );
             transferRenderedHexagons(view.zoom);
             clearHexagons(view.zoom);
@@ -632,15 +671,16 @@ export default function EntreeMap({
         if (view.zoom >= 18) {
           // IF PREVIOUS ZOOM LEVEL IS BELOW 18 CLEAR GRAPHICS
           if (localMapState.zoomLevel < MAP_CONFIG.POINT_ZOOM_LEVEL) {
-            view.graphics.removeAll();
+            labelLayer.removeAll();
+            graphicsLayer.removeAll();
             localMapState.zoomLevel = view.zoom;
           }
 
           if (localMapState.treesRendered === -1) {
             localMapState.viewCenter = [longitude, latitude];
             await getTrees(latitude, longitude, localMapState.trees);
-            renderTrees(view, localMapState.trees);
-            renderTrees(view, localMapState.renderedTrees);
+            renderTrees(graphicsLayer, localMapState.trees);
+            renderTrees(graphicsLayer, localMapState.renderedTrees);
             clearTrees();
           }
         }
@@ -655,28 +695,34 @@ export default function EntreeMap({
             localMapState.zoomLevel !== view.zoom ||
             localMapState.firstLoad
           ) {
-            view.graphics.removeAll();
+            labelLayer.removeAll();
+            graphicsLayer.removeAll();
             localMapState.zoomLevel = view.zoom;
             await getHexagons(view.zoom, latitude, longitude, [
               ...localMapState.renderedHexagons[view.zoom],
-              localMapState.hexagons[view.zoom],
+              ...localMapState.hexagons[view.zoom],
             ]);
 
             renderHexagons(
-              view,
+              graphicsLayer,
               localMapState.hexagons,
               view.zoom,
-              localMapState
+              localMapState,
+              labelLayer,
+              zeroTreesLayer
             );
+
             renderHexagons(
-              view,
+              graphicsLayer,
               localMapState.renderedHexagons,
               view.zoom,
-              localMapState
+              localMapState,
+              labelLayer,
+              zeroTreesLayer
             );
             transferRenderedHexagons(view.zoom);
             clearHexagons(view.zoom);
-            renderPolygons(view, localMapState, false);
+            renderPolygons(graphicsLayer, localMapState, false, labelLayer);
 
             localMapState.firstLoad = false;
           }
@@ -684,15 +730,30 @@ export default function EntreeMap({
         if (view.zoom <= MAP_CONFIG.POLYGON_ZOOM_LEVEL) {
           localMapState.zoomLevel = view.zoom;
           await getCityPolygons();
-          view.graphics.removeAll();
+          labelLayer.removeAll();
+          graphicsLayer.removeAll();
           console.log("Rendering Cities");
           console.log("Cities", localMapState.cities);
 
-          renderPolygons(view, localMapState, true);
+          renderPolygons(graphicsLayer, localMapState, true, labelLayer);
         }
         // always render new trees
       }
     );
+
+    zeroTreesLayer.visible = false;
+
+    // move label layer to the top
+    console.log("Map layers Pre Reordering", map.layers);
+    let ind = map.layers.findIndex((layer) => {
+      return layer.id === "labelLayer";
+    });
+    map.layers.reorder(map.layers.getItemAt(ind), map.layers.length - 1);
+    ind = map.layers.findIndex((layer) => {
+      return layer.id === "newTreesLayer";
+    });
+    map.layers.reorder(map.layers.getItemAt(ind), map.layers.length - 2);
+    console.log("Map layers Post Reordering", map.layers);
 
     return () => {
       if (view) {
@@ -708,6 +769,7 @@ export default function EntreeMap({
         baseMapSubscription();
         mapOptionsSubscription();
         selectCitiesSubscription();
+        showLabelsSubscription();
       }
     };
   }, []);
