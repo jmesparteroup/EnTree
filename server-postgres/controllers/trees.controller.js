@@ -133,9 +133,9 @@ class TreesController {
             let return_processed = [];
             for (let row of result) {
                 // Comment/uncomment to disable/enable zero-tree hexagons
-                // if (row.treecount == 0) {
-                //     continue;
-                // }
+                if (row.treecount == 0) {
+                    continue;
+                }
                 let cities = row.cities.replace(/,*$/, '')
                 let hexagon_processed = [];
                 const hexagons_raw = row.geom.slice(9,-2);
