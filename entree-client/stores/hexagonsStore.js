@@ -9,6 +9,7 @@ const useHexagonsStore = create(
       15: [],
       16: [],
       17: [],
+      18: [],
     },
     renderedHexagons: {
       13: [],
@@ -16,6 +17,7 @@ const useHexagonsStore = create(
       15: [],
       16: [],
       17: [],
+      18: [],
     },
     addHexagons: (hexagons, zoom) =>
       set((state) => ({
@@ -32,11 +34,11 @@ const useHexagonsStore = create(
           [zoom]: [],
         },
       })),
-    transferRenderedHexagons: (zoom) =>
+    transferRenderedHexagons: (zoom, hexagons) =>
       set((state) => ({
         renderedHexagons: {
           ...state.renderedHexagons,
-          [zoom]: [...state.hexagons[zoom], ...state.renderedHexagons[zoom]],
+          [zoom]: [ ...hexagons, ...state.renderedHexagons[zoom]],
         },
       })),
     retransferRenderedHexagons: (zoom) =>

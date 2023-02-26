@@ -653,7 +653,7 @@ export default function EntreeMap({
               labelLayer,
               zeroTreesLayer
             );
-            transferRenderedHexagons(view.zoom);
+            transferRenderedHexagons(view.zoom, view.zoom > 17 ? [] : localMapState.hexagons[view.zoom]);
             clearHexagons(view.zoom);
           }
         }
@@ -720,7 +720,7 @@ export default function EntreeMap({
               labelLayer,
               zeroTreesLayer
             );
-            transferRenderedHexagons(view.zoom);
+            transferRenderedHexagons(view.zoom, view.zoom > 17 ? [] : localMapState.hexagons[view.zoom]);
             clearHexagons(view.zoom);
             renderPolygons(graphicsLayer, localMapState, false, labelLayer);
 
