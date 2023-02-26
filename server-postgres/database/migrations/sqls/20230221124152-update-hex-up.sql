@@ -1,9 +1,9 @@
-CALL tile_map('hexmap50', 50);
+CALL tile_map('hexmap100', 100);
 CALL tile_map('hexmap150', 150);
 CALL tile_map('hexmap300', 300);
 CALL tile_map('hexmap500', 500);
 
-CREATE OR REPLACE FUNCTION get_trees_on_hex_50(
+CREATE OR REPLACE FUNCTION get_trees_on_hex_100(
     IN p_longitude DECIMAL,
     IN p_latitude DECIMAL
 )
@@ -17,15 +17,15 @@ LANGUAGE plpgsql
 as $$
 BEGIN
     RETURN QUERY
-    SELECT "hexmap50"."hexid", "hexmap50"."treecount", ST_AsText("hexmap50"."geom"), "hexmap50"."cities"
-    FROM "hexmap50"
+    SELECT "hexmap100"."hexid", "hexmap100"."treecount", ST_AsText("hexmap100"."geom"), "hexmap100"."cities"
+    FROM "hexmap100"
     WHERE
         ST_DWithin(
-            "hexmap50"."geom"::geography,
+            "hexmap100"."geom"::geography,
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326)::geography,
-            500
+            700
         )
-    GROUP BY "hexmap50"."geom", "hexmap50"."hexid";
+    GROUP BY "hexmap100"."geom", "hexmap100"."hexid";
 END;
 $$;
 
@@ -107,14 +107,14 @@ BEGIN
 END;
 $$;
 
--- 59, 150, 300, 500
-UPDATE "hexmap50" as "h"
+-- 100, 150, 300, 500
+UPDATE "hexmap100" as "h"
 SET "treecount" = temp.c
 FROM (
-	SELECT "hexmap50"."hexid", COUNT("trees"."treeId") as c
-	FROM "hexmap50" JOIN "trees"
-	ON ST_Intersects("trees"."location", "hexmap50"."geom")
-	GROUP BY "hexmap50"."geom", "hexmap50"."hexid"
+	SELECT "hexmap100"."hexid", COUNT("trees"."treeId") as c
+	FROM "hexmap100" JOIN "trees"
+	ON ST_Intersects("trees"."location", "hexmap100"."geom")
+	GROUP BY "hexmap100"."geom", "hexmap100"."hexid"
 ) as temp
 WHERE "h"."hexid" = "temp"."hexid";
 
@@ -154,11 +154,11 @@ CREATE OR REPLACE PROCEDURE updatehex(
 LANGUAGE plpgsql
 as $$
 BEGIN
-	UPDATE "hexmap50"
-	SET "cities" = CONCAT("hexmap50"."cities","cityPolygons"."cityName",',')
+	UPDATE "hexmap100"
+	SET "cities" = CONCAT("hexmap100"."cities","cityPolygons"."cityName",',')
 	FROM "cityPolygons"
 	WHERE "cityPolygons"."cityName" = p_city
-	AND ST_Intersects("cityPolygons"."polygon", "hexmap50"."geom");
+	AND ST_Intersects("cityPolygons"."polygon", "hexmap100"."geom");
 	
 	UPDATE "hexmap150"
 	SET "cities" = CONCAT("hexmap150"."cities","cityPolygons"."cityName",',')

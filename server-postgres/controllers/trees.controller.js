@@ -118,7 +118,7 @@ class TreesController {
             }
             let result;
             if (zoomLevel >= 17) {
-                result = await this.TreesRepository.getTreeByHex(50, latitude, longitude);
+                result = await this.TreesRepository.getTreeByHex(100, latitude, longitude);
             } else if (zoomLevel == 16) {
                 result = await this.TreesRepository.getTreeByHex(150, latitude, longitude);
             } else if (zoomLevel == 15) {
@@ -132,6 +132,7 @@ class TreesController {
             }
             let return_processed = [];
             for (let row of result) {
+                // Comment/uncomment to disable/enable zero-tree hexagons
                 // if (row.treecount == 0) {
                 //     continue;
                 // }
