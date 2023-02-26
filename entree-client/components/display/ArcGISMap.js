@@ -37,20 +37,13 @@ import MAP_CONFIG from "../../constants/map";
 // color should be an array of 4 values: [r, g, b, a] lighter for lower values, darker for higher values
 
 const COLOR_CODE_HEATMAPS = {
-  // hexagons: [
-  //   [10, [135, 212, 107, 0.85]],
-  //   [200, [108, 202, 74, 0.85]],
-  //   [500, [89, 186, 54, 0.85]],
-  //   [1000, [83, 172, 50, 0.85]],
-  //   [50000, [74, 154, 45, 0.85]],
-  // ],
   hexagons: [
-    [0, [237, 248, 233, 0.4]],
-    [10, [237, 248, 233, 0.85]],
-    [200, [186, 228, 179, 0.85]],
-    [500, [116, 196, 118, 0.85]],
-    [1000, [49, 163, 84, 0.85]],
-    [50000, [0, 109, 44, 0.85]],
+    [0, [237, 248, 233, 0.2]],
+    [10, [237, 248, 233, 0.65]],
+    [200, [186, 228, 179, 0.65]],
+    [500, [116, 196, 118, 0.65]],
+    [1000, [49, 163, 84, 0.65]],
+    [50000, [0, 109, 44, 0.65]],
   ],
   polygons: [
     [10, [135, 212, 107, 0.5]],
@@ -92,7 +85,7 @@ const createPolygon = (polygonData, color, borderOnly) => {
     color: color,
     outline: borderOnly
       ? {
-          color: [255, 255, 255], // White
+          color: [255, 255, 255, 0.8], // White
           width: 1,
         }
       : {
@@ -220,7 +213,7 @@ export default function EntreeMap({
       console.log("Hexagons:", hexagons);
       console.log("Length of Hexagons Before:", data?.length);
       const newHexagons = data.filter((hexagon) => {
-        return !hexagons[zoom].some((h) => h.hexId === hexagon.hexId);
+        return !hexagons.some((h) => h.hexId === hexagon.hexId);
       });
       console.log("Length of Hexagons After:", data?.length);
 
@@ -611,12 +604,10 @@ export default function EntreeMap({
             200 * 2 ** (18 - view.zoom) // 200 meters at zoom 18, 400 meters at zoom 17, 800 meters at zoom 16, etc.
           ) {
             localMapState.viewCenter = [longitude, latitude];
-            await getHexagons(
-              view.zoom,
-              latitude,
-              longitude,
-              localMapState.renderedHexagons
-            );
+            await getHexagons(view.zoom, latitude, longitude, [
+              ...localMapState.renderedHexagons[view.zoom],
+              localMapState.hexagons[view.zoom],
+            ]);
             renderHexagons(
               view,
               localMapState.hexagons,
@@ -666,12 +657,10 @@ export default function EntreeMap({
           ) {
             view.graphics.removeAll();
             localMapState.zoomLevel = view.zoom;
-            await getHexagons(
-              view.zoom,
-              latitude,
-              longitude,
-              localMapState.hexagons
-            );
+            await getHexagons(view.zoom, latitude, longitude, [
+              ...localMapState.renderedHexagons[view.zoom],
+              localMapState.hexagons[view.zoom],
+            ]);
 
             renderHexagons(
               view,
