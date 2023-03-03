@@ -13,6 +13,10 @@ export default function AddTrees({ className, useNewTreesStore, TreeService }) {
   const addNewTree = useNewTreesStore((state) => state.addNewTree);
   const removeNewTree = useNewTreesStore((state) => state.removeNewTree);
   const clearNewTrees = useNewTreesStore((state) => state.clearNewTrees);
+  const highlightedIndex = useNewTreesStore(
+    (state) => state.highlightedIndex
+  );
+  
 
   const openAddTrees = useOpenAddTreesStore((state) => state.openAddTrees);
   const setOpenAddTrees = useOpenAddTreesStore((state) => state.setOpenAddTrees);
@@ -108,7 +112,10 @@ export default function AddTrees({ className, useNewTreesStore, TreeService }) {
           <div className="w-full h-full flex-col items-center bg-transparent rounded-lg overflow-x-hidden scroll-smooth">
             {newTrees.map((tree, index) => (
               <div
-                className="flex h-8 w-full"
+                className={`flex h-8 w-full ${
+                  highlightedIndex === index &&
+                  "bg-gray-100 border-b-[1px]"
+                }`}
                 key={`${index}${tree.latitude}${tree.longitude}`}
               >
                 {/* index */}

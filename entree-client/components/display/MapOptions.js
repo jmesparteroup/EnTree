@@ -3,6 +3,7 @@ import useMapOptionsStore from "../../stores/mapOptionsStore";
 import useOpenMapOptionsStore from "../../stores/openMapOptionsStore";
 import Container from "../layout/Container";
 
+
 import MAP_CONFIG from "../../constants/map";
 
 const MAP_SELECTIONS = [
@@ -77,7 +78,7 @@ export default function MapOptions({ className }) {
       </Container>
       {openMapOptions ? (
         <Container
-          className={`w-[max(30vh,100px)] h-[25vh] absolute right-2 top-[25%] bottom-0 rounded-lg bg-white opacity-90 flex flex-col p-4 items-center text-gray-800 shadow-2xl`}
+          className={`w-[258px] h-[25vh] absolute right-2 bottom-[25%] rounded-lg bg-white opacity-90 flex flex-col p-4 items-center text-gray-800 shadow-2xl`}
         >
           {/* scrollable div that shows clicked items */}
           <div className="text-lg border-b-[1px] w-full mx-4 text-center font-bold">

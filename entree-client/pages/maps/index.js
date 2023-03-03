@@ -13,6 +13,7 @@ import AddTrees from "../../components/display/AddTrees";
 import Notification from "../../components/display/Notification";
 import useBaseMapStore from "../../stores/basemapStore";
 import MapOptions from "../../components/display/MapOptions";
+import SelectedTree from "../../components/display/SelectedTreeDialogue";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -29,6 +30,7 @@ const BASEMAPS = {
 export default function Maps() {
   const setBaseMap = useBaseMapStore((state) => state.setBaseMap);
   const baseMapKey = useBaseMapStore((state) => state.baseMapKey);
+
 
   return (
     <div className="h-[calc(100vh-4rem)] flex overflow-hidden">
@@ -59,10 +61,12 @@ export default function Maps() {
           useNewTreesStore={useNewTreesStore}
           TreeService={TreeService}
         />
+        <SelectedTree/>
       </Container>
       {/* Notification popup on the lower right */}
       <Notification className="absolute right-2 bottom-2" type="success" />
       {/* form for adding new trees */}
+      
     </div>
   );
 }

@@ -11,6 +11,15 @@ function MyApp({ Component, pageProps }) {
   const setUserState = useUserStore((state) => state.setUserState);
 
   useEffect(() => {
+    window.addEventListener(
+      "touchmove",
+      function (event) {
+        // Prevent scrolling on this element
+        event.preventDefault();
+      },
+      { passive: false }
+    );
+
     const checkUserCookie = async () => {
       const user = CookieService.getUserCookie();
       if (user) {
