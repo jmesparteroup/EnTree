@@ -66,7 +66,6 @@ class TreesRepository {
 
   async updateTree(id, data) {
     try {
-      console.log("Updating tree!")
       const conn = await this.pool.connect();
       const result = await conn.query("CALL update_tree($1, $2, $3)", [id, data.description, data.flagged]);
       conn.release();
@@ -78,7 +77,11 @@ class TreesRepository {
 
   async deleteTree(id) {
     try {
-      return await this.TreeDB.findByIdAndDelete(id);
+      console.log("Deleting tree", id);
+      const conn = await this.pool.connect();
+      const result = await conn.query("CALL delete_tree($1)", [id]);
+      conn.release();
+      return result.rows[0];
     } catch (error) {
       throw error;
     }

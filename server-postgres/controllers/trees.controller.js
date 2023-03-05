@@ -48,7 +48,7 @@ class TreesController {
     async deleteTree(req, res) {
         try {
             const tree = await this.TreesRepository.deleteTree(req.params.id);
-            res.status(200).json(tree);
+            res.status(200).json({DELETE: "Tree deleted successfully"});
         } catch (error) {
             res.status(500).json(error);
         }
