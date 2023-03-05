@@ -1,86 +1,71 @@
+-- Stored procedure for creating a tree
 CREATE OR REPLACE PROCEDURE create_tree(
     IN p_treeId VARCHAR(16),
     IN p_description VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_location VARCHAR(255),
     IN p_userId VARCHAR(32)
-) language plpgsql as $$ BEGIN
-INSERT INTO
-    trees (
+) LANGUAGE plpgsql AS $$ 
+BEGIN
+    INSERT INTO trees (
         "treeId",
         "description",
         "createdAt",
         "location",
-        "userId"
-    )
-VALUES
-    (
+        "userId",
+        "flagged",
+        "cityName"
+    ) VALUES (
         p_treeId,
         p_description,
         p_createdAt,
         ST_GeomFromText(p_location, 4326), 
-        p_userId
+        p_userId,
+        FALSE,
+        ''
     );
-END;
-$$;
+END; $$;
 
 -- Stored procedure for getting a tree
-CREATE
-OR REPLACE FUNCTION get_tree(
+CREATE OR REPLACE FUNCTION get_tree(
     IN p_treeId VARCHAR(16)
 ) 
 RETURNS setof trees
-language plpgsql 
-as 
-$$ 
+LANGUAGE plpgsql AS $$ 
 BEGIN
     RETURN QUERY
     SELECT *
     FROM trees
     WHERE trees."treeId" = p_treeId;
-END;$$;
-
--- Stored procedure for getting all trees
--- CREATE
--- OR REPLACE PROCEDURE get_all_trees() language plpgsql as $$ BEGIN
--- SELECT
---     *
--- FROM
---     trees;
-
--- END;$$;
+END; $$;
 
 -- Stored procedure for updating a tree
-CREATE
-OR REPLACE PROCEDURE update_tree(
+CREATE OR REPLACE PROCEDURE update_tree(
     IN p_treeId VARCHAR(16),
     IN p_description VARCHAR(255),
     IN p_createdAt BIGINT,
     IN p_location VARCHAR(255),
     IN p_userId VARCHAR(32)
-) language plpgsql as $$ BEGIN
-UPDATE
-    trees
-SET
-    "description" = COALESCE(p_description, "description"),
-    "createdAt" = COALESCE(p_createdAt, "createdAt"),
-    "location" = COALESCE(ST_GeomFromText(p_location, 4326), "location"),
-    "userId" = COALESCE(p_userId, "userId")
-WHERE
-    trees."treeId" = p_treeId;
-END;$$;
+) LANGUAGE plpgsql AS $$ BEGIN
+    UPDATE trees
+    SET
+        "description" = COALESCE(p_description, "description"),
+        "createdAt" = COALESCE(p_createdAt, "createdAt"),
+        "location" = COALESCE(ST_GeomFromText(p_location, 4326), "location"),
+        "userId" = COALESCE(p_userId, "userId")
+    WHERE trees."treeId" = p_treeId;
+END; $$;
 
 -- Stored procedure for deleting a tree
 CREATE
 OR REPLACE PROCEDURE delete_tree(
     IN p_treeId VARCHAR(16)
-) language plpgsql as $$ BEGIN
-DELETE FROM
-    trees
-WHERE
-    trees."treeId" = p_treeId;
-END;
-$$;
+) LANGUAGE plpgsql AS $$ BEGIN
+    DELETE FROM
+        trees
+    WHERE
+        trees."treeId" = p_treeId;
+END; $$;
 
 -- Stored procedure for getting trees by proximity
 CREATE OR REPLACE FUNCTION get_trees_by_proximity(
@@ -89,9 +74,7 @@ CREATE OR REPLACE FUNCTION get_trees_by_proximity(
     IN p_distance INT
 ) 
 RETURNS table (j json)
-LANGUAGE plpgsql 
-as $$ 
-BEGIN
+LANGUAGE plpgsql AS $$ BEGIN
     RETURN QUERY
     SELECT json_agg(json_build_object(        
         'treeId', trees."treeId",
@@ -107,14 +90,11 @@ BEGIN
             ST_SetSRID(ST_MakePoint(p_longitude, p_latitude),4326)::geography,
             p_distance
         );
-END;
-$$;
+END; $$;
 
 CREATE OR REPLACE FUNCTION get_all_trees()
 RETURNS table (j json)
-LANGUAGE plpgsql
-as $$
-BEGIN
+LANGUAGE plpgsql as $$ BEGIN
     RETURN QUERY
     SELECT json_agg(json_build_object(
         'treeId', trees."treeId",
@@ -124,20 +104,16 @@ BEGIN
         'userId', trees."userId"
     )) j 
     FROM trees;
-END;
-$$;
+END; $$;
 
 CREATE OR REPLACE FUNCTION get_trees_by_city(
     IN p_city VARCHAR(255)
 )
 RETURNS table (c BIGINT)
-LANGUAGE plpgsql
-as $$
-BEGIN
+LANGUAGE plpgsql as $$ BEGIN
     RETURN QUERY
     SELECT COUNT(*) as c
     FROM "trees" join "cityPolygons"
 	ON ST_Intersects("trees".location,"cityPolygons".polygon)
     WHERE "cityPolygons"."cityName" = p_city;
-END;
-$$;
+END; $$;

@@ -21,9 +21,10 @@ CREATE TABLE IF NOT EXISTS "trees" (
     "treeId" VARCHAR(16) UNIQUE NOT NULL,
     "description" VARCHAR(255) NOT NULL,
     "createdAt" BIGINT NOT NULL,
-    --   LOCATION POSTGIS POINT
     "location" GEOMETRY(POINT,4326) NOT NULL,
     "userId" VARCHAR(32) NOT NULL,
+    "flagged" BOOLEAN NOT NULL,
+    "cityName" VARCHAR(255) NOT NULL,
     PRIMARY KEY ("treeId")
 );
 
@@ -33,4 +34,13 @@ CREATE TABLE IF NOT EXISTS "cityPolygons" (
     "cityName" VARCHAR(255) NOT NULL,
     "polygon" GEOMETRY(POLYGON,4326) NOT NULL,
     PRIMARY KEY ("cityId")
+);
+
+
+-- TABLE FOR USER FLAGS
+CREATE TABLE IF NOT EXISTS "flags" (
+    "flagId" VARCHAR(16) UNIQUE NOT NULL,
+    "userId" VARCHAR(16) NOT NULL,
+    "treeId" VARCHAR(16) NOT NULL,
+    PRIMARY KEY ("flagId")
 );
