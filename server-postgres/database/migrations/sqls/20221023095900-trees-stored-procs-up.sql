@@ -1,3 +1,34 @@
+CREATE OR REPLACE PROCEDURE update_city_of_tree(
+    IN p_treeId VARCHAR(16)
+) LANGUAGE plpgsql as $$
+BEGIN
+    UPDATE "trees"
+    SET "cityName" = temp."cityName"
+    FROM (
+        SELECT "cityPolygons"."cityName"
+        FROM "trees" join "cityPolygons"
+        ON ST_Intersects("trees"."location", "cityPolygons"."polygon")
+        WHERE "trees"."treeId" = p_treeId
+    ) as temp
+    WHERE "trees"."treeId" = p_treeId;
+END; $$;
+
+CREATE OR REPLACE PROCEDURE update_city_of_trees()
+LANGUAGE plpgsql as $$
+DECLARE 
+	_cursor CURSOR FOR SELECT "treeId" FROM "trees";
+	_tempid	VARCHAR(16);
+BEGIN
+	OPEN _cursor;
+	LOOP
+	FETCH _cursor INTO _tempid;
+	EXIT WHEN NOT FOUND;
+	
+	CALL update_city_of_tree(_tempid);
+	END LOOP;
+	CLOSE _cursor;
+END; $$;
+
 -- Stored procedure for creating a tree
 CREATE OR REPLACE PROCEDURE create_tree(
     IN p_treeId VARCHAR(16),
@@ -24,6 +55,8 @@ BEGIN
         FALSE,
         ''
     );
+
+    CALL update_city_of_tree(p_treeId);
 END; $$;
 
 -- Stored procedure for getting a tree
@@ -101,7 +134,8 @@ LANGUAGE plpgsql as $$ BEGIN
         'description', trees."description",
         'createdAt', trees."createdAt",
         'location', ST_AsText(trees."location"),
-        'userId', trees."userId"
+        'userId', trees."userId",
+        'cityName', trees."cityName"
     )) j 
     FROM trees;
 END; $$;

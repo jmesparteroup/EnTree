@@ -32,3 +32,6 @@ BEGIN
 	    ST_Intersects("hexmap500"."geom", ST_SetSRID(ST_MakePoint(p_longitude, p_latitude), 4326));
 END;
 $$;
+
+-- Calls stored procedure made earlier that updates cities of all trees
+CALL update_city_of_trees();
