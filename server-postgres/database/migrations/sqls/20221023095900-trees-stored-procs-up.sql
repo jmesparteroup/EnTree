@@ -111,7 +111,9 @@ LANGUAGE plpgsql AS $$ BEGIN
         'description', trees."description",
         'createdAt', trees."createdAt",
         'location', ST_AsText(trees."location"),
-        'userId', trees."userId"
+        'userId', trees."userId",
+        'flagged', trees."flagged",
+        'cityName', trees."cityName"
     )) j
     FROM trees
     WHERE
