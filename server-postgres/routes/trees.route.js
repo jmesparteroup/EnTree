@@ -19,7 +19,7 @@ router.get("/hex", treesController.getTreeByHex.bind(treesController));
 router.get("/:id", treesController.getTreeById.bind(treesController));
 
 router.post("/", treesController.createTree.bind(treesController));
-router.put("/:id", treesController.updateTree.bind(treesController));
+router.patch("/:id", treesController.updateTree.bind(treesController));
 router.delete("/:id", treesController.deleteTree.bind(treesController));
 
 module.exports = router;

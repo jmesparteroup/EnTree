@@ -8,6 +8,7 @@ class Trees {
     this.userId = data?.userId;
     this.longitude = parseFloat(data?.location.split(" ")[0]);
     this.latitude = parseFloat(data?.location.split(" ")[1]);
+    this.flagged = data?.flagged;
   }
 }
  

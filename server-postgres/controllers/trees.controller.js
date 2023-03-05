@@ -36,12 +36,10 @@ class TreesController {
         }
     }
 
-
-
     async updateTree(req, res) {
         try {
             const tree = await this.TreesRepository.updateTree(req.params.id, req.body);
-            res.status(200).json(tree);
+            res.status(200).json(req.body);
         } catch (error) {
             res.status(500).json(error);
         }

@@ -76,16 +76,13 @@ END; $$;
 CREATE OR REPLACE PROCEDURE update_tree(
     IN p_treeId VARCHAR(16),
     IN p_description VARCHAR(255),
-    IN p_createdAt BIGINT,
-    IN p_location VARCHAR(255),
-    IN p_userId VARCHAR(32)
+    IN p_flagged BOOLEAN
 ) LANGUAGE plpgsql AS $$ BEGIN
     UPDATE trees
     SET
         "description" = COALESCE(p_description, "description"),
         "createdAt" = COALESCE(p_createdAt, "createdAt"),
-        "location" = COALESCE(ST_GeomFromText(p_location, 4326), "location"),
-        "userId" = COALESCE(p_userId, "userId")
+        "flagged" = COALESCE(p_flagged, "flagged")
     WHERE trees."treeId" = p_treeId;
 END; $$;
 

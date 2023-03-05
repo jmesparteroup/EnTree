@@ -66,7 +66,11 @@ class TreesRepository {
 
   async updateTree(id, data) {
     try {
-      return await this.TreeDB.findByIdAndUpdate(id, data);
+      console.log("Updating tree!")
+      const conn = await this.pool.connect();
+      const result = await conn.query("CALL update_tree($1, $2, $3)", [id, data.description, data.flagged]);
+      conn.release();
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
