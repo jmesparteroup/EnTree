@@ -56,7 +56,7 @@ class TreesRepository {
   async getTree(id) {
     try {
       const conn = await this.pool.connect();
-      const result = await conn.query("SELECT get_tree($1)", [id]);
+      const result = await conn.query("SELECT * FROM get_tree($1)", [id]);
       conn.release();
       return result.rows[0];
     } catch (error) {
