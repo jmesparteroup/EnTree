@@ -7,13 +7,21 @@ class TreesController {
 
     async createTree(req, res) {
         try {            
-            let trees = req.body.map(tree => {
-                return new this.TreeModel(tree);
-            });
-            const result = await this.TreesRepository.createTree(trees);
-            res.status(200).json(result);
+            console.log("Creating tree");
+            if (!req.user.userId) {
+                throw Error("Invalid user");
+            }
+            let newTrees = req.body.map(tree => {
+                if (!tree.location) throw Error("Empty location data");
+                let newTree = new this.TreeModel(tree);
+                newTree.userId = req.user.userId;
+                return newTree;
+            })
+            const result = await this.TreesRepository.createTree(newTrees);
+            res.status(201).json(req.body);
         } catch (error) {
-            res.status(500).json(error);
+            console.log(error);
+            res.status(400).json({error: error.message});
         }
     }
 
