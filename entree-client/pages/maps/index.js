@@ -2,6 +2,8 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Container from "../../components/layout/Container";
 
+import Head from 'next/head'
+
 import useTreesStore from "../../stores/treesStore";
 import useHexagonsStore from "../../stores/hexagonsStore";
 import useNewTreesStore from "../../stores/newTreesStore";
@@ -33,9 +35,15 @@ const BASEMAPS = {
 export default function Maps() {
   const setBaseMap = useBaseMapStore((state) => state.setBaseMap);
   const baseMapKey = useBaseMapStore((state) => state.baseMapKey);
+  const user = useUserStore((state) => state.userState.user);
 
   return (
     <div className="h-[calc(100vh-4rem)] flex overflow-hidden">
+      <Head>
+        <title>Entree | Maps</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      
       <Container className="w-full h-full rounded-md relative overflow-hidden">
         <div className="h-full w-full">
           <EntreeMapWithNoSSR
@@ -61,7 +69,7 @@ export default function Maps() {
           useUserStore={useUserStore}
         />
         <MapOptions
-          className="bottom-2 left-[80px] absolute"
+          className={`bottom-2 left-${user? "[80px]":"2"} absolute`}
           useNewTreesStore={useNewTreesStore}
           TreeService={TreeService}
         />

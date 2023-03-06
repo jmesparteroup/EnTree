@@ -6,20 +6,23 @@ import {
 } from "@heroicons/react/24/outline";
 import Container from "../layout/Container";
 
-
-
-export default function AddTrees({ className, useNewTreesStore, TreeService, useOpenAddTreesStore, useUserStore }) {
+export default function AddTrees({
+  className,
+  useNewTreesStore,
+  TreeService,
+  useOpenAddTreesStore,
+  useUserStore,
+}) {
   const newTrees = useNewTreesStore((state) => state.newTrees);
   const addNewTree = useNewTreesStore((state) => state.addNewTree);
   const removeNewTree = useNewTreesStore((state) => state.removeNewTree);
   const clearNewTrees = useNewTreesStore((state) => state.clearNewTrees);
-  const highlightedIndex = useNewTreesStore(
-    (state) => state.highlightedIndex
-  );
-  
+  const highlightedIndex = useNewTreesStore((state) => state.highlightedIndex);
 
   const openAddTrees = useOpenAddTreesStore((state) => state.openAddTrees);
-  const setOpenAddTrees = useOpenAddTreesStore((state) => state.setOpenAddTrees);
+  const setOpenAddTrees = useOpenAddTreesStore(
+    (state) => state.setOpenAddTrees
+  );
 
   const loggedInUser = useUserStore((state) => state.userState.user);
 
@@ -49,7 +52,6 @@ export default function AddTrees({ className, useNewTreesStore, TreeService, use
       parsedData.forEach((tree) => {
         if (tree[0].length === 0) return;
         addNewTree({
-          description: "new tree",
           latitude: +tree[1],
           // longitude should cut the \r at the end using regex
           longitude: +tree[2].replace(/\r$/, ""),
@@ -64,24 +66,25 @@ export default function AddTrees({ className, useNewTreesStore, TreeService, use
 
   const submitNewTreesClickHandler = async () => {
     // process new trees
-    
-    const userId = loggedInUser.userId;
+    try {
+      const userId = loggedInUser.userId;
 
-    if (!userId) return;
+      if (!userId) return;
 
-    let formattedNewTrees = newTrees.map((tree) => {
-      return {
-        description: tree.description,
-        location: `${tree.longitude} ${tree.latitude}`,
-        userId
-      };
-    });
-    const response = await TreeService.addTrees(formattedNewTrees);
-    if (response.status === 200) {
-      // clear new trees
-      clearNewTrees();
+      let formattedNewTrees = newTrees.map((tree) => {
+        return {
+          location: `${tree.latitude} ${tree.longitude}`,
+        };
+      });
+      const response = await TreeService.addTrees(formattedNewTrees);
+      if (response.status === 201) {
+        // clear new trees
+        clearNewTrees();
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
-    console.log(response);
   };
 
   return (
@@ -121,8 +124,7 @@ export default function AddTrees({ className, useNewTreesStore, TreeService, use
             {newTrees.map((tree, index) => (
               <div
                 className={`flex h-8 w-full ${
-                  highlightedIndex === index &&
-                  "bg-gray-100 border-b-[1px]"
+                  highlightedIndex === index && "bg-gray-100 border-b-[1px]"
                 }`}
                 key={`${index}${tree.latitude}${tree.longitude}`}
               >

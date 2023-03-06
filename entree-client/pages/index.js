@@ -77,7 +77,7 @@ export default function Home() {
               <Logo size="25px" className="mr-1" />
               <h2 className="text-2xl text-gray 400 font-bold">EnTree</h2>
             </div>
-            <div className="flex flex-col items-center mt-3 w-[80%]">
+            <form className="flex flex-col items-center mt-3 w-[80%]">
               <input
                 className="border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full"
                 type="text"
@@ -111,7 +111,7 @@ export default function Home() {
                   Join us
                 </p>
               </div>
-            </div>
+            </form>
           </div>
         </Container>
       </div>

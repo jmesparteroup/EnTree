@@ -7,13 +7,14 @@ const TreeService = {
     });
     return await res.json();
   },
-  addTrees: async (tree) => {
+  addTrees: async (trees) => {
     return await fetch(`http://localhost:5000/trees/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${cookieService.getUserCookie()}`
       },
-      body: JSON.stringify(tree),
+      body: JSON.stringify(trees)
     });
   },
   getTreesByCity: async (city) => {

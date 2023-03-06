@@ -815,7 +815,6 @@ export default function EntreeMap({
         addNewTree({
           longitude: lng,
           latitude: lat,
-          description: "I am a new tree",
           clientIdentifier: `newTree${Date.now()}`,
         });
       });

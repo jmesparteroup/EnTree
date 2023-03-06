@@ -29,9 +29,9 @@ export default function Navbar() {
                   entree
                 </span>
               </div>
-              <div className="">
-                <HomeIcon className="h-8 w-8 text-gray-200 hover:text-gray-500 pr-4" />
-              </div>
+              <Link href={"/"}>
+                <HomeIcon className="h-8 w-8 text-gray-200 hover:text-gray-500 pr-4 cursor-pointer" />
+              </Link>
               {/* User Info */}
               <div className="flex-grow flex justify-end text-[var(--primary-text-color)]">
                 {/* Username or Login */}

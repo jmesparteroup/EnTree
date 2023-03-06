@@ -83,7 +83,7 @@ export default function Register({
       className={`min-h-[480px] max-w-[450px] min-w-[400px] p-5 lg:w-1/2 border-2 border-gray-100 bg-[color:var(--primary-bg-color)] flex justify-center items-center ${className}`}
     >
       {/* LOGIN */}
-      <div className="flex flex-col items-center w-full">
+      <form className="flex flex-col items-center w-full">
         {/* Entree Logo with Entree */}
         <div className="w-full flex justify-center">
           <Logo size="25px" className="mr-1" />
@@ -106,7 +106,7 @@ export default function Register({
             Register
           </button>
         </div>
-      </div>
+      </form>
     </Container>
   );
 }
