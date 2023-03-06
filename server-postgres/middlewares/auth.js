@@ -12,7 +12,7 @@ const pool = require("../config/database");
 const getUser = async function (userId) {
     try {
         const user = await pool.query(
-            "SELECT * FROM users WHERE user_id = $1",
+            `SELECT * FROM users WHERE "userId" = $1`,
             [userId]
         );
         return user.rows[0];

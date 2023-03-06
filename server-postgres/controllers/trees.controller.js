@@ -47,10 +47,27 @@ class TreesController {
 
     async deleteTree(req, res) {
         try {
-            const tree = await this.TreesRepository.deleteTree(req.params.id);
+            // access currently logged in user
+            const user = req.user;
+            
+            // query for tree
+            const treeQueryResponse = await this.TreesRepository.getTree(req.params.id);
+            const tree = treeQueryResponse.get_tree.json();
+            
+            if (!tree) {
+                throw this.TreeErrorRepository.TreeNotFoundError();
+            }
+
+            // check if tree belongs to user
+            console.log(tree.userId, user.userId);
+            if (tree.userId !== user.userId) {
+                throw this.TreeErrorRepository.Unauthorized("You are not authorized to delete this tree");
+            }
+            
+            const response = await this.TreesRepository.deleteTree(req.params.id);
             res.status(200).json({DELETE: "Tree deleted successfully"});
         } catch (error) {
-            res.status(500).json(error);
+            res.status(error.code).json({error: error.message});
         }
     }
 

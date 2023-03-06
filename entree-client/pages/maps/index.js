@@ -61,7 +61,7 @@ export default function Maps() {
           useNewTreesStore={useNewTreesStore}
           TreeService={TreeService}
         />
-        <SelectedTree/>
+        <SelectedTree TreeService={TreeService}/>
       </Container>
       {/* Notification popup on the lower right */}
       <Notification className="absolute right-2 bottom-2" type="success" />

@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const auth = require('../middlewares/auth');
+
 const pool = require('../config/database');
 
 const Trees = require('../models/trees.model');
@@ -20,6 +22,6 @@ router.get("/:id", treesController.getTreeById.bind(treesController));
 
 router.post("/", treesController.createTree.bind(treesController));
 router.patch("/:id", treesController.updateTree.bind(treesController));
-router.delete("/:id", treesController.deleteTree.bind(treesController));
+router.delete("/:id", auth, treesController.deleteTree.bind(treesController));
 
 module.exports = router;

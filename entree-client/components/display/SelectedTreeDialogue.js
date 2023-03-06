@@ -1,9 +1,30 @@
 import useSelectedTreeStore from "../../stores/selectTreesStore";
 import Container from "../layout/Container";
 
-export default function SelectedTree({ className }) {
+export default function SelectedTree({ className, TreeService }) {
   const selectedTree = useSelectedTreeStore((state) => state.selectedTree);
   // checkbox handler
+
+  // delete tree handler
+  const deleteTreeHandler = async () => {
+    // delete tree
+    try {
+      const res = await TreeService.deleteTree(selectedTree.treeId);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const flagTreeHandler = async () => {
+    // flag tree
+    try {
+      const res = await TreeService.flagTree(selectedTree.treeId);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -20,10 +41,16 @@ export default function SelectedTree({ className }) {
             {/* icon and detail */}
             <div className="mt-2 w-full justify-center items-center">
               <div className="w-full flex justify-center text-center font-semibold">
-                ID: <span className="ml-3 text-lime-600">{selectedTree.treeId}</span>
+                ID:{" "}
+                <span className="ml-3 text-lime-600">
+                  {selectedTree.treeId}
+                </span>
               </div>
               <div className="w-full flex justify-center text-center font-semibold">
-                Uploader : <span className="ml-3 text-lime-600">{selectedTree.userId}</span>
+                Uploader :{" "}
+                <span className="ml-3 text-lime-600">
+                  {selectedTree.userId}
+                </span>
               </div>
               <div className="w-full flex justify-center text-center font-semibold">
                 {/* lat */} Lat:
@@ -35,11 +62,11 @@ export default function SelectedTree({ className }) {
               </div>
               <div className="flex justify-between w-[70%] mx-auto">
                 {/* flag button */}
-                <button className="w-2/5 h-10 rounded-md bg-lime-300 text-gray-800 font-semibold hover:bg-lime-400">
+                <button onClick={flagTreeHandler} className="w-2/5 h-10 rounded-md bg-lime-300 text-gray-800 font-semibold hover:bg-lime-400">
                   Flag
                 </button>
                 {/* delete button */}
-                <button className="w-2/5 h-10 rounded-md bg-lime-300 text-gray-800 font-semibold hover:bg-lime-400">
+                <button onClick={deleteTreeHandler} className="w-2/5 h-10 rounded-md bg-lime-300 text-gray-800 font-semibold hover:bg-lime-400">
                   Delete
                 </button>
               </div>

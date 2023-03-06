@@ -1,3 +1,5 @@
+import cookieService from "./cookieService";
+
 const TreeService = {
   getAllTrees: async () => {
     const res =  await fetch(`http://localhost:5000/trees/`, {
@@ -37,7 +39,21 @@ const TreeService = {
       }
     );
     return await data.json();
+  },
+  deleteTree: async (id) => {
+    return await fetch(`http://localhost:5000/trees/${id}`, {
+      method: "DELETE",
+      headers: {
+        'Authorization': `Bearer ${cookieService.getUserCookie()}`
+      }
+    });
+  },
+  flagTree: async (id) => {
+    return await fetch(`http://localhost:5000/trees/flag/${id}`, {
+      method: "PUT",
+    });
   }
+
 };
 
 export default TreeService;

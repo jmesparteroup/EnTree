@@ -15,6 +15,10 @@ class GlobalError {
         return new CustomError(message, 404);
     }
 
+    static Unauthorized(message) {
+        return new CustomError(message, 401);
+    }
+
 }
 
 module.exports = GlobalError;

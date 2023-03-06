@@ -1,8 +1,7 @@
 class CustomError {
-    constructor(code, message, customCode) {
+    constructor(message, code) {
         this.code = code;
         this.message = message;
-        this.customCode = customCode;
     }
 }
 
