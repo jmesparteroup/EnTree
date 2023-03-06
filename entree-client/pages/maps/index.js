@@ -5,13 +5,16 @@ import Container from "../../components/layout/Container";
 import useTreesStore from "../../stores/treesStore";
 import useHexagonsStore from "../../stores/hexagonsStore";
 import useNewTreesStore from "../../stores/newTreesStore";
+import useBaseMapStore from "../../stores/basemapStore";
+import useOpenAddTreesStore from "../../stores/openAddTreesStore";
+import useUserStore from "../../stores/userStore";
+import useSelectedTreeStore from "../../stores/selectTreesStore";
 
 import TreeService from "../../services/treeService";
 
 import BaseMapSelect from "../../components/display/BaseMapSelect";
 import AddTrees from "../../components/display/AddTrees";
 import Notification from "../../components/display/Notification";
-import useBaseMapStore from "../../stores/basemapStore";
 import MapOptions from "../../components/display/MapOptions";
 import SelectedTree from "../../components/display/SelectedTreeDialogue";
 
@@ -30,7 +33,6 @@ const BASEMAPS = {
 export default function Maps() {
   const setBaseMap = useBaseMapStore((state) => state.setBaseMap);
   const baseMapKey = useBaseMapStore((state) => state.baseMapKey);
-
 
   return (
     <div className="h-[calc(100vh-4rem)] flex overflow-hidden">
@@ -55,18 +57,24 @@ export default function Maps() {
           className="bottom-2 left-2 absolute"
           useNewTreesStore={useNewTreesStore}
           TreeService={TreeService}
+          useOpenAddTreesStore={useOpenAddTreesStore}
+          useUserStore={useUserStore}
         />
         <MapOptions
           className="bottom-2 left-[80px] absolute"
           useNewTreesStore={useNewTreesStore}
           TreeService={TreeService}
         />
-        <SelectedTree TreeService={TreeService}/>
+        <SelectedTree
+          TreeService={TreeService}
+          useTreesStore={useTreesStore}
+          useSelectedTreeStore={useSelectedTreeStore}
+          useUserStore={useUserStore}
+        />
       </Container>
       {/* Notification popup on the lower right */}
       <Notification className="absolute right-2 bottom-2" type="success" />
       {/* form for adding new trees */}
-      
     </div>
   );
 }

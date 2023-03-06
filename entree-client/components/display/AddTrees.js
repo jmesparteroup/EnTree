@@ -5,10 +5,10 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Container from "../layout/Container";
-import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 
 
-export default function AddTrees({ className, useNewTreesStore, TreeService }) {
+
+export default function AddTrees({ className, useNewTreesStore, TreeService, useOpenAddTreesStore, useUserStore }) {
   const newTrees = useNewTreesStore((state) => state.newTrees);
   const addNewTree = useNewTreesStore((state) => state.addNewTree);
   const removeNewTree = useNewTreesStore((state) => state.removeNewTree);
@@ -20,6 +20,9 @@ export default function AddTrees({ className, useNewTreesStore, TreeService }) {
 
   const openAddTrees = useOpenAddTreesStore((state) => state.openAddTrees);
   const setOpenAddTrees = useOpenAddTreesStore((state) => state.setOpenAddTrees);
+
+  const loggedInUser = useUserStore((state) => state.userState.user);
+
   // handler
   const parseCSV = (csv) => {
     const lines = csv.split("\n");
@@ -61,11 +64,16 @@ export default function AddTrees({ className, useNewTreesStore, TreeService }) {
 
   const submitNewTreesClickHandler = async () => {
     // process new trees
+    
+    const userId = loggedInUser.userId;
+
+    if (!userId) return;
+
     let formattedNewTrees = newTrees.map((tree) => {
       return {
         description: tree.description,
         location: `${tree.longitude} ${tree.latitude}`,
-        userId: "5f9f1b9b9c9d440000",
+        userId
       };
     });
     const response = await TreeService.addTrees(formattedNewTrees);

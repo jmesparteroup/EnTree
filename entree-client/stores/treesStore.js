@@ -16,6 +16,10 @@ const useTreesStore = create(
       set((state) => ({
         renderedTrees: [...state.renderedTrees, ...state.trees],
       })),
+    removeTree: (tree) =>
+      set((state) => ({
+        renderedTrees: state.renderedTrees.filter((t) => t !== tree),
+      })),
   }))
 );
 

@@ -10,7 +10,6 @@ import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
 import { useEffect, useRef } from "react";
 import useGeoLocation from "../../hooks/useGeoLocation";
-
 import TreeService from "../../services/treeService";
 import HexagonService from "../../services/hexagonService";
 import useCityStore from "../../stores/cityStore";
@@ -777,12 +776,12 @@ export default function EntreeMap({
                 } else if (localMapState.selectedTree !== graphic) {
                   localMapState.selectedTree = graphic;
                   localMapState.highlight = layerView.highlight(graphic);
-                  setSelectedTree(graphic.attributes);
+                  setSelectedTree(graphic);
                 }
               } else {
                 localMapState.highlight = layerView.highlight(graphic);
                 localMapState.selectedTree = graphic;
-                setSelectedTree(graphic.attributes);
+                setSelectedTree(graphic);
               }
               return;
             }
