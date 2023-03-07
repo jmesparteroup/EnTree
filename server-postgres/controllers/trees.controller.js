@@ -1,3 +1,4 @@
+const nanoid = require('nanoid');
 class TreesController {
     constructor(TreesRepository, TreeModel, TreeErrorRepository) {
         this.TreesRepository = TreesRepository;
@@ -7,7 +8,6 @@ class TreesController {
 
     async createTree(req, res) {
         try {            
-            console.log("Creating tree");
             if (!req.user.userId) {
                 throw Error("Invalid user");
             }
@@ -17,7 +17,7 @@ class TreesController {
                 newTree.userId = req.user.userId;
                 return newTree;
             })
-            const result = await this.TreesRepository.createTree(newTrees);
+            await this.TreesRepository.createTree(newTrees);
             res.status(201).json(req.body);
         } catch (error) {
             console.log(error);
@@ -61,14 +61,10 @@ class TreesController {
             // query for tree
             console.log("QUERYING FOR TREE:", req.params.id)
             const tree = await this.TreesRepository.getTree(req.params.id);
-
-            console.log(tree)
             
             if (!tree) {
                 throw this.TreeErrorRepository.TreeNotFoundError();
             }
-
-            // check if tree belongs to user!
 
             console.log("TREE USER ID:", tree.userId)
             console.log("USER USER ID:", user.userId)
@@ -76,8 +72,8 @@ class TreesController {
                 throw this.TreeErrorRepository.Unauthorized("You are not authorized to delete this tree");
             }
 
-            
-            const response = await this.TreesRepository.deleteTree(req.params.id);
+            await this.TreesRepository.deleteTree(req.params.id);
+            await this.TreesRepository.deleteAllFlagsOfTree(req.params.id);
             res.status(200).json({DELETE: "Tree deleted successfully"});
         } catch (error) {
 
@@ -182,10 +178,25 @@ class TreesController {
                     cities: cities.split(',')
                 })
             }
-            console.log(return_processed.length)
             res.status(200).json(return_processed);
         } catch (error) {
             res.status(500).json(error);
+        }
+    }
+
+    async flagTree(req, res) {
+        try {
+            if (!req.user.userId) throw Error("Invalid user");
+            if (!req.params.id) throw Error("Empty tree parameter");
+            if (req.query.unflag == 'true') {
+                await this.TreesRepository.unFlagTree(req.params.id, req.user.userId);
+                res.status(202).json({userId: req.user.userId, treeId: req.params.id});
+                return;
+            }            
+            await this.TreesRepository.flagTree(nanoid(16), req.params.id, req.user.userId);
+            res.status(201).json({userId: req.user.userId, treeId: req.params.id});
+        } catch(err) {
+            res.status(500).json(err);
         }
     }
 

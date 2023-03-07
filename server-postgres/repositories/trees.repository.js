@@ -19,6 +19,7 @@ class TreesRepository {
       const conn = await this.pool.connect();
       await conn.query('BEGIN');
       for (let tree of data) {
+        console.log("Repository: adding tree with points", tree.longitude, tree.latitude);
         const result = await conn.query(`CALL create_tree($1, $2, $3, $4, $5)`, [
           tree.treeId,
           tree.description,
@@ -26,10 +27,12 @@ class TreesRepository {
           tree.location,
           tree.userId,
         ]);
+        console.log("Repository: added tree to table");
         const result_two = await conn.query(`CALL update_hex_add_trees($1, $2)`, [
           tree.longitude,
           tree.latitude
         ]);
+        console.log("Repository: updated relevant hexes");
       }
       await conn.query('COMMIT');
       conn.release();
@@ -90,6 +93,7 @@ class TreesRepository {
   async getTreeByProximity(longitude, latitude, radius) {
     try {
       const conn = await this.pool.connect();
+      console.log(longitude, latitude, radius)
       const result = await conn.query("SELECT * FROM get_trees_by_proximity($1, $2, $3)", [longitude, latitude, radius]);
       conn.release();
       return result.rows[0];
@@ -128,6 +132,44 @@ class TreesRepository {
       conn.release();
       return result.rows;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async flagTree(flagId, treeId, userId) {
+    try {      
+      const conn = await this.pool.connect();
+      console.log(flagId, userId, treeId);
+      await conn.query('CALL create_flag($1, $2, $3)', [flagId, treeId, userId]);
+      conn.release();
+      return "success";
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+
+  async unFlagTree(treeId, userId) {
+    try {      
+      const conn = await this.pool.connect();
+      console.log("Deleting flag")
+      await conn.query('CALL delete_flag($1, $2)', [treeId, userId]);
+      conn.release();
+      return "success";
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+
+  async deleteAllFlagsOfTree(treeId) {
+    try {      
+      const conn = await this.pool.connect();
+      await conn.query('CALL delete_tree_flags($1)', [treeId]);
+      conn.release();
+      return "success";
+    } catch (error) {
+      console.log("Error:", error);
       throw error;
     }
   }

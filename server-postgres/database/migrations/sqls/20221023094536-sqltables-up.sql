@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "cityPolygons" (
 -- TABLE FOR USER FLAGS
 CREATE TABLE IF NOT EXISTS "flags" (
     "flagId" VARCHAR(16) UNIQUE NOT NULL,
-    "userId" VARCHAR(16) NOT NULL,
     "treeId" VARCHAR(16) NOT NULL,
+    "userId" VARCHAR(32) NOT NULL,
     PRIMARY KEY ("flagId")
 );

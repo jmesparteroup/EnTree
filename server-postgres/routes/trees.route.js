@@ -21,6 +21,7 @@ router.get("/hex", treesController.getTreeByHex.bind(treesController));
 router.get("/:id", treesController.getTreeById.bind(treesController));
 
 router.post("/", auth, treesController.createTree.bind(treesController));
+router.patch("/flag/:id", auth, treesController.flagTree.bind(treesController));
 router.patch("/:id", treesController.updateTree.bind(treesController));
 router.delete("/:id", auth, treesController.deleteTree.bind(treesController));
 
