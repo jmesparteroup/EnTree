@@ -73,7 +73,7 @@ class TreesController {
             }
 
             await this.TreesRepository.deleteTree(req.params.id);
-            await this.TreesRepository.deleteAllFlagsOfTree(req.params.id);
+            // await this.TreesRepository.deleteAllFlagsOfTree(req.params.id);
             res.status(200).json({DELETE: "Tree deleted successfully"});
         } catch (error) {
 
@@ -189,10 +189,12 @@ class TreesController {
             if (!req.user.userId) throw Error("Invalid user");
             if (!req.params.id) throw Error("Empty tree parameter");
             if (req.query.unflag == 'true') {
+                console.log(`User {req.user.userId} UNflagging {req.params.id}`);
                 await this.TreesRepository.unFlagTree(req.params.id, req.user.userId);
                 res.status(202).json({userId: req.user.userId, treeId: req.params.id});
                 return;
             }            
+            console.log(`User ${req.user.userId} flagging ${req.params.id}`);
             await this.TreesRepository.flagTree(nanoid(16), req.params.id, req.user.userId);
             res.status(201).json({userId: req.user.userId, treeId: req.params.id});
         } catch(err) {

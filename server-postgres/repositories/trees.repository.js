@@ -80,12 +80,24 @@ class TreesRepository {
 
   async deleteTree(id) {
     try {
-      console.log("Deleting tree", id);
+      console.log("HERE");
       const conn = await this.pool.connect();
-      const result = await conn.query("CALL delete_tree($1)", [id]);
+      await conn.query('BEGIN');
+      const getTree = await conn.query("SELECT ST_AsText(location) as coords FROM get_tree($1)", [id]);
+      await conn.query("CALL delete_tree($1)", [id]);
+      const tree = getTree.rows[0];
+      const treeLon = parseFloat(tree?.coords.split(" ")[0].slice(6));
+      const treeLat = parseFloat(tree?.coords.split(" ")[1].slice(0, -1));
+      await conn.query(`CALL update_hex_delete_trees($1, $2)`, [
+        treeLon,
+        treeLat
+      ]);
+      await conn.query('COMMIT');
       conn.release();
-      return result.rows[0];
+      return "success";
     } catch (error) {
+      await conn.query('ROLLBACK');
+      conn.release();
       throw error;
     }
   }
