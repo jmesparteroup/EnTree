@@ -28,8 +28,6 @@ services:
 
     db_server:
         image: kartoza/postgis:14-3.2
-        volumes:
-            - ./postgres-data/:/var/lib/postgresql/data
         environment:
             # If you need to create multiple database you can add coma separated databases eg gis,data
             - POSTGRES_DB=entree
@@ -43,6 +41,20 @@ services:
         restart: on-failure
         healthcheck:
           test: "exit 0"
+
+    command_runner:
+        build: ./command-runner
+        volumes:
+            - ./command-runner/:/command-runner
+        environment:
+            # If you need to create multiple database you can add coma separated databases eg gis,data
+            - POSTGRES_HOST_AUTH_METHOD=trust
+        depends_on:
+            - db_server
+        command:
+            - "bash restorebackup.sh db_server:5432"
+
+
 
             
 
