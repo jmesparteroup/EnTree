@@ -96,9 +96,9 @@ export default function AddTrees({
         <div className="w-full h-full flex justify-center items-center shadow-none">
           <button className="w-full h-full rounded-md border flex justify-center items-center shadow-none">
             {!openAddTrees ? (
-              <PlusCircleIcon className="w-8 h-8 hover:animate-bounce" />
+              <PlusCircleIcon className="w-8 h-8" />
             ) : (
-              <MinusCircleIcon className="w-8 h-8 hover:animate-bounce" />
+              <MinusCircleIcon className="w-8 h-8" />
             )}
           </button>
         </div>

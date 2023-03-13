@@ -69,7 +69,7 @@ export default function Maps() {
           useUserStore={useUserStore}
         />
         <MapOptions
-          className={`bottom-2 left-${user? "[80px]":"2"} absolute`}
+          className={`bottom-2 ${user ? "left-[80px]" : "left-2"} absolute`}
           useNewTreesStore={useNewTreesStore}
           TreeService={TreeService}
         />

@@ -7,12 +7,17 @@ const HexagonService = {
           method: "GET",
         }
       );
+      if (!res.ok) {
+        throw new Error("Could not fetch hexagons");
+      }
 
       const data = await res.json();
-      //   if data is an array, return it
-      //  if not, return an empty array
 
-      return Array.isArray(data) ? data : [];
+      if (!data || !Array.isArray(data)) {
+        throw new Error("Could not fetch hexagons");
+      }
+
+      return data;
       
     } catch (err) {
       console.log(err);

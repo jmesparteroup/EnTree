@@ -1,3 +1,4 @@
+import useNotificationStore from "../../stores/notificationStore";
 import Container from "../layout/Container";
 
 export default function SelectedTree({
@@ -15,10 +16,18 @@ export default function SelectedTree({
   const removeTree = useTreesStore((state) => state.removeTree);
   // checkbox handler
 
+  const setStatus = useNotificationStore((state) => state.setStatus);
+  const clearStatus = useNotificationStore((state) => state.clearStatus);
+  const setMessage = useNotificationStore((state) => state.setMessage);
+  const clearMessage = useNotificationStore((state) => state.clearMessage);
+
+
   // delete tree handler
   const deleteTreeHandler = async () => {
     // delete tree
     try {
+      setStatus("loading");
+      setMessage("Deleting tree...");
       const res = await TreeService.deleteTree(
         selectedTree?.attributes?.treeId
       );
@@ -26,19 +35,41 @@ export default function SelectedTree({
         removeTree(selectedTree);
         selectedTree.visible = false;
         removeSelectedTree();
+        setStatus("success");
+        setMessage("Tree deleted");
+        setTimeout(() => {
+          clearMessage();
+          clearStatus();
+        }, 2000);
       }
     } catch (error) {
       console.error(error);
+
+      setStatus("error");
+      setMessage("Error deleting tree");
     }
   };
 
   const flagTreeHandler = async () => {
     // flag tree
     try {
-      const res = await TreeService.flagTree(selectedTree.treeId);
+      setStatus("loading");
+      setMessage("Flagging tree...");
+      const res = await TreeService.flagTree(selectedTree?.attributes?.treeId);
       console.log(res);
+      if (res.status === 201) {
+        setStatus("success");
+        setMessage("Tree flagged");
+        setTimeout(() => {
+          clearMessage();
+          clearStatus();
+        }, 2000);
+      }
     } catch (error) {
       console.error(error);
+
+      setStatus("error");
+      setMessage("Error flagging tree");
     }
   };
 

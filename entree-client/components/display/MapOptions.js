@@ -69,9 +69,9 @@ export default function MapOptions({ className }) {
         <div className="w-full h-full flex justify-center items-center shadow-none">
           <button className="w-full h-full rounded-md flex justify-center items-center shadow-none">
             {!openMapOptions ? (
-              <Cog6ToothIcon className="w-8 h-8 hover:animate-bounce" />
+              <Cog6ToothIcon className="w-8 h-8" />
             ) : (
-              <MinusCircleIcon className="w-8 h-8 hover:animate-bounce" />
+              <MinusCircleIcon className="w-8 h-8" />
             )}
           </button>
         </div>

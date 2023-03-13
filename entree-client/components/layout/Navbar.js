@@ -6,11 +6,25 @@ import { useRouter } from "next/router";
 import Logo from "./Logo";
 import {HomeIcon} from "@heroicons/react/24/solid";
 import useUserStore from "../../stores/userStore";
+import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
+import cookieService from "../../services/cookieService";
 
 export default function Navbar() {
   const router = useRouter();
   const userState = useUserStore((state) => state.userState);
+  const setUserState = useUserStore((state) => state.setUserState);
   console.log("User State: ", userState);
+
+  const logoutHandler = () => {
+    cookieService.deleteUserCookie();
+    setUserState({
+      isLoggedIn: false,
+      user: null,
+    });
+    router.push("/");
+  };
+
+
 
   // On first load, check for cookie if user is logged in
 
@@ -21,7 +35,7 @@ export default function Navbar() {
         <></>
       ) : (
         <>
-          <nav className="bg-[var(--secondary-bg-color)] p-3 w-full h-14">
+          <nav className="bg-[var(--secondary-bg-color)] p-3 w-full h-14 sticky top">
             <div className="flex items-center max-w-7xl flex-wrap mx-auto">
               <div className="flex items-center flex-shrink-0 text-[var(--primary-text-color)] mr-6">
                 <Logo size="25px" color="#121212" />
@@ -30,14 +44,27 @@ export default function Navbar() {
                 </span>
               </div>
               <Link href={"/"}>
-                <HomeIcon className="h-8 w-8 text-gray-200 hover:text-gray-500 pr-4 cursor-pointer" />
+                <HomeIcon className="h-8 w-8 text-gray-500 hover:text-gray-300 transition ease-in-out pr-4 cursor-pointer" />
               </Link>
               {/* User Info */}
               <div className="flex-grow flex justify-end text-[var(--primary-text-color)]">
                 {/* Username or Login */}
-                {userState.isLoggedIn ? (`Hello, ${userState.user.firstName}`) : (<></>)}
-                
+                {/* Get only the first first name of the user */}
+                {userState.isLoggedIn ? (`Hello, ${userState.user.firstName.split(" ")[0]}`) : (<></>)}
               </div>
+              <div className="text-[var(--primary-text-color)]">
+                  {userState.isLoggedIn ? (
+                      <div className="ml-2 inline-block text-md hover:scale-105 transition ease-inout text-[var(--primary-text-color)]" onClick={logoutHandler}>
+                        <ArrowLeftOnRectangleIcon className="h-6 w-6 text-gray-600"/>
+                      </div>
+                  ) : (
+                    <Link href={"/"}>
+                      <div className="ml-5 inline-block text-md hover:scale-105 transition ease-in-out text-[var(--primary-text-color)] ">
+                        Login
+                      </div>
+                    </Link>
+                  )}
+                </div>
             </div>
           </nav>
         </>

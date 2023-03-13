@@ -1,5 +1,17 @@
 import cookieService from "./cookieService";
 
+
+const generateAuthHeader = () => {
+  const token = cookieService.getUserCookie();
+  if (token) {
+    return `Bearer ${token}`;
+  } else {
+    return ``;
+  }
+};
+
+
+
 const TreeService = {
   getAllTrees: async () => {
     const res =  await fetch(`http://localhost:5000/trees/`, {
@@ -12,7 +24,7 @@ const TreeService = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': `Bearer ${cookieService.getUserCookie()}`
+        'Authorization': generateAuthHeader(),
       },
       body: JSON.stringify(trees)
     });
@@ -45,13 +57,16 @@ const TreeService = {
     return await fetch(`http://localhost:5000/trees/${id}`, {
       method: "DELETE",
       headers: {
-        'Authorization': `Bearer ${cookieService.getUserCookie()}`
+        'Authorization': generateAuthHeader(),
       }
     });
   },
   flagTree: async (id) => {
     return await fetch(`http://localhost:5000/trees/flag/${id}`, {
-      method: "PUT",
+      method: "PATCH",
+      headers: {
+        'Authorization': generateAuthHeader(),
+      }
     });
   }
 

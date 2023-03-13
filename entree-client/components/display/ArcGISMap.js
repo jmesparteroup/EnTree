@@ -291,48 +291,56 @@ export default function EntreeMap({
   };
 
   const getHexagons = async (zoom, lat, lng, hexagons) => {
-    setStatus("loading");
-    setMessage("Fetching Hexagons");
-    const data = await HexagonService.getHexagons(zoom, lat, lng);
+    try {
+      setStatus("loading");
+      setMessage("Fetching Hexagons");
+      const data = await HexagonService.getHexagons(zoom, lat, lng);
 
-    if (data?.length > 0) {
-      // remove hexagons that are already in store
+      if (data?.length > 0) {
+        // remove hexagons that are already in store
 
-      let updatedHexagonsCount = 0;
+        let updatedHexagonsCount = 0;
 
-      const newHexagons = data.filter((hexagon) => {
-        // find if hexagon is already in store then edit the count of the one in store
-        const hexagonInStore = hexagons?.find(
-          // note that this gives us the pointer to the item in the array itself
-          (h) => h.hexId === hexagon.hexId
-        );
-        if (hexagonInStore) {
-          if (hexagonInStore.count !== hexagon.count) {
-            updatedHexagonsCount++;
+        const newHexagons = data.filter((hexagon) => {
+          // find if hexagon is already in store then edit the count of the one in store
+          const hexagonInStore = hexagons?.find(
+            // note that this gives us the pointer to the item in the array itself
+            (h) => h.hexId === hexagon.hexId
+          );
+          if (hexagonInStore) {
+            if (hexagonInStore.count !== hexagon.count) {
+              updatedHexagonsCount++;
+            }
+            hexagonInStore.count = hexagon.count;
+            return false;
           }
-          hexagonInStore.count = hexagon.count;
-          return false;
-        }
-        return true;
-      });
+          return true;
+        });
 
-      addHexagons(newHexagons, zoom);
-      if (updatedHexagonsCount > 0) {
-        setMessage(
-          `${updatedHexagonsCount} hexagons updated. ${`${newHexagons.length} new hexagons loaded`}`
-        );
-      } else {
-        setMessage(
-          `${
-            newHexagons.length === 0
-              ? "No new hexagons found within the area."
-              : `${newHexagons.length} new hexagons loaded`
-          } `
-        );
+        addHexagons(newHexagons, zoom);
+        console.log("newHexagons", newHexagons)
+
+        if (updatedHexagonsCount > 0) {
+          setMessage(
+            `${updatedHexagonsCount} hexagons updated. ${`${newHexagons.length} new hexagons loaded`}`
+          );
+        } else {
+          setMessage(
+            `${
+              newHexagons.length === 0
+                ? "No new hexagons found within the area."
+                : `${newHexagons.length} new hexagons loaded`
+            } `
+          );
+        }
       }
+      setStatus("success");
+      
+    } catch (error) {
+      setStatus("error");
+      setMessage("Error loading hexagons");
     }
-    setStatus("success");
-  };
+  };  
 
   const renderTrees = (graphicsLayer, trees) => {
     trees?.forEach((tree) => {
@@ -347,7 +355,7 @@ export default function EntreeMap({
           longitude: lng,
           latitude: lat,
         },
-        "#228C22"
+        tree.flagged ? "red" : "green"
       );
 
       const graphic = new Graphic({
@@ -413,7 +421,7 @@ export default function EntreeMap({
           symbol: pointSymbol,
           attributes: {
             clientIdentifier: tree.clientIdentifier,
-          }
+          },
         });
 
         // add to the new trees layer
@@ -803,7 +811,8 @@ export default function EntreeMap({
           console.log(graphic);
           // find index in localmapstate.newtrees
           const index = localMapState.newTrees.findIndex(
-            (tree) => tree.clientIdentifier === graphic.attributes.clientIdentifier
+            (tree) =>
+              tree.clientIdentifier === graphic.attributes.clientIdentifier
           );
           setHighlightedIndex(index);
           return;
