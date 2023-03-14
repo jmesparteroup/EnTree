@@ -27,7 +27,10 @@ services:
         command: "bash start.sh db_server:5432"
 
     db_server:
-        image: kartoza/postgis:14-3.2
+        build: ./postgres-db
+        volumes:
+            - ./postgres-db/data.sql:/var/lib/postgresql/data.sql
+            - ./postgres-db/restorebackup.sh:/docker-entrypoint-initdb.d/restorebackup.sh
         environment:
             # If you need to create multiple database you can add coma separated databases eg gis,data
             - POSTGRES_DB=entree
@@ -42,17 +45,6 @@ services:
         healthcheck:
           test: "exit 0"
 
-    command_runner:
-        build: ./command-runner
-        volumes:
-            - ./command-runner/:/command-runner
-        environment:
-            # If you need to create multiple database you can add coma separated databases eg gis,data
-            - POSTGRES_HOST_AUTH_METHOD=trust
-        depends_on:
-            - db_server
-        command:
-            - "bash restorebackup.sh db_server:5432"
 
 
 
