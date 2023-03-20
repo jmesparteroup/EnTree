@@ -97,6 +97,7 @@ export default function Register({
               placeholder={field.placeholder}
               value={formDetails[field.name]}
               onChange={(e) => onEdit(e, field.name)}
+              key={field.name}
             />
           ))}
           <button

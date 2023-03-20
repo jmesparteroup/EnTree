@@ -108,11 +108,8 @@ export default function Home() {
               </div>
               {/* don't have an account? join us*/}
               <div className="flex flex-row items-center justify-center mt-3 w-full">
-                <p className="text-md text-gray-500">Don't have an account?</p>
-                <p
-                  onClick={() => router.push("/u/register")}
-                  className="mx-2 text-md text-gray-500 font-bold cursor-pointer hover:translate-y-[-5px]"
-                >
+                <p className="text-md text-gray-500">Don&#39;t have an account?</p>
+                <p onClick={()=>router.push("/u/register")} className="mx-2 text-md text-gray-500 font-bold cursor-pointer hover:translate-y-[-5px]">
                   Join us
                 </p>
               </div>

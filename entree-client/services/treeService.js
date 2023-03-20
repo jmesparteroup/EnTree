@@ -14,13 +14,13 @@ const generateAuthHeader = () => {
 
 const TreeService = {
   getAllTrees: async () => {
-    const res =  await fetch(`http://localhost:5000/trees/`, {
+    const res =  await fetch(`${process.env.SERVER_URL}/trees/`, {
       method: "GET",
     });
     return await res.json();
   },
   addTrees: async (trees) => {
-    return await fetch(`http://localhost:5000/trees/`, {
+    return await fetch(`${process.env.SERVER_URL}/trees/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const TreeService = {
   },
   getTreesByCity: async (city) => {
     try {
-      const res = await fetch(`http://localhost:5000/trees/bycity?city=${city}`, {
+      const res = await fetch(`${process.env.SERVER_URL}/trees/bycity?city=${city}`, {
         method: "GET",
       });
       return await res.json();
@@ -40,13 +40,13 @@ const TreeService = {
     }
   },
   getTreesAllCities: async () => {
-    return await fetch(`http://localhost:5000/trees/cities`, {
+    return await fetch(`${process.env.SERVER_URL}/trees/cities`, {
       method: "GET",
     });
   },
   getTreesByProximity: async (lat, lng, radius) => {
     const data =  await fetch(
-      `http://localhost:5000/trees/proximity?lat=${lat}&long=${lng}&radius=${radius}`,
+      `${process.env.SERVER_URL}/trees/proximity?lat=${lat}&long=${lng}&radius=${radius}`,
       {
         method: "GET",
       }
@@ -54,7 +54,7 @@ const TreeService = {
     return await data.json();
   },
   deleteTree: async (id) => {
-    return await fetch(`http://localhost:5000/trees/${id}`, {
+    return await fetch(`${process.env.SERVER_URL}/trees/${id}`, {
       method: "DELETE",
       headers: {
         'Authorization': generateAuthHeader(),
@@ -62,7 +62,7 @@ const TreeService = {
     });
   },
   flagTree: async (id) => {
-    return await fetch(`http://localhost:5000/trees/flag/${id}`, {
+    return await fetch(`${process.env.SERVER_URL}/trees/flag/${id}`, {
       method: "PATCH",
       headers: {
         'Authorization': generateAuthHeader(),

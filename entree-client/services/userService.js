@@ -1,7 +1,7 @@
 const userService = {
     getUserById: async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/users/${id}`, {
+            const response = await fetch(`${process.env.SERVER_URL}/users/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -21,7 +21,7 @@ const userService = {
 
     loginUser: async (user) => {
         try {
-            const response = await fetch('http://localhost:5000/users/login', {
+            const response = await fetch(`${process.env.SERVER_URL}/users/login`, {
                 method: 'POST',
                 body: JSON.stringify(user),
                 headers: {
@@ -42,7 +42,7 @@ const userService = {
     },
 
     registerUser: async (user) => {
-        const response = await fetch(`http://localhost:5000/users/`, {
+        const response = await fetch(`${process.env.SERVER_URL}/users/`, {
             method: 'POST',
             body: JSON.stringify(user),
             headers: {
