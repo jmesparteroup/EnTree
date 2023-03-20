@@ -3,7 +3,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 
 const BASEMAPS = {
   Streets: "arcgis-streets",
-  Imagery: "arcgis-imagery",
+  Satellite: "arcgis-imagery",
 };
 
 const useBaseMapStore = create(

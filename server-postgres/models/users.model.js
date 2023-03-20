@@ -1,6 +1,7 @@
 const nanoid = require("nanoid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const UsersError = require("../errors/users.error");
 
 
 class User {
@@ -66,7 +67,7 @@ class User {
 			message = "Identity Confirmed";
 		}
 		if (!data) {
-			throw errors.UserNotFound();
+			throw UsersError.UserNotFound();
 		}
 
 		const isPasswordValid = await this.comparePassword(

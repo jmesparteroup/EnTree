@@ -33,6 +33,7 @@ const useMapOptionsStore = create(
     showLabels: true,
     showZeroTreeHexagons: false,
 
+
     setShowLabels: (showLabels) => {
       set((state) => ({ showLabels: showLabels }));
     },
@@ -50,7 +51,14 @@ const useMapOptionsStore = create(
       set((state) => ({
         selectCities: { ...state.selectCities, [city]: false },
       }));
+    },
+
+    zoom: 13,
+    
+    setZoomLevel: (zoom) => {
+      set((state) => ({ zoom: zoom }));
     }
+    
   }))
 );
 

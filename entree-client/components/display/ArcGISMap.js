@@ -20,6 +20,7 @@ import useMapOptionsStore from "../../stores/mapOptionsStore";
 
 import MAP_CONFIG from "../../constants/map";
 import useSelectedTreeStore from "../../stores/selectTreesStore";
+import useOpenMapOptionsStore from "../../stores/openMapOptionsStore";
 
 // STRUCTURE OF FILE
 // 1. CONSTANTS
@@ -38,90 +39,39 @@ import useSelectedTreeStore from "../../stores/selectTreesStore";
 // given certain ranges, return a shade of green for polygons and hexagons
 // color should be an array of 4 values: [r, g, b, a] lighter for lower values, darker for higher values
 
-function calculateColor(startColor, endColor, minValue, maxValue, value) {
-  // Convert the start and end colors to RGB arrays
-  const startColorRgb = hexToRgb(startColor);
-  const endColorRgb = hexToRgb(endColor);
-
-  // Calculate the percentage that the value is between the min and max values
-  const percentage = (value - minValue) / (maxValue - minValue);
-
-  // Calculate the RGB values for the color at the given percentage between the start and end colors
-  const colorRgb = [
-    Math.round(
-      startColorRgb[0] + (endColorRgb[0] - startColorRgb[0]) * percentage
-    ),
-    Math.round(
-      startColorRgb[1] + (endColorRgb[1] - startColorRgb[1]) * percentage
-    ),
-    Math.round(
-      startColorRgb[2] + (endColorRgb[2] - startColorRgb[2]) * percentage
-    ),
-  ];
-
-  // Convert the RGB values back to a hex color code
-  const colorHex = rgbToHex(colorRgb);
-
-  return colorHex;
-}
-
-// Helper function to convert a hex color code to an RGB array
-function hexToRgb(hex) {
-  const r = parseInt(hex.substring(1, 3), 16);
-  const g = parseInt(hex.substring(3, 5), 16);
-  const b = parseInt(hex.substring(5, 7), 16);
-  return [r, g, b];
-}
-
-// Helper function to convert an RGB array to a hex color code
-function rgbToHex(rgb) {
-  return (
-    "#" +
-    componentToHex(rgb[0]) +
-    componentToHex(rgb[1]) +
-    componentToHex(rgb[2])
-  );
-}
-
-// Helper function to convert a number to a two-digit hex string
-function componentToHex(c) {
-  const hex = c.toString(16);
-  return hex.length == 1 ? "0" + hex : hex;
-}
-
 const COLOR_CODE_HEATMAPS = {
   hexagons: {
     14: [
+      [100, [0, 109, 44, 0.75]],
+      [50, [49, 163, 84, 0.75]],
+      [25, [116, 196, 118, 0.75]],
+      [15, [186, 228, 179, 0.75]],
+      [5, [237, 248, 233, 0.75]],
       [0, [237, 248, 233, 0.2]],
-      [10, [237, 248, 233, 0.75]],
-      [100, [186, 228, 179, 0.75]],
-      [200, [116, 196, 118, 0.75]],
-      [1000, [49, 163, 84, 0.75]],
-      [5000, [0, 109, 44, 0.75]],
     ],
     15: [
+      [80, [0, 109, 44, 0.65]],
+      [27, [49, 163, 84, 0.65]],
+      [15, [116, 196, 118, 0.65]],
+      [8, [186, 228, 179, 0.65]],
+      [3, [237, 248, 233, 0.65]],
       [0, [237, 248, 233, 0.2]],
-      [5, [237, 248, 233, 0.65]],
-      [50, [186, 228, 179, 0.65]],
-      [100, [116, 196, 118, 0.65]],
-      [500, [49, 163, 84, 0.65]],
-      [5000, [0, 109, 44, 0.65]],
     ],
     16: [
+      [50, [0, 109, 44, 0.65]],
+      [25, [49, 163, 84, 0.65]],
+      [10, [116, 196, 118, 0.65]],
+      [5, [186, 228, 179, 0.65]],
+      [3, [237, 248, 233, 0.65]],
       [0, [237, 248, 233, 0.2]],
-      [5, [237, 248, 233, 0.65]],
-      [20, [186, 228, 179, 0.65]],
-      [50, [116, 196, 118, 0.65]],
-      [200, [49, 163, 84, 0.65]],
-      [1000, [0, 109, 44, 0.65]],
     ],
     17: [
+      [50, [0, 109, 44, 0.65]],
+      [25, [49, 163, 84, 0.65]],
+      [10, [116, 196, 118, 0.65]],
+      [5, [186, 228, 179, 0.65]],
+      [2, [237, 248, 233, 0.65]],
       [0, [237, 248, 233, 0.2]],
-      [3, [237, 248, 233, 0.65]],
-      [8, [186, 228, 179, 0.65]],
-      [20, [116, 196, 118, 0.65]],
-      [50, [49, 163, 84, 0.65]],
-      [200, [0, 109, 44, 0.65]],
     ],
   },
   polygons: [
@@ -132,7 +82,6 @@ const COLOR_CODE_HEATMAPS = {
     [100000, [74, 154, 45, 0.85]],
   ],
 };
-
 // START OF HELPER FUNCTIONS
 
 const distanceCalculator = (lat1, lon1, lat2, lon2) => {
@@ -234,7 +183,7 @@ export default function EntreeMap({
   const setHighlightedIndex = useNewTreesStore(
     // set highlighted index for new trees
     (state) => state.setHighlightedIndex
-  );
+  );   
 
   const cityPolygons = useCityStore((state) => state.polygons);
   const addCityPolygons = useCityStore((state) => state.addPolygons);
@@ -246,6 +195,8 @@ export default function EntreeMap({
 
   const mapOptions = useMapOptionsStore((state) => state.mapOptions);
   const selectCities = useMapOptionsStore((state) => state.selectCities);
+
+  const setZoomLevel = useMapOptionsStore((state) => state.setZoomLevel);
 
   const setSelectedTree = useSelectedTreeStore(
     (state) => state.setSelectedTree
@@ -509,7 +460,7 @@ export default function EntreeMap({
       //   return hexagon.count <= colorCode[0];
       // })[1];
       const color = COLOR_CODE_HEATMAPS.hexagons[zoom].find((colorCode) => {
-        return hexagon.count < colorCode[0];
+        return hexagon.count > colorCode[0];
       })[1];
 
       const [polygon, simpleFillSymbol] = createPolygon(
@@ -902,6 +853,7 @@ export default function EntreeMap({
       () => view?.stationary,
       async () => {
         const { longitude, latitude } = view.center;
+        setZoomLevel(view.zoom)
 
         // IF ZOOM IS LESS THAN 18, SHOW TREES
         if (view.zoom >= 18) {

@@ -77,7 +77,7 @@ export default function SelectedTree({
     <>
       {selectedTree?.attributes ? (
         <Container
-          className={`w-[258px] h-[30vh] absolute right-2 top-[5%] rounded-lg bg-white opacity-90 flex flex-col p-4 items-center text-gray-800 shadow-2xl`}
+          className={`w-[258px] h-[232px] absolute right-2 top-[5%] rounded-lg bg-white opacity-90 flex flex-col p-4 items-center text-gray-800 shadow-2xl`}
         >
           <div className="text-lg border-b-[1px] w-full mx-4 text-center font-bold">
             Selected Tree

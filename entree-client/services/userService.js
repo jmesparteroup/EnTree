@@ -7,10 +7,15 @@ const userService = {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
             });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw errorData.message;
+            }
+
             const data = await response.json();
             return data;
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
 
@@ -23,10 +28,16 @@ const userService = {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw errorData
+            }
+
             const data = await response.json();
             return data;
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
 

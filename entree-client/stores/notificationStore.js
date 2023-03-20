@@ -9,7 +9,7 @@ const useNotificationStore = create(
     status: "success",
     setStatus: (status) => set({ status: status }),
     clearStatus: () => set({ status: "success" }),
-    isOpen: true,
+    isOpen: false,
     setIsOpen: () =>
       set((state) => ({
         isOpen: !state.isOpen,

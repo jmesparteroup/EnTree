@@ -16,12 +16,12 @@ export default function Home() {
   const setUserState = useUserStore((state) => state.setUserState);
 
   useEffect(() => {
-      // On first load, check for cookie if user is logged in
-      console.log("Checking for userState", userState);
+    // On first load, check for cookie if user is logged in
+    console.log("Checking for userState", userState);
 
-      if (userState.isLoggedIn){
-          window.location.pathname = "/maps";
-      }
+    if (userState.isLoggedIn) {
+      window.location.pathname = "/maps";
+    }
   }, []);
 
   const [formDetails, setFormDetails] = useState({
@@ -35,24 +35,26 @@ export default function Home() {
   };
 
   const submitHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const { email, password } = formDetails;
+      const response = await userService.loginUser({ email, password });
 
-    e.preventDefault();
-    const { email, password } = formDetails;
-    const response = await userService.loginUser({ email, password });
-    
-    if (response?.data?.token) {
-      cookieService.setUserCookie(response?.data?.token);
-      // get user details
-      const userResponse = await userService.getUserById(response?.data?.userId);
-      setUserState({ isLoggedIn: true, user: userResponse?.data });
-      router.push("/maps");
-      
+      if (response?.data?.token) {
+        cookieService.setUserCookie(response?.data?.token);
+        // get user details
+        const userResponse = await userService.getUserById(
+          response?.data?.userId
+        );
+        setUserState({ isLoggedIn: true, user: userResponse?.data });
+        router.push("/maps");
+      }
+
+    } catch (error) {
+      console.log("ERROR CAUGHT", error);
+      setError(error.message);
     }
-    if (response.error) {
-      setError(data.error);
-    }
-    
-  };
+  };  
 
   return (
     <div className="h-screen w-screen flex justify-center items-center">
@@ -79,7 +81,7 @@ export default function Home() {
             </div>
             <form className="flex flex-col items-center mt-3 w-[80%]">
               <input
-                className="border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full"
+                className={`border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full ${error.length > 0 && "border-red-300 shadow-red-300 shadow"}`}
                 type="text"
                 placeholder="email"
                 value={formDetails.email}
@@ -107,7 +109,10 @@ export default function Home() {
               {/* don't have an account? join us*/}
               <div className="flex flex-row items-center justify-center mt-3 w-full">
                 <p className="text-md text-gray-500">Don't have an account?</p>
-                <p onClick={()=>router.push("/u/register")} className="mx-2 text-md text-gray-500 font-bold cursor-pointer hover:translate-y-[-5px]">
+                <p
+                  onClick={() => router.push("/u/register")}
+                  className="mx-2 text-md text-gray-500 font-bold cursor-pointer hover:translate-y-[-5px]"
+                >
                   Join us
                 </p>
               </div>

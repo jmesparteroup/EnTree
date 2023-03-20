@@ -1,14 +1,24 @@
 import { useState } from "react";
 import Container from "../layout/Container";
 
-export default function BaseMapSelect({BASEMAPS, baseMapKey, setBaseMapKey, className}) {
-    const [openChangeView, setOpenChangeView] = useState(false);
-    
-    const changeViewClickHandler = () => {
-        setOpenChangeView((prevState) => !prevState);
-      };
+const BASEMAPTEXT = {
+  Streets: "Street View",
+  Satellite: "Satellite View",
+};
 
-    return (
+export default function BaseMapSelect({
+  BASEMAPS,
+  baseMapKey,
+  setBaseMapKey,
+  className,
+}) {
+  const [openChangeView, setOpenChangeView] = useState(false);
+
+  const changeViewClickHandler = () => {
+    setOpenChangeView((prevState) => !prevState);
+  };
+
+  return (
     <>
       <Container
         className={`w-[75px] h-[75px] md:w-[100px] md:h-[100px] rounded-md opacity-90 bg-white flex items-center text-gray-800 shadow-2xl cursor-pointer ${className}`}
@@ -32,7 +42,9 @@ export default function BaseMapSelect({BASEMAPS, baseMapKey, setBaseMapKey, clas
                 className="w-2/3 h-full rounded-md border bg-white border-gray-400"
                 onClick={() => setBaseMapKey(key)}
               >
-                {key}
+                <span className="h-full w-1/2 overflow-wrap">
+                  {BASEMAPTEXT[key]}
+                </span>
               </button>
             ))}
           </div>

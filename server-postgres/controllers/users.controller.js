@@ -64,7 +64,10 @@ class UsersController {
             const data = await this.UserModel.loginUser('email', email, password, this.UsersRepository, this.UserErrorRepository);
             res.status(200).json(data);
         } catch (error) {
-            res.status(500).json(error);
+            console.log(error);
+            res.status(error.code || 500).json(
+                error
+            );
         }
     }
 

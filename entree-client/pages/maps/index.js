@@ -19,6 +19,8 @@ import AddTrees from "../../components/display/AddTrees";
 import Notification from "../../components/display/Notification";
 import MapOptions from "../../components/display/MapOptions";
 import SelectedTree from "../../components/display/SelectedTreeDialogue";
+import ZoomIndicator from "../../components/display/ZoomIndicator";
+import InfoDialogue from "../../components/display/InfoDialogue";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -29,7 +31,7 @@ const EntreeMapWithNoSSR = dynamic(
 
 const BASEMAPS = {
   Streets: "arcgis-streets",
-  Imagery: "arcgis-imagery",
+  Satellite: "arcgis-imagery",
 };
 
 export default function Maps() {
@@ -82,6 +84,9 @@ export default function Maps() {
       </Container>
       {/* Notification popup on the lower right */}
       <Notification className="absolute right-2 bottom-2" type="success" />
+      <ZoomIndicator className="absolute right-2 top-[4rem]" />
+      <InfoDialogue className="absolute right-2 top-[7.5rem]" />
+      
       {/* form for adding new trees */}
     </div>
   );
