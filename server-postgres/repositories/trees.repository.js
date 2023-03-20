@@ -185,6 +185,20 @@ class TreesRepository {
       throw error;
     }
   }
+
+  async getTreeByUser(userId) {
+    try {
+      const conn = await this.pool.connect();
+      // Use 'SELECT *' to get all metadata instead.
+      let result = await conn.query(`SELECT ST_AsText(location) FROM "trees" WHERE "userId" = '${userId}'`);
+      // console.log(`SELECT * FROM "trees" WHERE "userId" = '${userId}'`);
+      conn.release();
+      return result.rows
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
 }
 
 

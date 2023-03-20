@@ -18,6 +18,7 @@ router.get("/", treesController.getAllTrees.bind(treesController));
 router.get("/proximity", treesController.getTreeByProximity.bind(treesController));
 router.get("/bycity", treesController.getTreeByCity.bind(treesController));
 router.get("/hex", treesController.getTreeByHex.bind(treesController));
+router.get("/user", auth, treesController.getTreeByUser.bind(treesController));
 router.get("/:id", treesController.getTreeById.bind(treesController));
 
 router.post("/", auth, treesController.createTree.bind(treesController));

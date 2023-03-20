@@ -189,7 +189,7 @@ class TreesController {
             if (!req.user.userId) throw Error("Invalid user");
             if (!req.params.id) throw Error("Empty tree parameter");
             if (req.query.unflag == 'true') {
-                console.log(`User {req.user.userId} UNflagging {req.params.id}`);
+                console.log(`User {req.user.userId} UNflagging ${req.params.id}`);
                 await this.TreesRepository.unFlagTree(req.params.id, req.user.userId);
                 res.status(202).json({userId: req.user.userId, treeId: req.params.id});
                 return;
@@ -198,6 +198,30 @@ class TreesController {
             await this.TreesRepository.flagTree(nanoid(16), req.params.id, req.user.userId);
             res.status(201).json({userId: req.user.userId, treeId: req.params.id});
         } catch(err) {
+            res.status(500).json(err);
+        }
+    }
+
+    async getTreeByUser(req, res) {
+        try {
+            if (!req.user.userId) throw Error("Invalid user");
+            console.log(req.user.userId);
+            console.log(`Querying all trees posted by user {req.user.userId}`);
+            let result = await this.TreesRepository.getTreeByUser(req.user.userId);
+            // Uncomment to directly return result if user needs all the metadata
+            let coordinates = result.map(function(x) {
+                    return x.st_astext
+                }).map(function(x){
+                    let points = x.slice(6, -1);
+                    return points.split(" ").map(function(point) {
+                        return parseFloat(point)
+                    });
+                }).map(function (x) {
+                    return [x[1], x[0]]
+                })
+            res.status(200).json({userId: req.user.userId, trees: coordinates});
+            // Otherwise, clean the data to get an array of coordinates only
+        } catch (err) {
             res.status(500).json(err);
         }
     }
