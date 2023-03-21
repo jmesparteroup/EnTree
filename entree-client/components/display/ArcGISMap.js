@@ -245,7 +245,7 @@ export default function EntreeMap({
     try {
       setStatus("loading");
       setMessage("Fetching Hexagons");
-      const data = await HexagonService.getHexagons(zoom, lat, lng);
+      const data = await HexagonService.getHexagons(Math.round(zoom), lat, lng);
 
       if (data?.length > 0) {
         // remove hexagons that are already in store
