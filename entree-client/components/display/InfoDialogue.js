@@ -96,10 +96,10 @@ export default function InfoDialogue({ className }) {
             {/* Display the selected step */}
             <div className="my-3 h-1/2 w-4/5 flex flex-col justify-start items-center border-t py-3">
               <div className="text-2xl font-bold">
-                {appInfo.guides.steps[selectedStep].title}
+                {appInfo.guides?.steps[selectedStep]?.title}
               </div>
               <div className="text-md font-semibold mt-3">
-                {appInfo.guides.steps[selectedStep].description}
+                {appInfo.guides?.steps[selectedStep]?.description}
               </div>
             </div>
           </div>

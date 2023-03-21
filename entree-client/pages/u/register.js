@@ -18,7 +18,7 @@ export default function Users() {
         <title>Entree | Register</title>
       </Head>
       <div className="flex justify-center items-center h-[calc(100vh-4rem)]">
-        <div className="w-[80] px-auto h-full content-center grid md:grid-cols-2 grid-cols-1 gap-5 ">
+        <div className="w-[80] px-auto  h-full content-center grid md:grid-cols-2 grid-cols-1 gap-5 ">
           <Login
             router={router}
             cookieService={cookieService}
