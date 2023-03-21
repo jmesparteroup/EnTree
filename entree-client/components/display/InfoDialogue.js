@@ -47,6 +47,11 @@ const appInfo = {
         title: "Get trees uploaded by the user",
         description:
           "This upcoming feature is intended for NSTP students from UP Diliman. This is to allow students to get all the points they have submitted so far."
+      },
+      "Survey": {
+        title: "Answer our Thesis Survey!",
+        description:
+          "Good day! This survey is intended to be answered by NSTP students from UP Diliman. The survey is available here: https://docs.google.com/forms/d/e/1FAIpQLSeOHuHu6CFkV9qF-R6vES2IL0X2TxA4EamYb4g8jRVxFGe3Iw/viewform . Hopefully, you can answer this survey before the third week of April. Thank you for participating and using our application!"
       }
     },
   },
