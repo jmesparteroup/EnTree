@@ -124,7 +124,7 @@ export default function SelectedTree({
                   user.userId === selectedTree?.attributes?.userId && (
                     <button
                       onClick={deleteTreeHandler}
-                      className="w-2/5 h-10 rounded-md bg-lime-300 text-gray-800 font-semibold hover:bg-lime-400"
+                      className="w-2/5 h-10 rounded-md bg-lime-300 text-gray-800 font-semibold hover:bg-lime-400 shadow-hover"
                     >
                       Delete
                     </button>

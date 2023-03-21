@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Container from "../../components/layout/Container";
 
-import Head from 'next/head'
+import Head from "next/head";
 
 import useTreesStore from "../../stores/treesStore";
 import useHexagonsStore from "../../stores/hexagonsStore";
@@ -45,7 +45,7 @@ export default function Maps() {
         <title>Entree | Maps</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <Container className="w-full h-full rounded-md relative overflow-hidden">
         <div className="h-full w-full">
           <EntreeMapWithNoSSR
@@ -54,39 +54,38 @@ export default function Maps() {
             useNewTreesStore={useNewTreesStore}
           />
         </div>
-
-        {/* menu to change view */}
-        <BaseMapSelect
-          className="top-2 left-2 absolute"
-          BASEMAPS={BASEMAPS}
-          baseMapKey={baseMapKey}
-          setBaseMapKey={setBaseMap}
-        />
-        {/*  */}
-        <AddTrees
-          className="bottom-2 left-2 absolute"
-          useNewTreesStore={useNewTreesStore}
-          TreeService={TreeService}
-          useOpenAddTreesStore={useOpenAddTreesStore}
-          useUserStore={useUserStore}
-        />
-        <MapOptions
-          className={`bottom-2 ${user ? "left-[80px]" : "left-2"} absolute`}
-          useNewTreesStore={useNewTreesStore}
-          TreeService={TreeService}
-        />
-        <SelectedTree
-          TreeService={TreeService}
-          useTreesStore={useTreesStore}
-          useSelectedTreeStore={useSelectedTreeStore}
-          useUserStore={useUserStore}
-        />
       </Container>
       {/* Notification popup on the lower right */}
+      {/* menu to change view */}
+      <BaseMapSelect
+        className="absolute top-[4rem] left-2 "
+        BASEMAPS={BASEMAPS}
+        baseMapKey={baseMapKey}
+        setBaseMapKey={setBaseMap}
+      />
+      {/*  */}
+      <AddTrees
+        className="absolute bottom-2 left-2 "
+        useNewTreesStore={useNewTreesStore}
+        TreeService={TreeService}
+        useOpenAddTreesStore={useOpenAddTreesStore}
+        useUserStore={useUserStore}
+      />
+      <MapOptions
+        className={`bottom-2 ${user ? "left-[80px]" : "left-2"} absolute`}
+        useNewTreesStore={useNewTreesStore}
+        TreeService={TreeService}
+      />
+      <SelectedTree
+        TreeService={TreeService}
+        useTreesStore={useTreesStore}
+        useSelectedTreeStore={useSelectedTreeStore}
+        useUserStore={useUserStore}
+      />
       <Notification className="absolute right-2 bottom-2" type="success" />
       <ZoomIndicator className="absolute right-2 top-[4rem]" />
       <InfoDialogue className="absolute right-2 top-[7.5rem]" />
-      
+
       {/* form for adding new trees */}
     </div>
   );

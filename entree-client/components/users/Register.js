@@ -101,7 +101,7 @@ export default function Register({
             />
           ))}
           <button
-            className="bg-lime-100 p-2 m-2 w-full text-gray-500"
+            className="bg-lime-100 p-2 m-2 w-full text-gray-500 shadow-hover active:shadow-none"
             onClick={submitHandler}
           >
             Register

@@ -82,39 +82,42 @@ export default function InfoDialogue({ className }) {
             {/* minimize button */}
             <div
               onClick={() => setOpenAppInfo()}
-              className="rounded-full  h-7 w-7 text-center flex justify-center items-center absolute top-0 right-0 m-1 border-0 cursor-pointer"
+              className="rounded-full h-7 w-7 text-center flex justify-center items-center absolute top-0 right-0 m-1 border-0 cursor-pointer"
             >
               <MinusCircleIcon className="h-10 w-10 text"></MinusCircleIcon>
             </div>
             {/* Title */}
             <div
               id="title"
-              className="h-12 flex justify-center items-center my-3 w-4/5 border-b"
+              className="h-12 flex justify-center items-center my-3 w-[90%] border-b"
             >
               <div className="text-2xl font-bold">{appInfo.guides.title}</div>
             </div>
             {/* items for info sheet*/}
             {/* Display a grid of buttons for the different keys of appInfo.guides.steps */}
-            <div className="grid md:grid-cols-4 sm: grid-cols-3 gap-3 w-4/5">
-              {Object.keys(appInfo.guides.steps).map((key) => (
-                <div
-                  key={key}
-                  className={`${
-                    selectedStep === key ? "border-2" : ""
-                  } hover:scale-105 shadow-hover transition ease-in-out rounded-md bg-[var(--primary-bg-color)] py-2 opacity-90 text-center flex justify-center items-center border-gray-400 cursor-pointer`}
-                  onClick={() => setSelectedStep(key)}
-                >
-                  <div className="md:text-lg text-md font-bold">{key}</div>
-                </div>
-              ))}
+            {/* <div className="grid md:grid-cols-4 grid-cols-3 gap-3 w-[10]"> */}
+            <div className="w-full overflow-hidden flex justify-start lg:justify-center">
+              <div className="overflow-x-auto flex justify-start lg:justify-center mx-10">
+                {Object.keys(appInfo.guides.steps).map((key) => (
+                  <div
+                    key={key}
+                    className={`${
+                      selectedStep === key ? "border-2" : ""
+                    } hover:scale-105 shadow-hover transition ease-linear px-5 rounded-md bg-[var(--primary-bg-color)] mx-2 my-2 py-2 opacity-90 text-center flex justify-center items-center border-gray-400 cursor-pointer w-[100px]`}
+                    onClick={() => setSelectedStep(key)}
+                  >
+                    <div className="md:text-lg text-md font-bold">{key}</div>
+                  </div>
+                ))}
+              </div>
             </div>
             {/* Display the selected step */}
-            <div className="my-3 h-1/2 w-4/5 flex flex-col justify-start items-center border-t py-3">
+            <div className="my-3 h-[60%] w-[90%] flex flex-col justify-start items-center border-t py-3 ">
               <div className="text-2xl font-bold">
                 {appInfo.guides?.steps[selectedStep]?.title}
               </div>
-              <div className="text-md font-semibold mt-3">
-                {appInfo.guides?.steps[selectedStep]?.description}
+              <div className="text-md font-semibold mt-3 overflow-y-scroll">
+                {appInfo.guides?.steps[selectedStep]?.description || "Select an item to see its description."}
               </div>
             </div>
           </div>

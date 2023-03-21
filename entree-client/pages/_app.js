@@ -22,6 +22,7 @@ function MyApp({ Component, pageProps }) {
 
     const checkUserCookie = async () => {
       const user = CookieService.getUserCookie();
+      try {
       if (user) {
         const decoded = jwt_decode(user);
         // get current user
@@ -32,6 +33,14 @@ function MyApp({ Component, pageProps }) {
             user: response.data,
           });
         }
+      }}
+      catch (error) {
+        setUserState({
+          isLoggedIn: false,
+          user: null,
+        });
+        // remove cookie
+        CookieService.deleteUserCookie();
       }
     };
 

@@ -35,10 +35,10 @@ export default function Login({
 
   return (
     <Container
-      className={`min-h-[480px] max-w-[450px] min-w-[400px] p-5 lg:w-1/2 border-2 border-gray-100 bg-[color:var(--primary-bg-color)] flex justify-center items-center ${className}`}
+      className={`max-w-[450px] min-w-[400px] p-5 lg:w-1/2 border-2 border-gray-100 bg-[color:var(--primary-bg-color)] flex justify-center items-center ${className}`}
     >
       {/* LOGIN */}
-      <form className="flex flex-col items-center w-full">
+      <form className="flex flex-col items-center justify-center w-full h-full">
         {/* Entree Logo with Entree */}
         <div className="w-full flex justify-center">
           <Logo size="25px" className="mr-1" />
@@ -60,7 +60,7 @@ export default function Login({
             onChange={(e) => onEdit(e, "password")}
           />
           <button
-            className="bg-lime-100 p-2 m-2 w-full text-gray-500"
+            className="bg-lime-100 p-2 m-2 w-full text-gray-500 shadow-hover active:shadow-none"
             onClick={submitHandler}
           >
             Login

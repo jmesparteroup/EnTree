@@ -17,22 +17,22 @@ export default function Users() {
       <Head>
         <title>Entree | Register</title>
       </Head>
-      <div className="flex justify-center items-center h-[calc(100vh-4rem)]">
-        <div className="w-[80] px-auto  h-full content-center grid md:grid-cols-2 grid-cols-1 gap-5 ">
-          <Login
-            router={router}
-            cookieService={cookieService}
-            userService={userService}
-            setUserState={setUserState}
-            className="mr-5 min-h-[600px] max-h-[600px] order-last md:order-1"
-          ></Login>
+      <div className="flex justify-center items-center h-[calc(100vh-4rem)] ">
+        <div className="w-[80] px-auto h-full grid md:grid-cols-2 grid-cols-1 gap-5 place-items-center   overflow-scrollable">
           <Register
             router={router}
             cookieService={cookieService}
             userService={userService}
             setUserState={setUserState}
-            className="mr-5 min-h-[600px] max-h-[600px] max-h-[600px]"
+            className=" min-h-[600px] max-h-[600px] sm:my-2"
           ></Register>
+          <Login
+            router={router}
+            cookieService={cookieService}
+            userService={userService}
+            setUserState={setUserState}
+            className="min-h-[280px] max-h-[600px] hidden md:block"
+          ></Login>
         </div>
       </div>
     </>

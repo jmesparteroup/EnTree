@@ -90,11 +90,11 @@ export default function AddTrees({
   return (
     <div className="bg-transparent">
       <Container
-        className={`w-[65px] h-[65px] rounded-full flex items-center bg-lime-300 text-gray-800 shadow-2xl cursor-pointer ${className}`}
+        className={`w-[65px] h-[65px] rounded-full flex items-center bg-lime-300 text-gray-800 shadow-2xl cursor-pointer  ${className}`}
         onClick={addTreesClickHandler}
       >
         <div className="w-full h-full flex justify-center items-center shadow-none">
-          <button className="w-full h-full rounded-md border flex justify-center items-center shadow-none">
+          <button className="w-full h-full rounded-md flex justify-center items-center shadow-none">
             {!openAddTrees ? (
               <PlusCircleIcon className="w-8 h-8" />
             ) : (
@@ -151,13 +151,13 @@ export default function AddTrees({
           <div className="text-lg border-t-[1px] w-full mx-4 text-center font-bold">
             {/* submit trees */}
             <button
-              className="w-full h-full rounded-md border flex justify-center items-center shadow-sm active:shadow-inner"
+              className="w-full h-full rounded-md shadow-hover flex justify-center items-center shadow-sm active:shadow-inner"
               onClick={submitNewTreesClickHandler}
             >
               Submit
             </button>
           </div>
-          <div className="text-lg border-t-[1px] w-full mx-4 mt-1 text-center font-bold relative ">
+          <div className="text-lg  w-full mx-4 mt-1 text-center font-bold relative ">
             {/* submit trees */}
             <input
               type="file"
@@ -165,7 +165,7 @@ export default function AddTrees({
               onChange={handleFileUpload}
             />
             <button
-              className="w-full h-full rounded-md border flex justify-center items-center shadow-sm active:shadow-inner z-0 cursor-pointer"
+              className="w-full h-full rounded-md shadow-hover flex justify-center items-center shadow-sm active:shadow-inner z-0 cursor-pointer"
               onClick={submitNewTreesClickHandler}
             >
               Upload CSV
