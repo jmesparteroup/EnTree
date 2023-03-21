@@ -9,35 +9,40 @@ const appInfo = {
     "A web-service that visualizes urban vegetation in the National Capital Region of the Philippines",
   version: "0.1.0",
   guides: {
-    title: "How to use the map",
+    title: "EnTree Guide",
     description:
       "The map is a tool that allows you to visualize the urban vegetation in the National Capital Region of the Philippines. You can use the map to explore the vegetation in the region and to find out more about the vegetation in a specific area.",
     steps: {
-      Zooming: {
-        title: "Zooming in and out",
+      EnTree: {
+        title: "What is EnTree?",
         description:
-          "You can zoom in and out of the map by using the zoom buttons on the top left of the map. You can also zoom in and out by using the scroll wheel on your mouse.",
+          "EnTree is a web application that aims to let users visualize trees in the National Capital Region, and also allows users to contribute to the dataset by providing their own points. The goal of this application is to eventually be able to make a comprehensive set of data about the trees in the National Capital Region, with the help of Philippine citizens, which in turn could help with forming government policies and planning.",
       },
-      Panning: {
-        title: "Moving around the map",
+      Features: {
+        title: "Basic usage",
         description:
-          "You can move around the map by clicking and dragging the map. You can also move around the map by using the arrow keys on your keyboard.",
+          "Move around the map by clicking and dragging the map. The map can also be moved around by using the keyboard. EnTree shows the location and number of trees using diffent techniques. When zooming out to the city level, the number of datapoints inside the city is shown. Zooming in a little bit further shows the number of trees by tiling the areas as hexagons. Zooming in on a specific area shows the exact location of trees reported in that area.",
       },
       "Base Maps": {
-        title: "Changing the base map",
+        title: "Base maps",
         description:
-          "You can change the map type by clicking on the map type button on the top left of the map. You can choose between a satellite map and a street map.",
+          "Change the map type by clicking on the button on the upper left corner of the map. Choose between a street map and a satellite map.",
       },
-      "Adding Trees": {
+      "Add Trees": {
         title: "Adding Trees",
         description:
-          "You first need to login to the application. Once you are, an add tree button with the plus symbol will appear on the bottom left of the map.\n With this opened, you will now be able to click on the map to add trees.",
+          "User needs to be logged in to use this feature. Click the '+' symbol that appears on the bottom left of the map once logged in. Then, click anywhere on the map to pinpoint which point (tree) on the map will be submitted to the database. Click submit to the submit the data to the database. Refresh or zoom in or out to see the changes applied.",
       },
-      Visualization: {
-        title: "Visualization",
+      "Flag trees": {
+        title: "Flagging Trees",
         description:
-          "Visualization of the urban vegetation depends on the zoom level of the current map. The more you zoom in, the more detailed the visualization will be. It will start with City level visualization and will go down to tree or street level visualization.",
+          "Users logged in may flag trees they deem to be incorrect (e.g., a point on the map does not represent a tree and is therefore incorrect). Application administrators will verify flagged data manually. Click on a point to see the interface to flag (or unflag) it. Note: to hide the details interface, please click the point again.",
       },
+      Filter: {
+        title: "Filtering Search",
+        description:
+          "Filter search by city. Click the settings button on the bottom left of the map. Then, click 'Show Select Cities' and check/uncheck the relevant cities."
+      }
     },
   },
 };
