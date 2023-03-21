@@ -54,7 +54,6 @@ const useMapOptionsStore = create(
     },
 
     zoom: 13,
-    
     setZoomLevel: (zoom) => {
       set((state) => ({ zoom: zoom }));
     }

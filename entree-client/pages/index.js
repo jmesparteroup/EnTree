@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Head from 'next/head'
 import { useEffect, useState } from "react";
 import Container from "../components/layout/Container";
 import Logo from "../components/layout/Logo";
@@ -58,6 +59,9 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen flex justify-center items-center">
+      <Head>
+        <title>Entree</title>
+      </Head>
       {/* HALF LOGO WITH TEXT */}
       <div className="w-1/3 lg:w-[250px] hidden md:flex min-h-[480px] md:justify-end">
         <div className="relative w-full">

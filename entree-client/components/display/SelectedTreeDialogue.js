@@ -113,12 +113,12 @@ export default function SelectedTree({
               </div>
               <div className="mt-3 flex justify-between w-[70%] mx-auto">
                 {/* flag button */}
-                <button
+                {user?.userId && <button
                   onClick={flagTreeHandler}
                   className="w-2/5 h-10 rounded-md bg-lime-300 text-gray-800 font-semibold hover:bg-lime-400"
                 >
                   Flag
-                </button>
+                </button>}
                 {/* delete button */}
                 {user?.userId &&
                   user.userId === selectedTree?.attributes?.userId && (
