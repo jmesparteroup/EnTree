@@ -42,6 +42,11 @@ const appInfo = {
         title: "Filtering Search",
         description:
           "Filter search by city. Click the settings button on the bottom left of the map. Then, click 'Show Select Cities' and check/uncheck the relevant cities."
+      },
+      "Get my trees": {
+        title: "Get trees uploaded by the user",
+        description:
+          "This upcoming feature is intended for NSTP students from UP Diliman. This is to allow students to get all the points they have submitted so far."
       }
     },
   },
