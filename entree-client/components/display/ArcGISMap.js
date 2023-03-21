@@ -268,7 +268,7 @@ export default function EntreeMap({
           return true;
         });
 
-        addHexagons(newHexagons, zoom);
+        addHexagons(newHexagons, Math.round(zoom));
         console.log("newHexagons", newHexagons)
 
         if (updatedHexagonsCount > 0) {
@@ -711,12 +711,15 @@ export default function EntreeMap({
       }
     );
 
+    
+
     view.on("click", async (event) => {
       if (!localMapState.openAddTrees) {
         if (view.zoom >= MAP_CONFIG.POINT_ZOOM_LEVEL) {
           const opts = {
             include: graphicsLayer,
           };
+          const _zoom = Math.round(view.zoom);
 
           let layerView = await view.whenLayerView(graphicsLayer);
           view.hitTest(event, opts).then((response) => {
@@ -786,6 +789,10 @@ export default function EntreeMap({
       "drag",
       async () => {
         const { longitude, latitude } = view.center;
+        const _zoom = Math.round(view.zoom);
+
+        // round off zoom to int
+        
 
         const distanceFromLastView = distanceCalculator(
           localMapState.viewCenter[1],
@@ -794,10 +801,10 @@ export default function EntreeMap({
           longitude
         );
 
-        if (distanceFromLastView < 200 * 2 ** (18 - view.zoom)) return;
+        if (distanceFromLastView < 200 * 2 ** (18 - _zoom)) return;
 
         // IF ZOOM IS LESS THAN 18, SHOW TREES
-        if (view.zoom >= 18) {
+        if (_zoom >= 18) {
           // IF PREVIOUS ZOOM LEVEL IS BELOW 18 CLEAR GRAPHICS
           if (
             localMapState.treesRendered === -1 ||
@@ -813,36 +820,36 @@ export default function EntreeMap({
 
         // IF ZOOM LEVEL IS LESS THAN 18, SHOW HEXAGONS
         if (
-          view.zoom < MAP_CONFIG.POINT_ZOOM_LEVEL &&
-          view.zoom > MAP_CONFIG.POLYGON_ZOOM_LEVEL
+          _zoom < MAP_CONFIG.POINT_ZOOM_LEVEL &&
+          _zoom > MAP_CONFIG.POLYGON_ZOOM_LEVEL
         ) {
           // IF CURRENT ZOOM == PREVIOUS ZOOM, DO NOTHING
           if (
             distanceFromLastView >
-            200 * 2 ** (18 - view.zoom) // 200 meters at zoom 18, 400 meters at zoom 17, 800 meters at zoom 16, etc.
+            200 * 2 ** (18 - _zoom) // 200 meters at zoom 18, 400 meters at zoom 17, 800 meters at zoom 16, etc.
           ) {
             localMapState.viewCenter = [longitude, latitude];
 
             await getHexagons(
-              view.zoom,
+              _zoom,
               latitude,
               longitude,
-              localMapState.renderedHexagons[view.zoom]
+              localMapState.renderedHexagons[_zoom]
             );
 
             renderHexagons(
               graphicsLayer,
               localMapState.hexagons,
-              view.zoom,
+              _zoom,
               localMapState,
               labelLayer,
               zeroTreesLayer
             );
             transferRenderedHexagons(
-              view.zoom,
-              localMapState.hexagons[view.zoom] || ["1"]
+              _zoom,
+              localMapState.hexagons[_zoom] || ["1"]
             );
-            clearHexagons(view.zoom);
+            clearHexagons(_zoom);
           }
         }
         // always render new trees
@@ -853,15 +860,16 @@ export default function EntreeMap({
       () => view?.stationary,
       async () => {
         const { longitude, latitude } = view.center;
-        setZoomLevel(view.zoom)
+        const _zoom = Math.round(view.zoom);
+        setZoomLevel(_zoom)
 
         // IF ZOOM IS LESS THAN 18, SHOW TREES
-        if (view.zoom >= 18) {
+        if (_zoom >= 18) {
           // IF PREVIOUS ZOOM LEVEL IS BELOW 18 CLEAR GRAPHICS
           if (localMapState.zoomLevel < MAP_CONFIG.POINT_ZOOM_LEVEL) {
             labelLayer.removeAll();
             graphicsLayer.removeAll();
-            localMapState.zoomLevel = view.zoom;
+            localMapState.zoomLevel = _zoom;
           }
 
           if (localMapState.treesRendered === -1) {
@@ -875,31 +883,31 @@ export default function EntreeMap({
 
         // IF ZOOM LEVEL IS LESS THAN 18, SHOW HEXAGONS
         if (
-          view.zoom < MAP_CONFIG.POINT_ZOOM_LEVEL &&
-          view.zoom > MAP_CONFIG.POLYGON_ZOOM_LEVEL
+          _zoom < MAP_CONFIG.POINT_ZOOM_LEVEL &&
+          _zoom > MAP_CONFIG.POLYGON_ZOOM_LEVEL
         ) {
           // IF CURRENT ZOOM == PREVIOUS ZOOM, DO NOTHING
           if (
-            localMapState.zoomLevel !== view.zoom ||
+            localMapState.zoomLevel !== _zoom ||
             localMapState.firstLoad
           ) {
             labelLayer.removeAll();
             graphicsLayer.removeAll();
-            localMapState.zoomLevel = view.zoom;
+            localMapState.zoomLevel = _zoom;
 
             await getHexagons(
-              view.zoom,
+              _zoom,
               latitude,
               longitude,
-              localMapState.renderedHexagons[view.zoom]
+              localMapState.renderedHexagons[_zoom]
             );
 
-            if (!localMapState.hexagons[view.zoom]) return;
+            if (!localMapState.hexagons[_zoom]) return;
 
             renderHexagons(
               graphicsLayer,
               localMapState.hexagons,
-              view.zoom,
+              _zoom,
               localMapState,
               labelLayer,
               zeroTreesLayer
@@ -908,21 +916,21 @@ export default function EntreeMap({
             renderHexagons(
               graphicsLayer,
               localMapState.renderedHexagons,
-              view.zoom,
+              _zoom,
               localMapState,
               labelLayer,
               zeroTreesLayer
             );
 
             console.log(
-              "localMapState.hexagons[view.zoom]",
-              localMapState.hexagons[view.zoom]
+              "localMapState.hexagons[_zoom]",
+              localMapState.hexagons[_zoom]
             );
             transferRenderedHexagons(
-              view.zoom,
-              localMapState.hexagons[view.zoom]
+              _zoom,
+              localMapState.hexagons[_zoom]
             );
-            clearHexagons(view.zoom);
+            clearHexagons(_zoom);
             renderPolygons(
               graphicsLayer,
               localMapState,
@@ -934,8 +942,8 @@ export default function EntreeMap({
             localMapState.firstLoad = false;
           }
         }
-        if (view.zoom <= MAP_CONFIG.POLYGON_ZOOM_LEVEL) {
-          localMapState.zoomLevel = view.zoom;
+        if (_zoom <= MAP_CONFIG.POLYGON_ZOOM_LEVEL) {
+          localMapState.zoomLevel = _zoom;
           await getCityPolygons();
           labelLayer.removeAll();
           graphicsLayer.removeAll();
