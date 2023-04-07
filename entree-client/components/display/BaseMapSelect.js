@@ -39,10 +39,10 @@ export default function BaseMapSelect({
             {Object.keys(BASEMAPS).map((key) => (
               <button
                 key={key}
-                className="w-2/3 h-full rounded-md border bg-white border-gray-400"
+                className="w-2/3 h-full rounded-md border bg-white border-gray-400 select-none"
                 onClick={() => setBaseMapKey(key)}
               >
-                <span className="h-full w-1/2 overflow-wrap">
+                <span className="h-full w-1/2 overflow-wrap select-none">
                   {BASEMAPTEXT[key]}
                 </span>
               </button>

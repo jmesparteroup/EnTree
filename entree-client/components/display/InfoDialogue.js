@@ -41,18 +41,18 @@ const appInfo = {
       Filter: {
         title: "Filtering Search",
         description:
-          "Filter search by city. Click the settings button on the bottom left of the map. Then, click 'Show Select Cities' and check/uncheck the relevant cities."
+          "Filter search by city. Click the settings button on the bottom left of the map. Then, click 'Show Select Cities' and check/uncheck the relevant cities.",
       },
       "Get my trees": {
         title: "Get trees uploaded by the user",
         description:
-          "This upcoming feature is intended for NSTP students from UP Diliman. This is to allow students to get all the points they have submitted so far."
+          "This upcoming feature is intended for NSTP students from UP Diliman. This is to allow students to get all the points they have submitted so far.",
       },
-      "Survey": {
+      Survey: {
         title: "Answer our Thesis Survey!",
         description:
-          "Good day! This survey is intended to be answered by NSTP students from UP Diliman. The survey is available here: https://docs.google.com/forms/d/e/1FAIpQLSeOHuHu6CFkV9qF-R6vES2IL0X2TxA4EamYb4g8jRVxFGe3Iw/viewform . Hopefully, you can answer this survey before the third week of April. Thank you for participating and using our application!"
-      }
+          "Good day! This survey is intended to be answered by NSTP students from UP Diliman. Hopefully, you can answer this survey before the third week of April. Thank you for participating and using our application!",
+      },
     },
   },
 };
@@ -64,6 +64,11 @@ export default function InfoDialogue({ className }) {
   const setOpenAppInfo = useAppInfoStore((state) => state.setOpenAppInfo);
   const selectedStep = useAppInfoStore((state) => state.selectedStep);
   const setSelectedStep = useAppInfoStore((state) => state.setSelectedStep);
+
+  const openLinkInNewTab = ( url ) => {
+    const newTab = window.open(url, '_blank', 'noopener, noreferrer');
+    if ( newTab ) newTab.opener = null;
+  }
   return (
     <>
       {!openAppInfo ? (
@@ -89,35 +94,56 @@ export default function InfoDialogue({ className }) {
             {/* Title */}
             <div
               id="title"
-              className="h-12 flex justify-center items-center my-3 w-[90%] border-b"
+              className="h-12 flex justify-center items-center my-3 w-[90%] border-b select-none"
             >
-              <div className="text-2xl font-bold">{appInfo.guides.title}</div>
+              <div className="text-2xl font-bold select-none">{appInfo.guides.title}</div>
             </div>
             {/* items for info sheet*/}
             {/* Display a grid of buttons for the different keys of appInfo.guides.steps */}
             {/* <div className="grid md:grid-cols-4 grid-cols-3 gap-3 w-[10]"> */}
-            <div className="w-full overflow-hidden flex justify-start lg:justify-center">
-              <div className="overflow-x-auto flex justify-start lg:justify-center mx-10">
+            <div className="w-full flex justify-start lg:justify-center">
+              <div
+                className="overflow-x-auto flex justify-start lg:justify-center mx-10 touch-auto"
+                id="allowedScroll"
+              >
                 {Object.keys(appInfo.guides.steps).map((key) => (
                   <div
                     key={key}
+                    id="allowedScroll"
                     className={`${
                       selectedStep === key ? "border-2" : ""
-                    } hover:scale-105 shadow-hover transition ease-linear px-5 rounded-md bg-[var(--primary-bg-color)] mx-2 my-2 py-2 opacity-90 text-center flex justify-center items-center border-gray-400 cursor-pointer w-[100px]`}
+                    } select-none hover:scale-105 shadow-hover transition ease-linear px-5 rounded-md bg-[var(--primary-bg-color)] mx-2 my-2 py-2 opacity-90 text-center flex justify-center items-center border-gray-400 cursor-pointer w-[100px]`}
                     onClick={() => setSelectedStep(key)}
                   >
-                    <div className="md:text-lg text-md font-bold">{key}</div>
+                    <div
+                      id="allowedScroll"
+                      className="md:text-lg text-md font-bold"
+                    >
+                      {key}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
             {/* Display the selected step */}
-            <div className="my-3 h-[60%] w-[90%] flex flex-col justify-start items-center border-t py-3 ">
-              <div className="text-2xl font-bold">
+            <div className="my-3 h-[60%] w-[90%] flex flex-col justify-start items-center border-t py-3">
+              <div className="text-2xl font-bold select-none">
                 {appInfo.guides?.steps[selectedStep]?.title}
               </div>
-              <div className="text-md font-semibold mt-3 overflow-y-scroll">
-                {appInfo.guides?.steps[selectedStep]?.description || "Select an item to see its description."}
+              <div
+                className="text-md font-semibold mt-3 overflow-y-auto touch-auto w-full"
+                id="allowedScroll"
+              >
+                {appInfo.guides?.steps[selectedStep]?.description ||
+                  "Select an item to see its description."}
+                {selectedStep === "Survey" && (
+                  <button
+                    className="bg-lime-100 p-2 m-2 w-4/5 text-gray-500 shadow-hover active:shadow-none"
+                    onClick={() => openLinkInNewTab("https://docs.google.com/forms/d/e/1FAIpQLSeOHuHu6CFkV9qF-R6vES2IL0X2TxA4EamYb4g8jRVxFGe3Iw/viewform")}
+                  >
+                    Survey Link
+                  </button>
+                )}
               </div>
             </div>
           </div>

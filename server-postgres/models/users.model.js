@@ -57,17 +57,20 @@ class User {
 
 		if (identifier === "username") {
 			data = await repository.getUserByUsername(identifierData);
+      if (!data) {
+        throw UsersError.UserNotFound();
+      }
 		}
 		if (identifier === "email") {
 			data = await repository.getUserByEmail(identifierData);
+      if (!data) {
+        throw UsersError.EmailDoesNotExist();
+      }
 		}
 		if (identifier === "userId") {
 			data = await repository.getUserById(identifierData);
 			expiresIn = "15m";
 			message = "Identity Confirmed";
-		}
-		if (!data) {
-			throw UsersError.UserNotFound();
 		}
 
 		const isPasswordValid = await this.comparePassword(
@@ -75,7 +78,7 @@ class User {
 			data.password
 		);
 		if (!isPasswordValid) {
-			throw errors.InvalidPassword();
+			throw errors.IncorrectPassword();
 		}
 
 		console.log("Expires in: ", expiresIn);

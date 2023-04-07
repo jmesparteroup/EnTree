@@ -18,36 +18,43 @@ const REGISTER_FIELDS = [
     name: "email",
     placeholder: "Email",
     type: "text",
+    errorCode: 1003,
   },
   {
     name: "username",
     placeholder: "Username",
     type: "text",
+    errorCode: 1002,
   },
   {
     name: "password",
     placeholder: "Password",
     type: "password",
+    errorCode: 9999,
   },
   {
     name: "firstName",
     placeholder: "First Name",
     type: "text",
+    errorCode: 9999,
   },
   {
     name: "lastName",
     placeholder: "Last Name",
     type: "text",
+    errorCode: 9999,
   },
   {
     name: "mobileNumber",
     placeholder: "Mobile Number",
     type: "text",
+    errorCode: 9999,
   },
   {
     name: "age",
     placeholder: "Age",
     type: "number",
+    errorCode: 9999,
   },
 ];
 
@@ -59,22 +66,36 @@ export default function Register({
   router,
 }) {
   const [formDetails, setFormDetails] = useState({});
+  const [error, setError] = useState({
+    message: "",
+    code: 0,
+  });
   const onEdit = (e, field) => {
     setFormDetails({ ...formDetails, [field]: e.target.value });
   };
 
   const submitHandler = async (e) => {
-    e.preventDefault();
-    const response = await userService.registerUser(formDetails);
+    try {
+      e.preventDefault();
+      const response = await userService.registerUser(formDetails);
+      
 
-    if (response?.data?.token) {
-      cookieService.setUserCookie(response?.data?.token);
-      // get user details
-      const userResponse = await userService.getUserById(
-        response?.data?.userId
-      );
-      setUserState({ isLoggedIn: true, user: userResponse?.data });
-      router.push("/maps");
+      if (response?.data?.token) {
+        cookieService.setUserCookie(response?.data?.token);
+        // get user details
+        const userResponse = await userService.getUserById(
+          response?.data?.userId
+        );
+        setUserState({ isLoggedIn: true, user: userResponse?.data });
+        router.push("/maps");
+      }
+    } catch (error) {
+
+      setError({
+        message: error.message || "Something went wrong",
+        code: error.customCode || 0,
+      });
+      console.log(error);
     }
   };
 
@@ -92,7 +113,9 @@ export default function Register({
         <div className="flex flex-col items-center mt-3 w-[80%]">
           {REGISTER_FIELDS.map((field) => (
             <input
-              className="border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full"
+              className={`border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full ${
+                field.errorCode === error.code && "border-red-300 shadow-red-300 shadow"
+              }`}
               type={field.type}
               placeholder={field.placeholder}
               value={formDetails[field.name]}

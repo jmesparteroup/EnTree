@@ -11,7 +11,6 @@ const generateAuthHeader = () => {
 };
 
 
-
 const TreeService = {
   getAllTrees: async () => {
     const res =  await fetch(`${process.env.SERVER_URL}/trees/`, {
@@ -68,7 +67,17 @@ const TreeService = {
         'Authorization': generateAuthHeader(),
       }
     });
+  },
+  getTreesByUser: async () => {
+    const res = await fetch(`${process.env.SERVER_URL}/trees/user`, {
+      method: "GET",
+      headers: {
+        'Authorization': generateAuthHeader(),
+      }
+    });
+    return await res.json();
   }
+
 
 };
 

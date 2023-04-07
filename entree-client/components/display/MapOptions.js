@@ -82,31 +82,32 @@ export default function MapOptions({ className }) {
         >
           {/* scrollable div that shows clicked items */}
           <div className="text-lg border-b-[1px] w-full mx-4 text-center font-bold">
-            Map Options
+            Options
           </div>
           {/* choices */}
-          <div className="w-full h-full flex-col items-center bg-transparent rounded-lg overflow-x-hidden scroll-smooth">
+          <div className="w-full h-full flex-col items-center bg-transparent rounded-lg overflow-x-hidden scroll-smooth" id="allowedScroll">
             {/* Map through Map Options and display a checkbox that corresponds to them */}
             {MAP_SELECTIONS.map((option, index) => (
               <div
                 className="flex h-8 w-full"
                 key={`${index}${option.name}${option.value}`}
+                id="allowedScroll"
               >
                 {/* index */}
-                <div className="w-1/12 h-full flex justify-center items-center">
+                <div className="w-1/12 h-full flex justify-center items-center" id="allowedScroll">
                   {index + 1}
                 </div>
-                <div className="w-9/12 h-full flex justify-center items-center">
+                <div className="w-9/12 h-full flex justify-center items-center" id="allowedScroll">
                   {option.name}
                 </div>
                 {/* check box */}
-                <div className="w-1/12 h-full flex justify-center items-center">
+                <div className="w-1/12 h-full flex justify-center items-center" id="allowedScroll">
                   <input
                     type="checkbox"
                     className="w-4 h-4 hover:scale-125 cursor-pointer transition duration-150"
                     name={option.value}
                     checked={option.value === "showLabels" ? showLabels : mapOptions[option.value]}
-                    onChange={handleCheckboxChange}
+                    onChange={handleCheckboxChange} id="allowedScroll"
                   />
                 </div>
               </div>
@@ -115,13 +116,13 @@ export default function MapOptions({ className }) {
             {mapOptions.showSelect && MAP_CONFIG.DEFAULT_CITIES.map((city, index) => (
               <div
                 className="flex h-8 w-full"
-                key={`${index}${city.name}${city.value}`}
+                key={`${index}${city.name}${city.value}`} id="allowedScroll"
               >
                 {/* index */}
-                <div className="w-1/12 h-full flex justify-center items-center">
+                <div className="w-1/12 h-full flex justify-center items-center" id="allowedScroll">
                   
                 </div>
-                <div className="w-9/12 h-full flex justify-center items-center">
+                <div className="w-9/12 h-full flex justify-center items-center" id="allowedScroll">
                   {city}
                 </div>
                 {/* check box */}
@@ -130,7 +131,7 @@ export default function MapOptions({ className }) {
                     type="checkbox"
                     className="w-4 h-4 hover:scale-125 cursor-pointer transition duration-150"
                     name={city}
-                    onChange={handleCheckCity}
+                    onChange={handleCheckCity} id="allowedScroll"
                   />
                 </div>
               </div>

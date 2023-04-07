@@ -15,7 +15,9 @@ function MyApp({ Component, pageProps }) {
       "touchmove",
       function (event) {
         // Prevent scrolling on this element
-        event.preventDefault();
+        if (event?.target?.id !== "allowedScroll") {
+          event.preventDefault();
+        }
       },
       { passive: false }
     );
@@ -23,18 +25,18 @@ function MyApp({ Component, pageProps }) {
     const checkUserCookie = async () => {
       const user = CookieService.getUserCookie();
       try {
-      if (user) {
-        const decoded = jwt_decode(user);
-        // get current user
-        const response = await UserService.getUserById(decoded.userId);
-        if (response?.data) {
-          setUserState({
-            isLoggedIn: true,
-            user: response.data,
-          });
+        if (user) {
+          const decoded = jwt_decode(user);
+          // get current user
+          const response = await UserService.getUserById(decoded.userId);
+          if (response?.data) {
+            setUserState({
+              isLoggedIn: true,
+              user: response.data,
+            });
+          }
         }
-      }}
-      catch (error) {
+      } catch (error) {
         setUserState({
           isLoggedIn: false,
           user: null,

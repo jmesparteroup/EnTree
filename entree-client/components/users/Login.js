@@ -9,27 +9,63 @@ export default function Login({
   className,
   router,
 }) {
-  const [formDetails, setFormDetails] = useState({});
+  const [formDetails, setFormDetails] = useState({
+    identifier: "",
+    password: "",
+  });
   const onEdit = (e, field) => {
     setFormDetails({ ...formDetails, [field]: e.target.value });
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    const { email, password } = formDetails;
-    const response = await userService.loginUser({ email, password });
+  const [error, setError] = useState({
+    message: "",
+    code: "",
+  });
 
-    if (response?.data?.token) {
-      cookieService.setUserCookie(response?.data?.token);
-      // get user details
-      const userResponse = await userService.getUserById(
-        response?.data?.userId
-      );
-      setUserState({ isLoggedIn: true, user: userResponse?.data });
-      router.push("/maps");
-    }
-    if (response.error) {
-      setError(data.error);
+  const submitHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const { identifier, password } = formDetails;
+      const response = await userService.loginUser({ identifier, password });
+
+      if (response?.data?.token) {
+        cookieService.setUserCookie(response?.data?.token);
+        // get user details
+        const userResponse = await userService.getUserById(
+          response?.data?.userId
+        );
+        setUserState({ isLoggedIn: true, user: userResponse?.data });
+        router.push("/maps");
+      }
+    } catch (error) {
+      switch (error.customCode) {
+        case 1001:
+          setError({
+            message: error.message,
+            code: error.customCode,
+          });
+          break;
+
+        case 1004:
+          setError({
+            message: error.message,
+            code: error.customCode,
+          });
+          break;
+
+        case 1005:
+          setError({
+            message: error.message,
+            code: error.customCode,
+          });
+          break;
+
+        default:
+          setError({
+            message: "Something went wrong",
+            code: error.customCode,
+          });
+      }
     }
   };
 
@@ -46,25 +82,34 @@ export default function Login({
         </div>
         <div className="flex flex-col items-center mt-3 w-[80%]">
           <input
-            className="border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full"
+            className={`border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full ${
+              error.code === 1001 ||
+              (error.code === 1004 && "border-red-300 shadow-red-300 shadow")
+            }`}
             type="text"
-            placeholder="email"
-            value={formDetails.email}
-            onChange={(e) => onEdit(e, "email")}
+            placeholder="email or username"
+            value={formDetails.identifier}
+            onChange={(e) => onEdit(e, "identifier")}
           />
           <input
-            className="border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full"
+            className={`border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full ${
+              error.code === 1005 && "border-red-300 shadow-red-300 shadow"
+            }`}
             type="password"
             placeholder="Password"
             value={formDetails.password}
             onChange={(e) => onEdit(e, "password")}
           />
+                    {error.code && (
+            <p className="text-red-400 text-sm w-full">{error.message}</p>
+          )}
           <button
             className="bg-lime-100 p-2 m-2 w-full text-gray-500 shadow-hover active:shadow-none"
             onClick={submitHandler}
           >
             Login
           </button>
+
         </div>
       </form>
     </Container>

@@ -6,6 +6,10 @@ import {
 } from "@heroicons/react/24/outline";
 import Container from "../layout/Container";
 
+import { CSVLink } from "react-csv";
+import { useState } from "react";
+import { map } from "leaflet";
+
 export default function AddTrees({
   className,
   useNewTreesStore,
@@ -24,16 +28,37 @@ export default function AddTrees({
     (state) => state.setOpenAddTrees
   );
 
+  const [userTrees, setUserTrees] = useState([]);
+  const [csvHeaders, setCsvHeaders] = useState([
+    "User ID", "Latitude", "Longitude",
+  ]);
+
   const loggedInUser = useUserStore((state) => state.userState.user);
+
+  const requestUserTrees = async () => {
+    try {
+      const response = await TreeService.getTreesByUser();
+      if (response?.trees?.length > 0) {
+        const formattedTrees = response.trees.map((tree) => {
+          return [
+            loggedInUser.userId,
+            tree[0],
+            tree[1],
+          ];
+        });
+        setUserTrees(formattedTrees);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // handler
   const parseCSV = (csv) => {
     const lines = csv.split("\n");
-    const headers = lines[0].split(",");
     const parsedData = [];
 
     for (let i = 1; i < lines.length; i++) {
-      const obj = {};
       const currentLine = lines[i].split(",");
 
       parsedData.push(currentLine);
@@ -170,6 +195,21 @@ export default function AddTrees({
             >
               Upload CSV
             </button>
+          </div>
+          <div className="text-lg border-t-[1px] w-full mx-4 mt-1 text-center font-bold">
+            {/* submit trees */}
+            {userTrees?.length > 0 ? (
+              <button className="bg-lime-100 w-full h-full rounded-md shadow-hover flex justify-center items-center shadow-sm active:shadow-inner">
+                <CSVLink data={userTrees} headers={csvHeaders} filename={`${Date.now()}_${loggedInUser.username}`}>Download CSV</CSVLink>
+              </button>
+            ) : (
+              <button
+                className="w-full h-full rounded-md shadow-hover flex justify-center items-center shadow-sm active:shadow-inner"
+                onClick={requestUserTrees}
+              >
+                Request Uploaded Trees
+              </button>
+            )}
           </div>
         </Container>
       ) : (

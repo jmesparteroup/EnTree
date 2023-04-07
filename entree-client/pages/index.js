@@ -26,10 +26,13 @@ export default function Home() {
   }, []);
 
   const [formDetails, setFormDetails] = useState({
-    email: "",
+    identifier: "",
     password: "",
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState({
+    message: "",
+    code: "",
+  });
 
   const onEdit = (e, field) => {
     setFormDetails({ ...formDetails, [field]: e.target.value });
@@ -38,8 +41,8 @@ export default function Home() {
   const submitHandler = async (e) => {
     try {
       e.preventDefault();
-      const { email, password } = formDetails;
-      const response = await userService.loginUser({ email, password });
+      const { identifier, password } = formDetails;
+      const response = await userService.loginUser({ identifier, password });
 
       if (response?.data?.token) {
         cookieService.setUserCookie(response?.data?.token);
@@ -51,8 +54,34 @@ export default function Home() {
         router.push("/maps");
       }
     } catch (error) {
-      console.log("ERROR CAUGHT", error);
-      setError(error.message);
+      switch (error.customCode) {
+        case 1001:
+          setError({
+            message: error.message,
+            code: error.customCode,
+          });
+          break;
+
+        case 1004:
+          setError({
+            message: error.message,
+            code: error.customCode,
+          });
+          break;
+
+        case 1005:
+          setError({
+            message: error.message,
+            code: error.customCode,
+          });
+          break;
+
+        default:
+          setError({
+            message: "Something went wrong",
+            code: error.customCode,
+          });
+      }
     }
   };
 
@@ -93,26 +122,35 @@ export default function Home() {
             <form className="flex flex-col items-center mt-3 w-[80%]">
               <input
                 className={`border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full ${
-                  error.length > 0 && "border-red-300 shadow-red-300 shadow"
+                  error.code === 1001 || error.code === 1004 &&
+                  "border-red-300 shadow-red-300 shadow"
                 }`}
                 type="text"
-                placeholder="email"
-                value={formDetails.email}
-                onChange={(e) => onEdit(e, "email")}
+                placeholder="email or username"
+                value={formDetails.identifier}
+                onChange={(e) => onEdit(e, "identifier")}
               />
               <input
-                className="border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full"
+                className={`border-gray-200 p-2 m-2 focus:outline-none border-[1px] bg-[color:var(--secondary-bg-color)] w-full ${
+                  error.code === 1005 &&
+                  "border-red-300 shadow-red-300 shadow"
+                }`}
                 type="password"
                 placeholder="Password"
                 value={formDetails.password}
                 onChange={(e) => onEdit(e, "password")}
               />
+             
               <button
                 className="bg-lime-100 p-2 m-2 w-full text-gray-500 shadow-hover active:shadow-none"
                 onClick={submitHandler}
               >
                 Login
               </button>
+               {/* error message */}
+               {error.code && (
+                <p className="text-red-400 text-sm w-full">{error.message}</p>
+              )}
               {/* --- or --- */}
               <div className="flex flex-row items-center justify-center mt-3 w-full">
                 <hr className="w-1/2 bg-gray-500" />
@@ -130,6 +168,14 @@ export default function Home() {
                 >
                   Join us
                 </p>
+              </div>
+              <div className="md:hidden flex flex-row items-center justify-center mt-3 w-full">
+                <hr className="w-1/2 bg-gray-500" />
+                <p className="mx-4 text-md text-gray-500">or</p>
+                <hr className="w-1/2 bg-gray-500" />
+              </div>
+              <div className="md:hidden w-full flex justify-center align-center text-gray-500 mt-3 cursor-pointer font-bold" onClick={() => router.push("/maps")}>
+                Click here to check our map!
               </div>
             </form>
           </div>
