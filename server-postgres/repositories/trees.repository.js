@@ -199,6 +199,17 @@ class TreesRepository {
       throw error;
     }
   }
+
+  async getBarangay(barangay) {
+    try {
+      const conn = await this.pool.connect();
+      const result = await conn.query("SELECT * FROM get_barangay($1)", [barangay]);
+      conn.release();
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 

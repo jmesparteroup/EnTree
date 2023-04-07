@@ -227,6 +227,62 @@ class TreesController {
     }
 
 
+    async getBarangay(req, res) {
+        try {
+            const barangay = req.query.brgy;
+            if (!barangay) {
+                res.status(400).json({error:"City not found"}); 
+                return;
+            }
+            console.log("Getting brgy data")
+            const brgy_data = await this.TreesRepository.getBarangay(barangay);
+            const centroid = brgy_data[0].centroid;
+            let processed_polygon_array = [];
+            for (let p of brgy_data) {
+                let polygons = p.polygon.slice(16,-3).split(")),((");
+                for (let polygon_raw of polygons) {
+                    const point_array = polygon_raw.split(',');
+                    let processed_polygon = [];
+                    for (let coord of point_array) {
+                        const x = parseFloat(coord.split(' ')[0]);
+                        const y = parseFloat(coord.split(' ')[1]);
+                        processed_polygon.push([x,y])
+                    }
+                    processed_polygon_array.push(processed_polygon);
+                }
+            }
+            const centroid_x = parseFloat(centroid.split(' ')[0]);
+            const centroid_y = parseFloat(centroid.split(' ')[1]);
+            // let processed_polygon_array = [];
+            // for (let p of city_data) {
+            //     let polygon = p.polygon;
+            //     const polygon_raw = polygon.slice(9,-2);
+            //     const point_array = polygon_raw.split(',');
+            //     let processed_polygon = [];
+            //     for (let coord of point_array) {
+            //         const x = parseFloat(coord.split(' ')[0]);
+            //         const y = parseFloat(coord.split(' ')[1]);
+            //         processed_polygon.push([x,y])
+            //     }
+            //     processed_polygon_array.push(processed_polygon)
+            // }
+            // let result = {
+            //     city: city_data.cityName,
+            //     polygons: processed_polygon_array,
+            //     trees: parseInt(trees.c)
+            // };
+            console.log("Got brgy data")
+            res.status(200).json({
+                barangayName: barangay,
+                polygons: processed_polygon_array,
+                centroid: [centroid_x, centroid_y]
+            });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json(error);
+        }
+    }
+
 }
 
 module.exports = TreesController;
