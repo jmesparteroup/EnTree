@@ -8,7 +8,6 @@ import Container from "../layout/Container";
 
 import { CSVLink } from "react-csv";
 import { useState } from "react";
-import { map } from "leaflet";
 
 export default function AddTrees({
   className,

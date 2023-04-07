@@ -1,3 +1,4 @@
 **/node_modules/
 entree-client/.gitignore
 testserver
+/postgres-db/data.sql
