@@ -6,8 +6,8 @@ import useUserStore from "../stores/userStore";
 import jwt_decode from "jwt-decode";
 import "../styles/globals.css";
 
-import esriConfig from "@arcgis/core/config.js";
-esriConfig.assetsPath = "./assets";
+// import esriConfig from "@arcgis/core/config.js";
+// esriConfig.assetsPath = "./assets";
 
 if (process.env.ENVIRONMENT !== "development")
     console.log = () => {};
