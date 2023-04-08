@@ -1,10 +1,10 @@
 import { Cog6ToothIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 import useMapOptionsStore from "../../stores/mapOptionsStore";
-import useOpenMapOptionsStore from "../../stores/openMapOptionsStore";
 import Container from "../layout/Container";
 
 
 import MAP_CONFIG from "../../constants/map";
+import { MinusIcon } from "@heroicons/react/24/solid";
 
 const MAP_SELECTIONS = [
   { name: "Show Number of Trees", value: "showLabels" },
@@ -13,10 +13,10 @@ const MAP_SELECTIONS = [
 ];
 
 export default function MapOptions({ className }) {
-  const openMapOptions = useOpenMapOptionsStore(
+  const openMapOptions = useMapOptionsStore(
     (state) => state.openMapOptions
   );
-  const setOpenMapOptions = useOpenMapOptionsStore(
+  const setOpenMapOptions = useMapOptionsStore(
     (state) => state.setOpenMapOptions
   );
 
@@ -78,12 +78,18 @@ export default function MapOptions({ className }) {
       </Container>
       {openMapOptions ? (
         <Container
-          className={`w-[258px] h-[25vh] absolute right-2 bottom-[25%] rounded-lg bg-white opacity-90 flex flex-col p-4 items-center text-gray-800 shadow-2xl`}
+          className={`w-[258px] h-[25vh] absolute right-2 bottom-[25%] rounded-lg bg-white opacity-90 flex flex-col p-3 items-center text-gray-800 shadow-2xl`}
         >
           {/* scrollable div that shows clicked items */}
           <div className="text-lg border-b-[1px] w-full mx-4 text-center font-bold">
             Options
           </div>
+          <div
+              onClick={() => setOpenMapOptions()}
+              className="rounded-full h-7 w-7 text-center flex justify-center items-center absolute top-0 right-0 m-1 border-0 cursor-pointer"
+            >
+              <MinusIcon className="h-10 w-10 text text-gray-400 hover:text-gray-600 transition ease-linear"></MinusIcon>
+            </div>
           {/* choices */}
           <div className="w-full h-full flex-col items-center bg-transparent rounded-lg overflow-x-hidden scroll-smooth" id="allowedScroll">
             {/* Map through Map Options and display a checkbox that corresponds to them */}

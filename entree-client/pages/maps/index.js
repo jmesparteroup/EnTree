@@ -21,6 +21,7 @@ import MapOptions from "../../components/display/MapOptions";
 import SelectedTree from "../../components/display/SelectedTreeDialogue";
 import ZoomIndicator from "../../components/display/ZoomIndicator";
 import InfoDialogue from "../../components/display/InfoDialogue";
+import SearchLocations from "../../components/display/SearchLocations";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -64,8 +65,9 @@ export default function Maps() {
         setBaseMapKey={setBaseMap}
       />
       {/*  */}
+      <SearchLocations className="absolute top-[40vh] md:top-[4rem] left-[10vw] sm:left-[30vw]" iconClassName="absolute right-2 top-[11rem]"/>
       <AddTrees
-        className="absolute bottom-2 left-2 "
+        className="absolute bottom-2 left-2"
         useNewTreesStore={useNewTreesStore}
         TreeService={TreeService}
         useOpenAddTreesStore={useOpenAddTreesStore}

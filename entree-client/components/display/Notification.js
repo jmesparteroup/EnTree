@@ -1,4 +1,4 @@
-import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { MinusIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import useNotificationStore from "../../stores/notificationStore";
 import Container from "../layout/Container";
 
@@ -29,10 +29,10 @@ export default function Notification({ className }) {
         >
           <div className="h-full w-full">
             <div className="w-full flex justify-end">
-              <MinusCircleIcon
-                className="h-4 w-4 shadow-none cursor-pointer"
+              <MinusIcon
+                className="h-4 w-4 shadow-none cursor-pointer text-gray-400 hover:text-gray-600 transition ease-linear"
                 onClick={setIsOpen}
-              ></MinusCircleIcon>
+              ></MinusIcon>
             </div>
             <h1 className="text-xl font-bold">Notification</h1>
             {/* button to hide */}

@@ -1,6 +1,6 @@
 import {
   InformationCircleIcon,
-  MinusCircleIcon,
+  MinusIcon,
 } from "@heroicons/react/24/outline";
 
 const appInfo = {
@@ -89,7 +89,7 @@ export default function InfoDialogue({ className }) {
               onClick={() => setOpenAppInfo()}
               className="rounded-full h-7 w-7 text-center flex justify-center items-center absolute top-0 right-0 m-1 border-0 cursor-pointer"
             >
-              <MinusCircleIcon className="h-10 w-10 text"></MinusCircleIcon>
+              <MinusIcon className="h-10 w-10 text text-gray-400 hover:text-gray-600 transition ease-linear"></MinusIcon>
             </div>
             {/* Title */}
             <div
@@ -131,7 +131,7 @@ export default function InfoDialogue({ className }) {
                 {appInfo.guides?.steps[selectedStep]?.title}
               </div>
               <div
-                className="text-md font-semibold mt-3 overflow-y-auto touch-auto w-full"
+                className="text-md font-semibold mt-3 overflow-y-auto touch-auto lg:w-3/4 h-6/10 w-9/10"
                 id="allowedScroll"
               >
                 {appInfo.guides?.steps[selectedStep]?.description ||

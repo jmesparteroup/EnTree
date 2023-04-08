@@ -8,6 +8,7 @@ import Container from "../layout/Container";
 
 import { CSVLink } from "react-csv";
 import { useState } from "react";
+import { MinusIcon } from "@heroicons/react/24/solid";
 
 export default function AddTrees({
   className,
@@ -50,6 +51,15 @@ export default function AddTrees({
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const downloadUserTrees = async () => {
+    // wait 3 secs for userTrees to finish downloading
+    setTimeout(() => {
+      setUserTrees([]);
+    }
+    , 3000);
+
   };
 
   // handler
@@ -135,6 +145,12 @@ export default function AddTrees({
           <div className="text-lg border-b-[1px] w-full mx-4 text-center font-bold">
             Add Trees
           </div>
+          <div
+              onClick={() => setOpenAddTrees()}
+              className="rounded-full h-7 w-7 text-center flex justify-center items-center absolute top-0 right-0 m-1 border-0 cursor-pointer"
+            >
+              <MinusIcon className="h-10 w-10 text text-gray-400 hover:text-gray-600 transition ease-linear"></MinusIcon>
+            </div>
           <div className="flex h-8 w-full border-b-[1px]">
             <div className="w-1/12 h-full flex justify-center items-center">
               #
@@ -199,7 +215,7 @@ export default function AddTrees({
             {/* submit trees */}
             {userTrees?.length > 0 ? (
               <button className="bg-lime-100 w-full h-full rounded-md shadow-hover flex justify-center items-center shadow-sm active:shadow-inner">
-                <CSVLink data={userTrees} headers={csvHeaders} filename={`${Date.now()}_${loggedInUser.username}`}>Download CSV</CSVLink>
+                <CSVLink onClick={downloadUserTrees} data={userTrees} headers={csvHeaders} filename={`${Date.now()}_${loggedInUser.username}`}>Download CSV</CSVLink>
               </button>
             ) : (
               <button

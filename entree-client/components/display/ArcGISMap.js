@@ -20,7 +20,6 @@ import useMapOptionsStore from "../../stores/mapOptionsStore";
 
 import MAP_CONFIG from "../../constants/map";
 import useSelectedTreeStore from "../../stores/selectTreesStore";
-import useOpenMapOptionsStore from "../../stores/openMapOptionsStore";
 
 // STRUCTURE OF FILE
 // 1. CONSTANTS

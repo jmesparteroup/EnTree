@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import Logo from "./Logo";
 import {HomeIcon} from "@heroicons/react/24/solid";
 import useUserStore from "../../stores/userStore";
-import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import cookieService from "../../services/cookieService";
 
 export default function Navbar() {
@@ -52,10 +52,10 @@ export default function Navbar() {
                 {/* Get only the first first name of the user */}
                 {userState.isLoggedIn ? (`Hello, ${userState.user.firstName.split(" ")[0]}`) : (<></>)}
               </div>
-              <div className="text-[var(--primary-text-color)]">
+              <div className="text-[var(--primary-text-color)] flex align-center justify-center">
                   {userState.isLoggedIn ? (
                       <div className="ml-2 inline-block text-md hover:scale-105 transition ease-inout text-[var(--primary-text-color)]" onClick={logoutHandler}>
-                        <ArrowLeftOnRectangleIcon className="h-6 w-6 text-gray-600"/>
+                        <ArrowLeftIcon className="h-4 w-4 text-gray-600"/>
                       </div>
                   ) : (
                     <Link href={"/"}>
