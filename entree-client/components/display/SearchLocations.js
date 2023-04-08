@@ -1,79 +1,8 @@
 import { useState } from "react";
-import { MagnifyingGlassIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
-
-const DUMMY_LOCATIONS = [
-  // generate me 10 locations
-  {
-    name: "San Juan Capistrano",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Loyola Heights",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Area 2",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Gaging Iloilo",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Brgy. Sup Cuh",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Location 6",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Location 7",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Location 8",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Location 9",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-  {
-    name: "Location 10",
-    center: {
-      lat: 37.7749,
-      lng: -122.4194,
-    },
-  },
-];
+import {
+  MagnifyingGlassIcon,
+  MinusCircleIcon,
+} from "@heroicons/react/24/outline";
 
 const debounce = (fn, ms) => {
   let timer;
@@ -88,20 +17,28 @@ const debounce = (fn, ms) => {
   };
 };
 
-const dummy_search = async (query) => {
-  // check if query is empty
-  if (!query) return;
-
-  // filter locations based on query
-  const filteredLocations = DUMMY_LOCATIONS.filter((location) => {
-    return location.name.toLowerCase().includes(query.toLowerCase());
-  });
-  return filteredLocations.slice(0, 8);
-};
-
-export default function SelectLocations({ className, iconClassName }) {
+export default function SelectLocations({
+  className,
+  iconClassName,
+  locationList,
+  TreeService,
+  useSearchStore,
+}) {
   const [openSearchBar, setOpenSearchBar] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const setSelectedLocation = useSearchStore((state) => state.setSelectedLocation);
+  const setData = useSearchStore((state) => state.setData);
+
+  const dummy_search = async (query) => {
+    // check if query is empty
+    if (!query) return;
+
+    // filter locations based on query
+    const filteredLocations = locationList.filter((location) => {
+      return location.toLowerCase().includes(query.toLowerCase());
+    });
+    return filteredLocations.slice(0, 8);
+  };
 
   const searchLocations = async (e) => {
     // implement debounce time of 500ms
@@ -113,6 +50,18 @@ export default function SelectLocations({ className, iconClassName }) {
       // search locations
       const locations = await dummy_search(query);
       setSearchResults(locations);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSelectLocation = async (location) => {
+    // get trees in location
+    try {
+      const barangayData = await TreeService.getBarangayByName(location);
+      setData(barangayData);
+      setSelectedLocation(location);
+      setSearchResults([]);
     } catch (error) {
       console.log(error);
     }
@@ -139,11 +88,12 @@ export default function SelectLocations({ className, iconClassName }) {
               {searchResults.map((location, index) => {
                 return (
                   <div
+                    onClick={() => handleSelectLocation(location)}
                     key={index}
                     className="flex flex-row h-9 bg-white search-result-shadow hover:bg-gray-200 transition ease-in-out select-none"
                   >
                     <div className="w-full h-full flex items-center pl-4 py-1 text-gray-800">
-                      {location.name}
+                      {location}
                     </div>
                   </div>
                 );
@@ -152,16 +102,18 @@ export default function SelectLocations({ className, iconClassName }) {
           )}
         </div>
       )}
-      
+
       <div
         className={`rounded-full bg-[var(--primary-bg-color)] h-12 w-12 text-center flex justify-center items-center ${iconClassName} border-2 border-gray-400 cursor-pointer`}
-        onClick={() => setOpenSearchBar((prev => !prev))}
-      > {
-        !openSearchBar ? <MagnifyingGlassIcon className="h-8 w-8 text-gray-500"></MagnifyingGlassIcon> : <MinusCircleIcon className="h-8 w-8 text-gray-500"></MinusCircleIcon>
-      }
-        
+        onClick={() => setOpenSearchBar((prev) => !prev)}
+      >
+        {" "}
+        {!openSearchBar ? (
+          <MagnifyingGlassIcon className="h-8 w-8 text-gray-500"></MagnifyingGlassIcon>
+        ) : (
+          <MinusCircleIcon className="h-8 w-8 text-gray-500"></MinusCircleIcon>
+        )}
       </div>
-      
     </>
   );
 }

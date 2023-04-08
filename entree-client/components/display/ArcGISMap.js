@@ -17,6 +17,7 @@ import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 import useNotificationStore from "../../stores/notificationStore";
 import useBaseMapStore from "../../stores/basemapStore";
 import useMapOptionsStore from "../../stores/mapOptionsStore";
+import useSearchStore from "../../stores/searchStore";
 
 import MAP_CONFIG from "../../constants/map";
 import useSelectedTreeStore from "../../stores/selectTreesStore";
@@ -433,6 +434,45 @@ export default function EntreeMap({
     }
   };
 
+  const createBrgyOutline = (polygonData) => {
+    // Create a polygon geometry
+    const polygon = {
+      type: "polygon", // autocasts as new Polygon()
+      rings: polygonData,
+    };
+
+    const polygonOutlineSymbol = {
+      // the polygon fill color
+      type: "simple-fill", //
+      outline: {
+        // red outline
+        color: [255, 99, 71, 0.8],
+        width: 1,
+      },
+    };
+    return [polygon, polygonOutlineSymbol];
+  };
+
+  const renderBrgyOutline = (brgyPolygons, brgyOutlineLayer) => {
+    try {
+      brgyOutlineLayer.removeAll();
+      // brgyPolygons.forEach((brgyPolygon) => {
+
+        const [polygon, simpleFillSymbol] = createBrgyOutline(brgyPolygons[0]);
+        const graphic = new Graphic({
+          geometry: polygon,
+          symbol: simpleFillSymbol,
+        });
+
+        brgyOutlineLayer.add(graphic);
+      // });
+
+      console.log("brgy outlines rendered");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const renderHexagons = (
     graphicsLayer,
     hexagons,
@@ -544,6 +584,28 @@ export default function EntreeMap({
     // create a new layer for 0 tree hexagons
     const zeroTreesLayer = new GraphicsLayer({ id: "zeroTreesLayer" });
     map.add(zeroTreesLayer);
+
+    const brgyOutlineLayer = new GraphicsLayer({
+      id: "brgyOutlineLayer",
+    });
+    map.add(brgyOutlineLayer);
+
+    const searchedBarangaySubscription = useSearchStore.subscribe(
+      (state) => state.selectedLocation,
+      () => {
+        console.log("searched barangay changed");
+        const data = useSearchStore.getState().data;
+
+        if (data.centroid.length === 2) {
+          renderBrgyOutline(data.polygons, brgyOutlineLayer)
+          view.goTo({
+            center: data.centroid,
+            zoom: 14,
+          });
+          console.log("should have moved to barangay");
+        }
+      }
+    );
 
     const showLabelsSubscription = useMapOptionsStore.subscribe(
       (state) => state.showLabels,
@@ -973,6 +1035,7 @@ export default function EntreeMap({
         mapOptionsSubscription();
         selectCitiesSubscription();
         showLabelsSubscription();
+        searchedBarangaySubscription();
       }
     };
   }, []);

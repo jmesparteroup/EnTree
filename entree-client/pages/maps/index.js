@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 import Container from "../../components/layout/Container";
 
 import Head from "next/head";
@@ -11,6 +10,7 @@ import useBaseMapStore from "../../stores/basemapStore";
 import useOpenAddTreesStore from "../../stores/openAddTreesStore";
 import useUserStore from "../../stores/userStore";
 import useSelectedTreeStore from "../../stores/selectTreesStore";
+import useSearchStore from "../../stores/searchStore";
 
 import TreeService from "../../services/treeService";
 
@@ -22,6 +22,8 @@ import SelectedTree from "../../components/display/SelectedTreeDialogue";
 import ZoomIndicator from "../../components/display/ZoomIndicator";
 import InfoDialogue from "../../components/display/InfoDialogue";
 import SearchLocations from "../../components/display/SearchLocations";
+
+import BARANGAY_NAMES from "../../constants/search";
 
 const EntreeMapWithNoSSR = dynamic(
   () => import("../../components/display/ArcGISMap"),
@@ -65,7 +67,13 @@ export default function Maps() {
         setBaseMapKey={setBaseMap}
       />
       {/*  */}
-      <SearchLocations className="absolute top-[40vh] md:top-[4rem] left-[10vw] sm:left-[30vw]" iconClassName="absolute right-2 top-[11rem]"/>
+      <SearchLocations
+        className="absolute top-[40vh] md:top-[4rem] left-[10vw] sm:left-[30vw]"
+        iconClassName="absolute right-2 top-[11rem]"
+        locationList={BARANGAY_NAMES}
+        TreeService={TreeService}
+        useSearchStore={useSearchStore}
+      />
       <AddTrees
         className="absolute bottom-2 left-2"
         useNewTreesStore={useNewTreesStore}

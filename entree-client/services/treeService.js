@@ -1,6 +1,5 @@
 import cookieService from "./cookieService";
 
-
 const generateAuthHeader = () => {
   const token = cookieService.getUserCookie();
   if (token) {
@@ -10,10 +9,9 @@ const generateAuthHeader = () => {
   }
 };
 
-
 const TreeService = {
   getAllTrees: async () => {
-    const res =  await fetch(`${process.env.SERVER_URL}/trees/`, {
+    const res = await fetch(`${process.env.SERVER_URL}/trees/`, {
       method: "GET",
     });
     return await res.json();
@@ -23,16 +21,19 @@ const TreeService = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': generateAuthHeader(),
+        Authorization: generateAuthHeader(),
       },
-      body: JSON.stringify(trees)
+      body: JSON.stringify(trees),
     });
   },
   getTreesByCity: async (city) => {
     try {
-      const res = await fetch(`${process.env.SERVER_URL}/trees/bycity?city=${city}`, {
-        method: "GET",
-      });
+      const res = await fetch(
+        `${process.env.SERVER_URL}/trees/bycity?city=${city}`,
+        {
+          method: "GET",
+        }
+      );
       return await res.json();
     } catch (err) {
       console.log(err);
@@ -44,7 +45,7 @@ const TreeService = {
     });
   },
   getTreesByProximity: async (lat, lng, radius) => {
-    const data =  await fetch(
+    const data = await fetch(
       `${process.env.SERVER_URL}/trees/proximity?lat=${lat}&long=${lng}&radius=${radius}`,
       {
         method: "GET",
@@ -56,29 +57,41 @@ const TreeService = {
     return await fetch(`${process.env.SERVER_URL}/trees/${id}`, {
       method: "DELETE",
       headers: {
-        'Authorization': generateAuthHeader(),
-      }
+        Authorization: generateAuthHeader(),
+      },
     });
   },
   flagTree: async (id) => {
     return await fetch(`${process.env.SERVER_URL}/trees/flag/${id}`, {
       method: "PATCH",
       headers: {
-        'Authorization': generateAuthHeader(),
-      }
+        Authorization: generateAuthHeader(),
+      },
     });
   },
   getTreesByUser: async () => {
     const res = await fetch(`${process.env.SERVER_URL}/trees/user`, {
       method: "GET",
       headers: {
-        'Authorization': generateAuthHeader(),
-      }
+        Authorization: generateAuthHeader(),
+      },
     });
     return await res.json();
-  }
+  },
 
-
+  getBarangayByName: async (name) => {
+    try {
+      const res = await fetch(
+        `${process.env.SERVER_URL}/trees/brgy?brgy=${name}`,
+        {
+          method: "GET",
+        }
+      );
+      return await res.json();
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 
 export default TreeService;
