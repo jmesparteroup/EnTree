@@ -4,17 +4,26 @@ import {
   MinusCircleIcon,
 } from "@heroicons/react/24/outline";
 
-const debounce = (fn, ms) => {
-  let timer;
-  return (_) => {
-    clearTimeout(timer);
-    timer = setTimeout((_) => {
-      timer = null;
-    }, ms);
-    if (!timer) {
-      fn.apply(this, arguments);
-    }
-  };
+const levenshteinDistance = (str1 = '', str2 = '') => {
+  const track = Array(str2.length + 1).fill(null).map(() =>
+  Array(str1.length + 1).fill(null));
+  for (let i = 0; i <= str1.length; i += 1) {
+     track[0][i] = i;
+  }
+  for (let j = 0; j <= str2.length; j += 1) {
+     track[j][0] = j;
+  }
+  for (let j = 1; j <= str2.length; j += 1) {
+     for (let i = 1; i <= str1.length; i += 1) {
+        const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+        track[j][i] = Math.min(
+           track[j][i - 1] + 1, // deletion
+           track[j - 1][i] + 1, // insertion
+           track[j - 1][i - 1] + indicator, // substitution
+        );
+     }
+  }
+  return track[str2.length][str1.length];
 };
 
 export default function SelectLocations({
@@ -33,11 +42,29 @@ export default function SelectLocations({
     // check if query is empty
     if (!query) return;
 
-    // filter locations based on query
-    const filteredLocations = locationList.filter((location) => {
-      return location.toLowerCase().includes(query.toLowerCase());
-    });
-    return filteredLocations.slice(0, 8);
+    const sortedBasedOnLevenshteinDistance = locationList.sort((a, b) => {
+      
+      if (a === b) return 0;
+
+      const levenshteinWeight = 0.3;
+      const isInWordWeight = 0.7;
+
+      const aIsInWordScore = a.toLowerCase().includes(query.toLowerCase()) ? -3 : 3;
+      const bIsInWordScore = b.toLowerCase().includes(query.toLowerCase()) ? -3 : 3;
+
+      const aDistance = levenshteinDistance(a, query);
+      const bDistance = levenshteinDistance(b, query);
+
+      const aScore = aDistance * levenshteinWeight + aIsInWordScore * isInWordWeight;
+      const bScore = bDistance * levenshteinWeight + bIsInWordScore * isInWordWeight;
+
+      return aScore - bScore;
+    }
+    );
+
+    // return top 5 results
+    return sortedBasedOnLevenshteinDistance.slice(0, 5);
+
   };
 
   const searchLocations = async (e) => {
@@ -74,7 +101,7 @@ export default function SelectLocations({
           <div className="flex flex-row items-center justify-between w-full h-10 rounded-full border overflow-hidden border-gray-300 focus:outline-none">
             <input
               type="text"
-              placeholder="Search Locations"
+              placeholder="Search Barangays"
               className="w-full h-10 px-4 focus:outline-none"
               autoComplete="off"
               onChange={searchLocations}

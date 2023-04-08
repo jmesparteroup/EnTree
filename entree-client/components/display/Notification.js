@@ -16,10 +16,6 @@ export default function Notification({ className }) {
   const isOpen = useNotificationStore((state) => state.isOpen);
   const setIsOpen = useNotificationStore((state) => state.setIsOpen);
 
-  const setOpenHandler = () => {
-    console.log("clicked");
-    setIsOpen();
-  };
 
   return (
     <>

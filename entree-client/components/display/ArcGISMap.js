@@ -456,18 +456,14 @@ export default function EntreeMap({
   const renderBrgyOutline = (brgyPolygons, brgyOutlineLayer) => {
     try {
       brgyOutlineLayer.removeAll();
-      // brgyPolygons.forEach((brgyPolygon) => {
+      const [polygon, simpleFillSymbol] = createBrgyOutline(brgyPolygons[0]);
+      const graphic = new Graphic({
+        geometry: polygon,
+        symbol: simpleFillSymbol,
+      });
 
-        const [polygon, simpleFillSymbol] = createBrgyOutline(brgyPolygons[0]);
-        const graphic = new Graphic({
-          geometry: polygon,
-          symbol: simpleFillSymbol,
-        });
-
-        brgyOutlineLayer.add(graphic);
+      brgyOutlineLayer.add(graphic);
       // });
-
-      console.log("brgy outlines rendered");
     } catch (err) {
       console.log(err);
     }
@@ -597,7 +593,7 @@ export default function EntreeMap({
         const data = useSearchStore.getState().data;
 
         if (data.centroid.length === 2) {
-          renderBrgyOutline(data.polygons, brgyOutlineLayer)
+          renderBrgyOutline(data.polygons, brgyOutlineLayer);
           view.goTo({
             center: data.centroid,
             zoom: 14,
@@ -993,18 +989,20 @@ export default function EntreeMap({
           }
         }
         if (_zoom <= MAP_CONFIG.POLYGON_ZOOM_LEVEL) {
-          localMapState.zoomLevel = _zoom;
-          await getCityPolygons();
-          labelLayer.removeAll();
-          graphicsLayer.removeAll();
+          if (localMapState.zoomLevel != _zoom || localMapState.firstLoad) {
+            localMapState.zoomLevel = _zoom;
+            await getCityPolygons();
+            labelLayer.removeAll();
+            graphicsLayer.removeAll();
 
-          renderPolygons(
-            graphicsLayer,
-            localMapState,
-            true,
-            labelLayer,
-            cityOutlinesLayer
-          );
+            renderPolygons(
+              graphicsLayer,
+              localMapState,
+              true,
+              labelLayer,
+              cityOutlinesLayer
+            );
+          }
         }
         // always render new trees
       }
