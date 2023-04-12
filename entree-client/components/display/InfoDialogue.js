@@ -46,12 +46,12 @@ const appInfo = {
       "Filter by Barangay": {
         title: "Filtering Search",
         description:
-          "Filter search by barangay. This highlights on the map the relevant barangays selected. This feature is intended to be an aid for data-gathering purposes.",
+          "Filter search by barangay. This highlights on the map the selected barangay. To use this feature, use the Search button on the right of the map. This feature is intended to be an aid for data-gathering purposes.",
       },
       "Get my trees": {
         title: "Get trees uploaded by the user",
         description:
-          "This feature allows a user to download all the trees they have submitted so far. It returns your datapoints as a csv.",
+          "This feature allows a user to download all the trees they have submitted so far. It returns your datapoints as a csv. To use this feature, make sure you are logged in first. Click the '+' symbol that appears on the bottom left of the map once logged in. Click the 'Request Uploaded Trees' option. Wait a few seconds; when it is ready you should be able to click the 'Download CSV' option.",
       },
       Survey: {
         title: "Answer our Thesis Survey!",
