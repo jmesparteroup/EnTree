@@ -38,15 +38,20 @@ const appInfo = {
         description:
           "Users logged in may flag trees they deem to be incorrect (e.g., a point on the map does not represent a tree and is therefore incorrect). Application administrators will verify flagged data manually. Click on a point to see the interface to flag (or unflag) it. Note: to hide the details interface, please click the point again.",
       },
-      Filter: {
+      "Filter by City": {
         title: "Filtering Search",
         description:
           "Filter search by city. Click the settings button on the bottom left of the map. Then, click 'Show Select Cities' and check/uncheck the relevant cities.",
       },
+      "Filter by Barangay": {
+        title: "Filtering Search",
+        description:
+          "Filter search by barangay. This highlights on the map the relevant barangays selected. This feature is intended to be an aid for data-gathering purposes.",
+      },
       "Get my trees": {
         title: "Get trees uploaded by the user",
         description:
-          "This upcoming feature is intended for NSTP students from UP Diliman. This is to allow students to get all the points they have submitted so far.",
+          "This feature allows a user to download all the trees they have submitted so far. It returns your datapoints as a csv.",
       },
       Survey: {
         title: "Answer our Thesis Survey!",
