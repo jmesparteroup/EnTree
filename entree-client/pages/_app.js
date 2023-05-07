@@ -5,12 +5,12 @@ import UserService from "../services/userService";
 import useUserStore from "../stores/userStore";
 import jwt_decode from "jwt-decode";
 import "../styles/globals.css";
+import Bulletin from "../components/display/Bulletin";
 
 // import esriConfig from "@arcgis/core/config.js";
 // esriConfig.assetsPath = "./assets";
 
-if (process.env.ENVIRONMENT !== "development")
-    console.log = () => {};
+if (process.env.ENVIRONMENT !== "development") console.log = () => {};
 
 function MyApp({ Component, pageProps }) {
   // on first load, check for cookie if user is logged in
@@ -58,6 +58,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Layout>
+        <Bulletin />
         <Component {...pageProps} />
       </Layout>
     </>
