@@ -11,11 +11,11 @@ class TreeError extends GlobalError {
     }
 
     static TreeDeleteError() {
-        return new CustomError('Failed to delete trees', 1002);
+        return new CustomError('Failed to delete trees', 400, 1002);
     }
 
     static TreeNotFoundError() {
-        return new CustomError('Failed to find tree', 1003);
+        return new CustomError('Failed to find tree', 400, 1003);
     }
 
 }
